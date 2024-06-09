@@ -1,0 +1,91 @@
+---
+title: "Anaemia in pregnancy in Ghana"
+author: "Report on Data Review" 
+date: '`r format(Sys.time(), format = "%d %B %Y %H:%M")`'
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    self_contained: true
+    code_download: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  echo = FALSE
+)
+
+suppressPackageStartupMessages(source("packages.R"))
+for (f in list.files(here::here("R"), full.names = TRUE)) source (f)
+
+targets::tar_load(c(anc_data_raw, anc_data_raw_metadata, anc_data_processed))
+```
+
+This document details the review performed on the antenatal care (ANC) data from Ghana provided after a request was made for ANC records for the whole year of 2023 of women visiting a specific clinic/hospital in a region of Ghana. The specific request was for anonymised record for all women visiting the specific clinic/hospital for the year 2023 to include the following information per record:
+
+* Date of birth;
+
+* Profession; 
+
+* Education level;
+
+* Marriage status;
+
+* Parity (number of pregnancies prior to current pregnancy);
+
+* Address [if possible without providing to much identification];
+
+* First HGB test results (first Hb test for patient, not more than the first needed. So one test per patient); and,
+
+* Age of gestation when blood was drawn for first Hb test.
+
+
+On 31 May 2024, a dataset was provided based on these specifications. The dataset was provided in Microsoft `.xlsx` format with the filename `Copy of ANC_anon.xlsx`. The `.xlsx` file had a single worksheet.
+
+For this review, we used R to read in the provided dataset and appropriate handling of the data was performed to aid in the review.
+
+## Data structure
+
+The dataset contains **`r nrow(anc_data_raw)` records** and **`r ncol(anc_data_raw)` fields**. No data dictionary or metadata document was provided alongside the dataset, so we assumed what the fields of the dataset indicate and created a metadata document which is presented below:
+
+```{r metadata-raw}
+knitr::kable(
+  x = anc_data_raw_metadata,
+  col.names = c("Field Name", "Field Type", "Field Description", "Field Values")
+) |>
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "bordered"),
+    full_width = FALSE,
+    position = "center"
+  )
+```
+
+Based on this raw data metadata, we propose performing the following data cleaning/processing steps:
+
+1. rename fields to make them more descriptive of the type and nature of the data they represent and to make the field nomenclature more data handling friendly (e.g., consistently and appropriately use snake case);
+
+2. standardise the date values to appropriate ISO format;
+
+3. standardise values for `Test`, `Profile`, `Result_Num`, `Profession`, `EducationLevel`, `MarriageStatus`, and `Address`;
+
+4. use title case or small case for `AttStatus`, `Profession`, `EducationLevel`, and `MarriageStatus`; and,
+
+4. convert `Department`, `AttSpecialty`, `AttStatus`, `Profession`, `EducationLevel`, and `MarriageStatus` to factors.
+
+Given the specifications of the data request made, our immediate assumption was that each record is a unique ANC attendee for the year 2023. However, on closer inspection of the fields for `Test`, `Profile`, and `Date_Of_Birth`, it seems that depending on the type of test or the profile of the test, more than one record corresponds to a single ANC attendee. We noted that the results date and date of birth would repeat if the type of test and/or test profile is different. This seems to indicate that a new row/record for the same attendee has been added as per type of test and/or test profile. Whilst this is a known *long form* data structure, this format isn't quite appropriate for the type of test results - haemoglobin results are numeric values (actual Hb readings) whilst the results for sickle cell and malaria blood film are binary descriptive values (positive or negative for sickle cell; no parasite or with parasite for malaria blood film test).
+
+From a data processing point of view, we need to convert the dataset in such a way what each record is a unique individual and test results for Hb, sickle cell, and malaria should have their own fields. As such, this would mean that the actual number of records for data analysis is going to be much lower than the **`r nrow(anc_data_raw)` records** initially thought of.
+
+## Data processing
+
+Based on initial review above, we processed the raw ANC dataset such that each row corresponds to a unique individual woman who attended ANC in 2023.
+
+The main challenge with the data processing is that the raw dataset didn't have a unique identifier for an individual woman attending ANC in 2023 and with how the raw data has been structured, information on different tests (Hb, sickle cell, and malaria) for the same individual woman were not marked as coming from the same person. We tried our best to re-structure the data and this is our best attempt at getting to a per individual record dataset.
+
+The processed dataset now has **`r nrow(anc_data_processed)`** records and **`r ncol(anc_data_processed)`** fields. Additional fields were created for the purpose of trying to identify each unique individual in the dataset. Field names have also been cleaned to consistent snake case. Fields on profession, education level, marital status, and address were standardised. In this dataset, there are three new fields specific to each test performed - *sickle cell*, *haemoglobin*, and *malaria*.
+
+It is highly likely that there is still duplication in this dataset. Without a clear identifying code, it is almost impossible to ascertain whether test results for an individual woman have been matched appropriately.
+

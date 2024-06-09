@@ -41,7 +41,7 @@ jobs:
         
       - name: Run workflow
         run: |
-          targets::tar_make()
+          targets::tar_make(anc_data_raw_file)
         shell: Rscript {0}
         
         
