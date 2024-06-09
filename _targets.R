@@ -43,7 +43,17 @@ data_targets <- tar_plan(
 
 ## Processing targets
 processing_targets <- tar_plan(
-  
+  ### Process raw ANC data ----
+  tar_target(
+    name = anc_data_processed,
+    command = process_anc_data_raw(anc_data_raw)
+  ),
+  ### Create processed ANC data CSV ----
+  tar_target(
+    name = anc_data_processed_csv,
+    command = create_anc_data_processed_csv(anc_data_processed),
+    format = "file"
+  )
 )
 
 
@@ -61,7 +71,12 @@ output_targets <- tar_plan(
 
 ## Reporting targets
 report_targets <- tar_plan(
-  
+  ### Render data review report ----
+  tar_render(
+    name = anc_data_raw_review_report,
+    path = "reports/gh_anc_data_report.Rmd",
+    knit_root_dir = here::here()
+  )
 )
 
 

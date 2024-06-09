@@ -16,6 +16,12 @@ library(openxlsx)
 library(ggplot2)
 
 
-## Packages for data cleaning, processing, and checking ------------------------
+## Packages for data cleaning, processing, and checking ----
 library(nipnTK)
 library(janitor)
+
+
+## Packages for Hb data handling ----
+library(micronutr)
+
+

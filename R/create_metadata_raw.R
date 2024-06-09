@@ -38,7 +38,23 @@ create_metadata_raw <- function(anc_data_raw) {
     "Address of attendee"
   )
   
-  data.frame(field_name, field_type, field_description) |>
+  field_values <- c(
+    "date values",
+    unique(anc_data_raw$Test) |> paste(collapse = "; "),
+    unique(anc_data_raw$Profile) |> paste(collapse = "; "),
+    unique(anc_data_raw$Result_Num) |> paste(collapse = "; "),
+    unique(anc_data_raw$Department) |> paste(collapse = "; "),
+    unique(anc_data_raw$AttSpecialty) |> paste(collapse = "; "),
+    unique(anc_data_raw$AttStatus) |> paste(collapse = "; "),
+    "date values",
+    "age values",
+    unique(anc_data_raw$Profession) |> paste(collapse = "; "),
+    unique(anc_data_raw$EducationLevel) |> paste(collapse = "; "),
+    unique(anc_data_raw$MarriageStatus) |> paste(collapse = "; "),
+    unique(anc_data_raw$Address) |> paste(collapse = "; ")
+  )
+  
+  data.frame(field_name, field_type, field_description, field_values) |>
     tibble::tibble()
 }
 
