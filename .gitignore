@@ -7,3 +7,5 @@ data
 !data/.gitkeep
 outputs
 !outputs/.gitkeep
+data-raw
+!data-raw/.gitkeep
