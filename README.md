@@ -1,10 +1,14 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Anaemia in pregnancy in Ghana
+# Anaemia in pregnancy in Ghana <a href="https://www.tropicalmedicine.ox.ac.uk/study-with-us/msc-ihtm" target="_blank"><img src="https://podcasts.ox.ac.uk/sites/default/files/image-mirror/unpacking-fundamentals-global-health-towards-new-generation-leadership.png" width="150px" align="right" /></a>
 
 <!-- badges: start -->
 
+[![License for
+code](https://img.shields.io/badge/license%20\(for%20code\)-GPL3.0-blue.svg)](https://opensource.org/licenses/gpl-3.0.html)
+![License for
+data](https://img.shields.io/badge/license%20\(for%20data\)-restricted-red)
 <!-- badges: end -->
 
 This repository is a
@@ -24,6 +28,7 @@ The project repository is structured as follows:
         |-- .github/
         |-- data/
         |-- data-raw/
+        |-- metadata/
         |-- outputs/
         |-- R/
         |-- reports
@@ -50,6 +55,9 @@ The project repository is structured as follows:
     permissions to use the raw datasets should include their copies of
     the raw dataset into this directory in their local versions of this
     repository.
+
+  - `metadata/` contains various metadata for both raw and processed
+    datasets found in `data-raw` and `data` directories respectively.
 
   - `outputs/` contains compiled reports and figures produced by the
     workflow.
