@@ -33,6 +33,7 @@ gh-anaemia-pregnancy
     |-- .github/
     |-- data/
     |-- data-raw/
+    |-- metadata/
     |-- outputs/
     |-- R/
     |-- reports
@@ -48,6 +49,8 @@ gh-anaemia-pregnancy
 * `data/` contains intermediate and final data outputs produced by the workflow.
 
 * `data-raw/` contains raw datasets, usually either downloaded from source or added manually, that are used in the project. This directory is empty given that the raw datasets used in this project are restricted and are only distributed to eligible members of the project. This directory is kept here to maintain reproducibility of project directory structure and ensure that the workflow runs as expected. Those who are collaborating on this project and who have permissions to use the raw datasets should include their copies of the raw dataset into this directory in their local versions of this repository.
+
+* `metadata/` contains various metadata for both raw and processed datasets found in `data-raw` and `data` directories respectively.
 
 * `outputs/` contains compiled reports and figures produced by the workflow.
 

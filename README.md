@@ -28,6 +28,7 @@ The project repository is structured as follows:
         |-- .github/
         |-- data/
         |-- data-raw/
+        |-- metadata/
         |-- outputs/
         |-- R/
         |-- reports
@@ -54,6 +55,9 @@ The project repository is structured as follows:
     permissions to use the raw datasets should include their copies of
     the raw dataset into this directory in their local versions of this
     repository.
+
+  - `metadata/` contains various metadata for both raw and processed
+    datasets found in `data-raw` and `data` directories respectively.
 
   - `outputs/` contains compiled reports and figures produced by the
     workflow.
