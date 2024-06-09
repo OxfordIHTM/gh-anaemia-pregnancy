@@ -11,9 +11,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Anaemia in pregnancy in Ghana
+# Anaemia in pregnancy in Ghana <a href="https://www.tropicalmedicine.ox.ac.uk/study-with-us/msc-ihtm" target="_blank"><img src="https://podcasts.ox.ac.uk/sites/default/files/image-mirror/unpacking-fundamentals-global-health-towards-new-generation-leadership.png" width="150px" align="right" /></a>
 
 <!-- badges: start -->
+[![License for code](https://img.shields.io/badge/license (for code)-GPL3.0-blue.svg)](https://opensource.org/licenses/gpl-3.0.html)
+![License for data](https://img.shields.io/badge/license (for data)-restricted-red)
 <!-- badges: end -->
 
 This repository is a [`docker`](https://www.docker.com/get-started)-containerised, [`{targets}`](https://docs.ropensci.org/targets/)-based, [`{renv}`](https://rstudio.github.io/renv/articles/renv.html)-enabled [`R`](https://cran.r-project.org/) workflow for the project on *Anaemia in pregnancy in Ghana*.
