@@ -176,6 +176,16 @@ targets::tar_make(dplyr::contains("metadata"))
 
 will run all targets whose names contain *“metadata”*.
 
+## Project Team
+
+  - Shih-Ting Tseng - University of Oxford
+
+  - Proochista Ariana - University of Oxford
+
+  - Caesar Atuire - University of Oxford
+
+  - Ernest Guevarra - University of Oxford
+
 ## Licenses
 
 All code created through this project (found in this repository) is
