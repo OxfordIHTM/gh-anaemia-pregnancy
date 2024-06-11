@@ -95,9 +95,95 @@ The project repository is structured as follows:
 
 ### R package dependencies
 
-This project was built using `R 4.4.0`. This project uses the `renv`
-framework to record R package dependencies and versions. Packages and
-versions used are recorded in `renv.lock` and code used to manage
-dependencies is in `renv/` and other files in the root project
+This project was built using `R 4.4.0`. This project uses the `{renv}`
+package framework to record R package dependencies and versions.
+Packages and versions used are recorded in `renv.lock` and code used to
+manage dependencies is in `renv/` and other files in the root project
 directory. On starting an R session in the working directory, run
 `renv::restore()` to install R package dependencies.
+
+On starting an R session in the working directory, run
+
+``` r
+renv::restore()
+```
+
+to install this project’s R package dependencies.
+
+### Running the workflow
+
+The current project workflow is described in the image below:
+
+``` mermaid
+graph LR
+  style Graph fill:#FFFFFF00,stroke:#000000;
+  subgraph Graph
+    direction LR
+    xbba39ca9e518ed94(["anc_data_raw"]):::uptodate --> x597caed207d4fc5d(["anc_data_processed"]):::uptodate
+    x597caed207d4fc5d(["anc_data_processed"]):::uptodate --> x34b86f86bb8014ea(["anc_data_processed_metadata"]):::uptodate
+    x34b86f86bb8014ea(["anc_data_processed_metadata"]):::uptodate --> x2d4384c638b4d284(["anc_data_processed_metadata_csv"]):::uptodate
+    x597caed207d4fc5d(["anc_data_processed"]):::uptodate --> x34a9c3203c3a0d4e(["anc_data_raw_review_report"]):::uptodate
+    x34b86f86bb8014ea(["anc_data_processed_metadata"]):::uptodate --> x34a9c3203c3a0d4e(["anc_data_raw_review_report"]):::uptodate
+    xbba39ca9e518ed94(["anc_data_raw"]):::uptodate --> x34a9c3203c3a0d4e(["anc_data_raw_review_report"]):::uptodate
+    x8a8877168229f4dd(["anc_data_raw_metadata"]):::uptodate --> x34a9c3203c3a0d4e(["anc_data_raw_review_report"]):::uptodate
+    x597caed207d4fc5d(["anc_data_processed"]):::uptodate --> x9efa48e5541103b9(["anc_data_processed_csv"]):::uptodate
+    x05812169c4dfa932(["anc_data_raw_file"]):::uptodate --> xbba39ca9e518ed94(["anc_data_raw"]):::uptodate
+    xbba39ca9e518ed94(["anc_data_raw"]):::uptodate --> x8a8877168229f4dd(["anc_data_raw_metadata"]):::uptodate
+    x8a8877168229f4dd(["anc_data_raw_metadata"]):::uptodate --> x2f4ef36220e6f123(["anc_data_raw_metadata_csv"]):::uptodate
+  end
+```
+
+To run the entire workflow as specified in the current version of the
+project, run
+
+``` r
+targets::tar_make()
+```
+
+from the R console.
+
+You can also run the entire workflow from the command line/Terminal as
+follows:
+
+``` bash
+Rscript -e "targets::tar_make()"
+```
+
+Running specific components of the workflow usually involves specifying
+a target name or target names of the components you want to run.
+Usually, you should be able to run a full workflow path by just
+specifying the name of the last target in the workflow sequence. For
+example, the following will run just the *raw data metadata processing
+workflow*:
+
+``` r
+targets::tar_make(anc_data_raw_metadata_csv)
+```
+
+The target `anc_data_raw_metadata_csv` is the last target of a series of
+linked metadata processing targets. Hence, to be able to produce the
+`anc_data_raw_metadata_csv` target requires running this series of
+linked targets.
+
+If you would like to run a set of interrelated but not fully linked
+targets, you will likely need to specify more than one target name. For
+this, you can use `tidyselect` approaches to name targets to be run. For
+example:
+
+``` r
+targets::tar_make(dplyr::contains("metadata"))
+```
+
+will run all targets whose names contain *“metadata”*.
+
+## Licenses
+
+All code created through this project (found in this repository) is
+released under a [GPL-3.0
+license](https://opensource.org/licenses/gpl-3.0.html).
+
+Antenatal care (ANC) data used in this project (not available through
+this repository) is restricted to those granted permission to use the
+data.
+
+<br> <br>
