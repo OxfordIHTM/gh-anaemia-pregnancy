@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 suppressPackageStartupMessages(source("packages.R"))
 for (f in list.files(here::here("R"), full.names = TRUE)) source (f)
 
-targets::tar_load(c(anc_data_raw, anc_data_raw_metadata, anc_data_processed))
+targets::tar_load(c(anc_data_raw, anc_data_raw_metadata, anc_data_processed, anc_data_processed_metadata))
 ```
 
 This document details the review performed on the antenatal care (ANC) data from Ghana provided after a request was made for ANC records for the whole year of 2023 of women visiting a specific clinic/hospital in a region of Ghana. The specific request was for anonymised record for all women visiting the specific clinic/hospital for the year 2023 to include the following information per record:
@@ -85,7 +85,19 @@ Based on initial review above, we processed the raw ANC dataset such that each r
 
 The main challenge with the data processing is that the raw dataset didn't have a unique identifier for an individual woman attending ANC in 2023 and with how the raw data has been structured, information on different tests (Hb, sickle cell, and malaria) for the same individual woman were not marked as coming from the same person. We tried our best to re-structure the data and this is our best attempt at getting to a per individual record dataset.
 
-The processed dataset now has **`r nrow(anc_data_processed)`** records and **`r ncol(anc_data_processed)`** fields. Additional fields were created for the purpose of trying to identify each unique individual in the dataset. Field names have also been cleaned to consistent snake case. Fields on profession, education level, marital status, and address were standardised. In this dataset, there are three new fields specific to each test performed - *sickle cell*, *haemoglobin*, and *malaria*.
+The processed dataset now has **`r nrow(anc_data_processed)`** records and **`r ncol(anc_data_processed)`** fields. Additional field named `unique_id` was created for the purpose of identifying each unique individual in the dataset. Other fields from raw dataset have been dropped. Remaining field names have been cleaned to consistent snake case. Fields on profession, education level, marital status, and address were standardised. In this dataset, there are three new fields specific to each test performed - *sickle cell*, *haemoglobin*, and *malaria*.
 
-It is highly likely that there is still duplication in this dataset. Without a clear identifying code, it is almost impossible to ascertain whether test results for an individual woman have been matched appropriately.
+There is still a possibility that duplication exists in this dataset. Following is the summary metadata of the processed ANC dataset.
+
+```{r metadata-processed}
+knitr::kable(
+  x = anc_data_processed_metadata,
+  col.names = c("Field Name", "Field Type", "Field Description", "Field Values")
+) |>
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "bordered"),
+    full_width = FALSE,
+    position = "center"
+  )
+```
 
