@@ -140,4 +140,3 @@ anc_data_processed_subset %>%
   geom_col() +
   facet_wrap(. ~ anaemia_status, ncol = 3)
 ```
-

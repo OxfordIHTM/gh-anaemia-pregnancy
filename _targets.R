@@ -70,7 +70,16 @@ processing_targets <- tar_plan(
 
 ## Analysis targets
 analysis_targets <- tar_plan(
-  
+  ### Recode new ANC data variables ----
+  tar_target(
+    name = anc_data_recode,
+    command = recode_anc_variables(anc_data_processed)
+  ),
+  ### Create summary tables ----
+  tar_target(
+    name = anc_data_summary_table,
+    command = summarise_anc_data_univariate(anc_data_recode)
+  )
 )
 
 
