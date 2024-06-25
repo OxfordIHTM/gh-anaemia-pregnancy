@@ -7,7 +7,7 @@ output:
   html_document:
     toc: true
     toc_depth: 3
-    self_contained: true
+    #self_contained: true
     code_download: true
 ---
 
@@ -25,7 +25,8 @@ for (f in list.files(here::here("R"), full.names = TRUE)) source (f)
 targets::tar_load(
   c(anc_data_raw, anc_data_raw_metadata, 
     anc_data_processed, anc_data_processed_metadata,
-    anc_data_recode, anc_data_summary_table)
+    anc_data_recode, anc_data_summary_univariate_table,
+    anc_data_summary_bivariate_table)
 )
 ```
 
@@ -36,7 +37,7 @@ targets::tar_load(
 
 ```{r sample-description}
 knitr::kable(
-  x = anc_data_summary_table |>
+  x = anc_data_summary_univariate_table |>
     dplyr::select(-var_set),
   col.names = c("", "")
 ) |>
@@ -161,6 +162,51 @@ boxplot(
 
 ## Outcome variable and bivariate analysis
 
+```{r bivariate-table}
+knitr::kable(
+  x = anc_data_summary_bivariate_table |>
+    dplyr::select(-var_set),
+  col.names = c("", "", "")
+) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::pack_rows(
+    group_label = "Age",
+    start_row = 1, end_row = 1
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Age Group",
+    start_row = 2, end_row = 8
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Haemoglobin",
+    start_row = 9, end_row = 9
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Profession",
+    start_row = 10, end_row = 22
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Education Level",
+    start_row = 23, end_row = 28
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Marital Status",
+    start_row = 29, end_row = 31
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Location",
+    start_row = 32, end_row = 55
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Sickle Cell",
+    start_row = 56, end_row = 58
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Malaria",
+    start_row = 59, end_row = 60
+  )
+```
+
 ### Anaemia status and age
 
 ```{r anaemia-status-age-barplot, fig.align = "center", fig.width = 8, fig.height = 6}
@@ -217,8 +263,3 @@ anc_data_recode |>
   oxthema::theme_oxford(grid = "Yy")
 ```
 
-### Anaemia status and profession
-
-```{r}
-
-```
