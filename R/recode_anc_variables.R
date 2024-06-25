@@ -20,7 +20,16 @@ recode_anc_variables <- function(anc_data_processed) {
       anaemia_category = cut(
         x = haemoglobin,
         breaks = c(0, 7, 10, 11, Inf),
-        labels = c("severe anaemia", "moderate anaemia", "mild anaemia", "no anaemia")
+        labels = c(
+          "severe anaemia", "moderate anaemia", "mild anaemia", "no anaemia"
+        )
+      ),
+      education_level = factor(
+        x = education_level, 
+        levels = c(
+          "Primary", "Junior High School", "Senior High School", 
+          "Tertiary", "None"
+        )
       )
     )
 }
