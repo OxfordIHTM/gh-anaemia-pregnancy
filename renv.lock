@@ -316,6 +316,18 @@
       ],
       "Hash": "c2efdd5f0bcd1ea861c2d4e2a883a67d"
     },
+    "forestploter": {
+      "Package": "forestploter",
+      "Version": "1.1.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "grid",
+        "gridExtra",
+        "gtable"
+      ],
+      "Hash": "869e0171f755536dc5ef28ee06c2a4dc"
+    },
     "fs": {
       "Package": "fs",
       "Version": "1.6.3",
@@ -427,6 +439,20 @@
         "methods"
       ],
       "Hash": "4f2596dfb05dac67b9dc558e5c6fba2e"
+    },
+    "gridExtra": {
+      "Package": "gridExtra",
+      "Version": "2.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "grDevices",
+        "graphics",
+        "grid",
+        "gtable",
+        "utils"
+      ],
+      "Hash": "7d7f283939f563670a697165b2cf5560"
     },
     "gtable": {
       "Package": "gtable",
@@ -814,6 +840,26 @@
         "zip"
       ],
       "Hash": "c03b4c18d42da881fb8e15a085c2b9d6"
+    },
+    "oxthema": {
+      "Package": "oxthema",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteUsername": "OxfordIHTM",
+      "RemoteRepo": "oxthema",
+      "RemoteRef": "main",
+      "RemoteSha": "5fdab8ca15a958548482f76cf1af141a3ef5895f",
+      "RemoteHost": "api.github.com",
+      "Requirements": [
+        "R",
+        "forestploter",
+        "ggplot2",
+        "stringr",
+        "systemfonts",
+        "withr"
+      ],
+      "Hash": "37173d12fa4ce3204326ff6aafa362d3"
     },
     "parallelly": {
       "Package": "parallelly",

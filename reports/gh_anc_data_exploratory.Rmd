@@ -1,0 +1,133 @@
+---
+title: "Anaemia in pregnancy in Ghana"
+subtitle: "Data analysis"
+author: "" 
+date: '`r format(Sys.time(), format = "%d %B %Y %H:%M")`'
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    self_contained: true
+    code_download: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  echo = FALSE
+)
+
+suppressPackageStartupMessages(source("packages.R"))
+for (f in list.files(here::here("R"), full.names = TRUE)) source (f)
+
+targets::tar_load(
+  c(anc_data_raw, anc_data_raw_metadata, 
+    anc_data_processed, anc_data_processed_metadata,
+    anc_data_recode, anc_data_summary_table)
+)
+```
+
+
+## Description of the sample
+
+### Summary statistics table
+
+```{r sample-description}
+knitr::kable(
+  x = anc_data_summary_table |>
+    dplyr::select(-var_set),
+  col.names = c("", "")
+) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::pack_rows(
+    group_label = "Age",
+    start_row = 1, end_row = 1
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Age Group",
+    start_row = 2, end_row = 8
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Haemoglobin",
+    start_row = 9, end_row = 9
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Anaemia Status",
+    start_row = 10, end_row = 12
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Anaemia Category",
+    start_row = 13, end_row = 17
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Profession",
+    start_row = 18, end_row = 32
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Education Level",
+    start_row = 33, end_row = 38
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Marital Status",
+    start_row = 39, end_row = 41
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Location",
+    start_row = 42, end_row = 65
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Sickle Cell",
+    start_row = 66, end_row = 68
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Malaria",
+    start_row = 69, end_row = 70
+  )
+```
+
+### Age structure
+
+```{r age-structure-1, fig.align = "center", fig.height = 6, fig.width = 8}
+anc_data_recode |>
+  ggplot(mapping = aes(x = age)) +
+  geom_bar(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
+  scale_x_continuous(
+    breaks = seq(from = 0, to = max(anc_data_recode$age), by = 5)
+  ) +
+  labs(
+    title = "Age Distribution",
+    subtitle = "Age (in years) of women attending ANC in 2023",
+    x = "Age (years)",
+    y = "Number of women"
+  ) +
+  oxthema::theme_oxford(grid = "Y")
+```
+
+
+```{r age-structure-2, fig.align = "center", fig.height = 6, fig.width = 8}
+anc_data_recode |>
+  dplyr::count(age_group) |>
+  ggplot(mapping = aes(x = age_group, y = n)) +
+  geom_col(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
+  scale_y_continuous(
+    breaks = seq(from = 0, to = 60, by = 10)
+  ) +
+  labs(
+    title = "Age Distribution",
+    subtitle = "Age group of women attending ANC in 2023",
+    x = "Age group",
+    y = "Number of women"
+  ) +
+  coord_flip() +
+  oxthema::theme_oxford(grid = "X")
+```
+
+## Outcome variable and bivariate analysis
+
+### Anaemia status and age
+
+```{r}
+
+```

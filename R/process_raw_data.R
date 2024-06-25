@@ -256,6 +256,11 @@ process_anc_data_raw <- function(anc_data_raw) {
       address = Address
     )
   
+  ## Filter out record with age of 1 year old ----
+  anc_data <- anc_data |>
+    dplyr::filter(age != 1)
+  
+  ## Return anc_data ----
   anc_data
 }
 
