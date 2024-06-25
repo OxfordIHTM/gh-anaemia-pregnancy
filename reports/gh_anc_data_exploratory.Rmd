@@ -93,8 +93,16 @@ knitr::kable(
 anc_data_recode |>
   ggplot(mapping = aes(x = age)) +
   geom_bar(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
-  scale_x_continuous(
-    breaks = seq(from = 0, to = max(anc_data_recode$age), by = 5)
+  scale_x_continuous(breaks = seq(from = 0, to = 50, by = 5)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 20, by = 4)) +
+  geom_vline(
+    xintercept = 26, 
+    colour = oxthema::get_oxford_colours("Oxford blue"),
+    linetype = 2
+  ) +
+  annotate(
+    geom = "text", x = 30, y = 14, label = "Median age: 26 years", 
+    colour = oxthema::get_oxford_colours("Oxford blue")
   ) +
   labs(
     title = "Age Distribution",
@@ -102,7 +110,7 @@ anc_data_recode |>
     x = "Age (years)",
     y = "Number of women"
   ) +
-  oxthema::theme_oxford(grid = "Y")
+  oxthema::theme_oxford(grid = "Yy")
 ```
 
 
@@ -124,9 +132,92 @@ anc_data_recode |>
   oxthema::theme_oxford(grid = "X")
 ```
 
+### Distribution of haemoglobin values
+
+```{r hb-histogram, fig.align = "center", fig.width = 8, fig.height = 6}
+anc_data_recode |>
+  ggplot(aes(x = haemoglobin)) +
+  geom_histogram(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
+  labs(
+    title = "Haemoglobin values distribution",
+    subtitle = "Haemoglobin values of women attending ANC in 2023",
+    x = "Hb (g/L)", y = "Number of women"
+  ) +
+  oxthema::theme_oxford(grid = "Yy")
+```
+
+```{r hb-boxplot, fig.align = "center", fig.height = 6, fig.width = 4}
+boxplot(
+  x = anc_data_recode$haemoglobin,
+  border = oxthema::get_oxford_colours("Oxford blue"),
+  col = oxthema::get_oxford_colours("sky"),
+  lwd = 1.5,
+  frame.plot = FALSE,
+  main = "Haemoglobin values distribution",
+  xlab = NULL, 
+  ylab = "Hb (g/L)"
+)
+```
+
 ## Outcome variable and bivariate analysis
 
 ### Anaemia status and age
+
+```{r anaemia-status-age-barplot, fig.align = "center", fig.width = 8, fig.height = 6}
+anc_data_recode |>
+  dplyr::filter(!is.na(anaemia_status)) |>
+  ggplot(mapping = aes(x = age)) +
+  geom_bar(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
+  scale_x_continuous(breaks = seq(from = 0, to = 50, by = 5)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 20, by = 4)) +
+  labs(
+    title = "Age Distribution by Anaemia Status",
+    subtitle = "Women attending ANC in 2023",
+    x = "Age (years)",
+    y = "Number of women"
+  ) +
+  facet_wrap(. ~ anaemia_status, ncol = 2) +
+  oxthema::theme_oxford(grid = "Yy")
+```
+
+```{r anaemia-status-age-group-barplot, fig.align = "center", fig.width = 6, fig.height = 8}
+anc_data_recode |>
+  dplyr::filter(!is.na(anaemia_status)) |>
+  dplyr::count(anaemia_status, age_group) |>
+  ggplot(mapping = aes(x = age_group, y = n)) +
+  geom_col(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
+  scale_y_continuous(
+    breaks = seq(from = 0, to = 40, by = 10)
+  ) +
+  labs(
+    title = "Age Distribution",
+    subtitle = "Age group of women attending ANC in 2023",
+    x = "Age group",
+    y = "Number of women"
+  ) +
+  coord_flip() +
+  facet_wrap(. ~ anaemia_status, nrow = 2) +
+  oxthema::theme_oxford(grid = "Xx")
+```
+
+```{r anaemia-status-age-violin, fig.align = "center", fig.width = 8, fig.height = 6}
+anc_data_recode |>
+  dplyr::filter(!is.na(anaemia_status)) |>
+  ggplot(mapping = aes(x = anaemia_status, y = age)) +
+  geom_violin(
+    fill = oxthema::get_oxford_colours("sky"), alpha = 0.8,
+    colour = oxthema::get_oxford_colours("Oxford blue")
+  ) + 
+  labs(
+    title = "Age Distribution by Anaemia Status",
+    subtitle = "Women attending ANC in 2023",
+    x = "",
+    y = "Age (years)"
+  ) + 
+  oxthema::theme_oxford(grid = "Yy")
+```
+
+### Anaemia status and profession
 
 ```{r}
 
