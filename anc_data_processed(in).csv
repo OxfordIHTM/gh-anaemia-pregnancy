@@ -1,0 +1,219 @@
+unique_id,age,profession,education_level,marital_status,address,haemoglobin,sickle_cell,malaria
+1,47,Trader,Senior High School,married,Insanfo,10.7,NA,NA
+2,42,Trader,Senior High School,married,Yamoransa,NA,negative,NA
+3,42,NA,NA,NA,NA,11.4,positive,NA
+4,41,Fishmonger,Junior High School,married,Biriwa,9.3,negative,NA
+5,40,Fishmonger,None,married,Biriwa,11.5,NA,NA
+6,41,Fishmonger,None,married,Biriwa,NA,negative,NA
+7,41,NA,NA,NA,NA,10.3,negative,NA
+8,40,Trader,Junior High School,married,Anomabo,10.7,negative,NA
+9,40,NA,NA,NA,NA,5.8,negative,NA
+10,40,Trader,None,married,Anomabo,9.8,negative,NA
+11,40,Trader,Junior High School,single,NA,8.6,negative,NA
+12,39,Fishmonger,Junior High School,married,Biriwa,11.2,negative,NA
+13,37,None,Junior High School,married,Saltpond Zongo,11.1,negative,NA
+14,39,Trader,Junior High School,married,Yamoransa,9.6,negative,NA
+15,38,Trader,Senior High School,married,Biriwa,10.9,NA,NA
+16,38,Trader,Junior High School,married,Biriwa,11.3,negative,NA
+17,38,None,None,single,Biriwa,10.9,negative,NA
+18,38,Trader,Tertiary,married,Yamoransa,8.1,negative,NA
+19,38,Hair Dresser,Junior High School,married,Egyirefa,9.7,negative,NA
+20,38,Hair Dresser,Junior High School,married,Yamoransa,10.2,negative,NA
+21,38,Trader,Primary,married,Anomabo,8.9,negative,NA
+22,38,Fishmonger,None,married,Biriwa,NA,positive,NA
+23,38,Trader,Senior High School,married,Amissakrom,10.9,positive,NA
+24,37,Trader,Tertiary,single,Yamoransa,NA,negative,NA
+25,37,Trader,Senior High School,married,Makassium,8.5,NA,NA
+26,37,Hair Dresser,Primary,married,Aketekyiwa,8.6,NA,NA
+27,37,Trader,Junior High School,married,Biriwa,9.1,negative,NA
+28,37,Hair Dresser,Junior High School,married,Biriwa,9,NA,negative
+29,34,None,None,married,Yamoransa,7.9,NA,NA
+30,36,Trader,Junior High School,single,Amissakrom,10.9,negative,NA
+31,34,Fishmonger,None,married,Biriwa,8.9,NA,NA
+32,36,Trader,Junior High School,married,Abandze,NA,negative,NA
+33,36,Trader,Junior High School,married,Biriwa,NA,negative,NA
+34,35,Trader,None,married,Anomabo,11.3,negative,NA
+35,35,Trader,None,married,Abandze,9.5,negative,NA
+36,35,Teacher,Tertiary,married,Insanfo,NA,negative,NA
+37,34,Trader,Primary,married,Biriwa,NA,negative,NA
+38,34,Trader,Junior High School,married,Yamoransa,6.6,negative,NA
+39,34,Seamstress,Senior High School,married,Biriwa,9.6,NA,NA
+40,34,Trader,Senior High School,married,Amissakrom,10,NA,NA
+41,34,Catre,Senior High School,single,Cape Coast,10.1,negative,negative
+42,34,Trader,Junior High School,single,Anomabo,10.8,positive,NA
+43,33,Trader,None,married,Biriwa,NA,negative,NA
+44,34,Trader,Junior High School,married,Biriwa,11.1,positive,NA
+45,34,Trader,Senior High School,married,Buranamoah,9.8,NA,NA
+46,32,NA,NA,NA,NA,6.8,positive,NA
+47,33,Fishmonger,Junior High School,married,Biriwa,9,negative,NA
+48,32,Hair Dresser,Junior High School,married,Kormantse,10.4,negative,NA
+49,33,Trader,Junior High School,single,Anomabo,NA,negative,NA
+50,32,Hair Dresser,Junior High School,single,Insanfo,NA,negative,NA
+51,32,Trader,Junior High School,married,Aketekyiwa,NA,negative,NA
+52,30,Trader,Senior High School,married,Insanfo,NA,negative,NA
+53,31,Hair Dresser,Junior High School,married,Yamoransa,9.1,positive,NA
+54,32,Teacher,Tertiary,single,Anomabo,9.2,NA,NA
+55,32,None,Senior High School,single,Biriwa,8.9,negative,NA
+56,32,Seamstress,Primary,married,Biriwa,NA,negative,NA
+57,32,Trader,Primary,married,Anomabo,10.6,negative,NA
+58,31,Teacher,Tertiary,married,Afrago Junction,8.4,negative,NA
+59,31,Teacher,Senior High School,single,Aketekyiwa,9.5,negative,NA
+60,31,Trader,Senior High School,single,Biriwa,11.2,positive,NA
+61,30,Trader,Junior High School,single,Amonda,9.4,negative,NA
+62,31,Seamstress,Senior High School,married,Biriwa,NA,negative,NA
+63,30,Trader,Primary,married,Biriwa,11.1,negative,NA
+64,31,Trader,Junior High School,married,Saltpond Zongo,9,negative,NA
+65,31,Trader,Junior High School,single,Anomabo,10.6,NA,NA
+66,30,Seamstress,Junior High School,married,Abandze,11.3,negative,NA
+67,30,Fishmonger,None,married,Biriwa,NA,negative,NA
+68,29,Trader,Junior High School,single,Kormantse,9.6,negative,NA
+69,30,Trader,Junior High School,single,Biriwa,9.7,negative,NA
+70,30,Trader,Senior High School,married,Mfanteman,8,NA,negative
+71,29,Trader,Tertiary,single,Anomabo,NA,negative,NA
+72,29,Trader,Junior High School,married,Eguase,10.4,negative,NA
+73,28,Fishmonger,Junior High School,married,Biriwa,9.5,NA,NA
+74,28,Trader,Junior High School,married,Amissakrom,10.2,NA,NA
+75,30,Trader,Senior High School,married,Pomasi,8.1,negative,NA
+76,29,Teacher,Tertiary,married,Saltpond Zongo,8.4,positive,NA
+77,29,Trader,Junior High School,married,Biriwa,9.8,negative,NA
+78,28,Trader,Primary,married,Asafora,9.9,negative,NA
+79,28,Trader,Junior High School,married,Biriwa,10.1,negative,NA
+80,29,Hair Dresser,Junior High School,married,Yamoransa,11.7,negative,NA
+81,28,Trader,Senior High School,married,Waakrom,10.2,positive,NA
+82,29,Trader,Junior High School,married,NA,11.48,negative,NA
+83,28,Seamstress,Junior High School,single,Kormantse,10.1,negative,NA
+84,28,NA,NA,NA,NA,NA,negative,NA
+85,27,None,Junior High School,single,Waakrom,6,negative,NA
+86,26,NA,NA,NA,NA,12.2,negative,NA
+87,28,Decorator,Senior High School,single,Anomabo,10.6,negative,NA
+88,27,Trader,Junior High School,married,Biriwa,NA,negative,NA
+89,28,Trader,Primary,married,Egyirefa,8.9,negative,NA
+90,28,Seamstress,Junior High School,married,Biriwa,NA,negative,NA
+91,27,Seamstress,None,married,Yamoransa,NA,negative,NA
+92,27,Trader,Junior High School,married,Saltpond Zongo,8.7,NA,NA
+93,28,None,Tertiary,married,Anomabo,10.4,negative,NA
+94,27,NA,NA,NA,NA,7.5,negative,NA
+95,27,Seamstress,Senior High School,married,Anomabo,11.2,negative,NA
+96,26,None,Junior High School,married,Biriwa,10.2,negative,NA
+97,27,Fishmonger,Junior High School,married,Biriwa,10.4,negative,NA
+98,28,None,Senior High School,single,Kormantse,NA,negative,NA
+99,28,Trader,Senior High School,married,Biriwa,9.7,positive,NA
+100,28,Seamstress,Senior High School,single,NA,10.3,negative,NA
+101,25,None,Primary,married,Yamoransa,8.5,negative,NA
+102,26,Business Owner,Junior High School,single,NA,11,positive,NA
+103,26,None,Senior High School,married,Waakrom,9.7,NA,NA
+104,26,Hair Dresser,Senior High School,married,Biriwa,NA,negative,NA
+105,27,None,Senior High School,married,Biriwa,9.4,negative,NA
+106,26,Trader,Senior High School,married,Anomabo,NA,negative,NA
+107,26,None,Junior High School,married,Insanfo,7.4,NA,NA
+108,25,Midwife,Tertiary,married,Biriwa,NA,negative,NA
+109,25,None,Junior High School,married,Biriwa,8.2,negative,NA
+110,26,None,Junior High School,married,Asafora,9.5,NA,NA
+111,24,None,Junior High School,single,Biriwa,NA,NA,negative
+112,25,Hair Dresser,Junior High School,married,Anomabo,12,negative,NA
+113,26,Seamstress,Junior High School,married,Asafora,8.4,NA,NA
+114,26,Decorator,Junior High School,single,Biriwa,11.5,negative,NA
+115,26,Trader,Senior High School,single,Biriwa,8.8,negative,negative
+116,26,Seamstress,Junior High School,single,Anomabo,8.2,negative,NA
+117,25,Undertaker,Junior High School,married,Anomabo,11.3,NA,NA
+118,26,Trader,Senior High School,single,Biriwa,NA,positive,NA
+119,25,None,Junior High School,married,Saltpond Zongo,9.2,negative,NA
+120,26,Teacher,Senior High School,single,Aketekyiwa,NA,negative,NA
+121,24,Trader,Senior High School,single,Yamoransa,10.2,negative,NA
+122,24,Trader,Junior High School,single,Biriwa,NA,negative,NA
+123,24,None,Junior High School,married,Insanfo,10.1,positive,NA
+124,24,Trader,Junior High School,married,Aketekyiwa,8.4,negative,NA
+125,24,Trader,None,married,Biriwa,8.6,negative,NA
+126,24,None,Junior High School,single,Biriwa,9.7,negative,NA
+127,25,None,Senior High School,single,Aketekyiwa,11.7,negative,negative
+128,24,Trader,Junior High School,single,Buranamoah,8.8,NA,NA
+129,24,Trader,Senior High School,single,Anomabo,10.1,negative,NA
+130,24,None,None,married,Yamoransa,8,positive,NA
+131,23,None,Primary,single,Biriwa,11.3,negative,NA
+132,24,None,Primary,married,Yamoransa,9.9,negative,negative
+133,24,Student,Senior High School,single,Egyirefa,9.3,NA,NA
+134,21,Trader,Senior High School,single,Biriwa,9.5,NA,NA
+135,23,NA,NA,NA,NA,NA,negative,NA
+136,23,Trader,Primary,single,Biriwa,10.2,negative,NA
+137,24,None,None,married,Biriwa,10.3,negative,NA
+138,23,Hair Dresser,Senior High School,married,Anomabo,NA,negative,NA
+139,24,Teacher,Senior High School,single,Biriwa,11.6,negative,negative
+140,22,Trader,Senior High School,married,Biriwa,12.3,NA,NA
+141,23,Seamstress,Junior High School,single,Insanfo,7,positive,NA
+142,23,Trader,Primary,married,Anomabo,9.5,negative,NA
+143,22,NA,NA,NA,NA,9.7,negative,NA
+144,23,Seamstress,Senior High School,single,Anomabo,NA,negative,NA
+145,23,Trader,Junior High School,single,Anomabo,7.7,negative,NA
+146,22,Teacher,Senior High School,married,Biriwa,12.5,negative,NA
+147,21,Trader,Junior High School,single,Biriwa,8.2,positive,NA
+148,22,Company Employee,Senior High School,single,Biriwa,11,negative,negative
+149,21,Student,Junior High School,single,Biriwa,9.5,negative,NA
+150,21,Trader,Junior High School,single,Yamoransa,NA,negative,NA
+151,21,None,Junior High School,married,Egyirefa,11.1,negative,NA
+152,21,NA,NA,NA,NA,NA,positive,NA
+153,22,None,Junior High School,single,Asafora,10.8,NA,NA
+154,21,None,Junior High School,single,Biriwa,NA,negative,NA
+155,22,None,Senior High School,single,Anomabo,10.9,negative,NA
+156,21,None,Primary,married,Biriwa,9.9,positive,NA
+157,20,None,Junior High School,single,Biriwa,10.3,negative,NA
+158,21,NA,NA,NA,NA,NA,negative,NA
+159,20,None,Junior High School,single,Buranamoah,5.3,NA,NA
+160,20,Trader,Junior High School,single,NA,9.6,negative,NA
+161,21,None,Primary,married,Biriwa,NA,NA,negative
+162,21,None,Junior High School,single,Anomabo,NA,negative,NA
+163,20,Hair Dresser,Junior High School,single,Insanfo,10.6,positive,NA
+164,20,None,Senior High School,single,Yamoransa,NA,negative,NA
+165,21,Trader,Senior High School,single,Insanfo,11.4,negative,NA
+166,21,Student,Tertiary,single,Yamoransa,NA,negative,NA
+167,19,Trader,None,single,Biriwa,10,negative,NA
+168,20,Seamstress,Junior High School,single,Ekotokrom,8.9,negative,NA
+169,19,Student,Junior High School,single,Biriwa,NA,negative,NA
+170,19,None,Junior High School,single,Anomabo,11.2,negative,NA
+171,20,Hair Dresser,Junior High School,single,Anomabo,10.1,NA,NA
+172,20,None,Junior High School,married,Egyirefa,9.4,negative,NA
+173,20,None,Primary,single,Biriwa,7.3,negative,NA
+174,19,None,Junior High School,married,Biriwa,6.9,negative,NA
+175,20,None,Senior High School,single,Insanfo,NA,negative,NA
+176,20,Farmer,None,married,Asafora,NA,negative,NA
+177,20,Student,Senior High School,single,Insanfo,10.6,positive,NA
+178,20,Trader,Junior High School,single,Biriwa,10.3,negative,negative
+179,19,Hair Dresser,Junior High School,single,Yamoransa,10.3,positive,NA
+180,19,None,None,single,Biriwa,5.5,negative,NA
+181,18,Trader,Junior High School,single,Biriwa,9.6,negative,NA
+182,18,None,Junior High School,married,Biriwa,7.2,negative,NA
+183,18,None,Junior High School,single,More,9,negative,NA
+184,19,None,Junior High School,single,Biriwa,NA,positive,NA
+185,19,None,Primary,single,Biriwa,NA,negative,NA
+186,18,Student,Junior High School,single,Anomabo,6.9,negative,NA
+187,18,None,Primary,single,Yamoransa,NA,negative,NA
+188,18,None,Junior High School,single,Biriwa,7.6,negative,NA
+189,18,Student,Junior High School,single,Biriwa,NA,negative,NA
+190,19,None,Primary,married,Anomabo,NA,NA,negative
+191,18,None,Junior High School,single,Anomabo,NA,negative,NA
+192,18,Trader,Junior High School,single,Anomabo,NA,negative,NA
+193,19,None,Junior High School,single,Biriwa,NA,negative,NA
+194,17,Trader,Junior High School,married,NA,10.1,negative,NA
+195,16,None,Junior High School,single,Egyirefa,8.8,negative,NA
+196,17,None,Junior High School,single,Yamoransa,9.5,negative,NA
+197,18,Student,Junior High School,single,Mfanteman,10.3,negative,NA
+198,15,None,Junior High School,single,Ekon,10.8,negative,NA
+199,17,None,Primary,single,Biriwa,9,positive,NA
+200,16,None,Junior High School,single,Biriwa,8,negative,NA
+201,17,Seamstress,Junior High School,married,Anomabo,8,negative,NA
+202,17,Trader,Junior High School,single,Anomabo,NA,negative,NA
+203,17,None,Junior High School,single,Aketekyiwa,9.9,negative,NA
+204,17,None,Junior High School,single,Waakrom,NA,positive,NA
+205,16,None,Junior High School,single,Anomabo,7.9,negative,negative
+206,15,Student,Junior High School,single,Biriwa,12.2,negative,NA
+207,15,Student,Junior High School,single,Biriwa,10.9,positive,NA
+208,15,None,Primary,single,Biriwa,NA,negative,NA
+209,1,Child,NA,child,Biriwa,9.7,NA,NA
+210,37,Trader,Junior High School,married,Biriwa,NA,negative,NA
+211,35,Trader,Primary,married,Anomabo,9.8,NA,NA
+212,28,None,Primary,married,Biriwa,NA,negative,NA
+213,21,None,Junior High School,single,Biriwa,8.6,negative,NA
+214,31,NA,NA,NA,NA,9.9,negative,NA
+215,32,Trader,Junior High School,married,Anomabo,11.3,positive,NA
+216,27,Trader,Junior High School,married,Yamoransa,9.8,negative,NA
+217,28,Trader,None,married,Anomabo,NA,negative,NA
+218,27,Trader,Junior High School,married,Anomabo,8.3,negative,NA
