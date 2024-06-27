@@ -29,7 +29,7 @@ targets::tar_load(c(anc_data_raw, anc_data_raw_metadata, anc_data_processed, anc
 ## Description of the sample
 
 ```{r sample-description}
-anc_data_processed_subset <- anc_data_processed %>%
+anc_data_processed_subset <- anc_data_processed_in_ %>%
   filter(age != 1) %>%
   dplyr::mutate(
     total_n = n(),
@@ -130,13 +130,61 @@ knitr::kable(
 ## Outcome variable and bivariate analysis
 
 ```{r}
+#histogram of age group
 anc_data_processed_subset %>%
   dplyr::count(anaemia_status)
+anc_data_processed_subset %>%
+  dplyr::count(anaemia_status, age_group) %>%
+  dplyr::arrange(desc(n)) %>%
+  ggplot(aes(x = age_group, y = n)) +
+  geom_col() +
+  facet_wrap(. ~ anaemia_status, ncol = 3)
 
+#histogram of education level
+anc_data_processed_subset %>%
+  dplyr::count(anaemia_status)
+anc_data_processed_subset %>%
+  dplyr::count(anaemia_status, education_level) %>%
+  dplyr::arrange(desc(n)) %>%
+  ggplot(aes(x = education_level, y = n)) +
+  geom_col() +
+  facet_wrap(. ~ anaemia_status, ncol = 3)
+#histogram of profession
+anc_data_processed_subset %>%
+  dplyr::count(anaemia_status)
 anc_data_processed_subset %>%
   dplyr::count(anaemia_status, profession) %>%
   dplyr::arrange(desc(n)) %>%
   ggplot(aes(x = profession, y = n)) +
   geom_col() +
   facet_wrap(. ~ anaemia_status, ncol = 3)
+#marital status
+anc_data_processed_subset %>%
+  dplyr::count(anaemia_status)
+anc_data_processed_subset %>%
+  dplyr::count(anaemia_status, marital_status) %>%
+  dplyr::arrange(desc(n)) %>%
+  ggplot(aes(x = marital_status, y = n)) +
+  geom_col() +
+  facet_wrap(. ~ anaemia_status, ncol = 3)
+#sickle cell
+anc_data_processed_subset %>%
+  dplyr::count(anaemia_status)
+anc_data_processed_subset %>%
+  dplyr::count(anaemia_status, sickle_cell) %>%
+  dplyr::arrange(desc(n)) %>%
+  ggplot(aes(x = sickle_cell, y = n)) +
+  geom_col() +
+  facet_wrap(. ~ anaemia_status, ncol = 3)
+#malaria
+anc_data_processed_subset %>%
+  dplyr::count(anaemia_status)
+anc_data_processed_subset %>%
+  dplyr::count(anaemia_status, malaria) %>%
+  dplyr::arrange(desc(n)) %>%
+  ggplot(aes(x = malaria, y = n)) +
+  geom_col() +
+  facet_wrap(. ~ anaemia_status, ncol = 3)
+
+
 ```
