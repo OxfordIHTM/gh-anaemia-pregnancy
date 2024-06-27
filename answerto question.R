@@ -235,7 +235,7 @@ anc_data_processed_in_%>%
 
 age_threshold <- 1
 
-filtered_anaemic_data <- subset(anc_data_processed_in_, age> age_threshold& anaemia_status==TRUE)
+filtered_anaemic_data <- subset(anc_data_processed_in_, age> age_threshold&haemoglobin< 11)
 
 write.csv(filtered_anaemic_data, "filtered_anaemic_data.csv", row.names = FALSE)
 
@@ -394,14 +394,14 @@ ggplot(anemia_data, aes(x = anaemia_status, y = haemoglobin, fill = anaemia_stat
 
 # Violin Plot
 
-ggplot(Haemoglobin_data, aes(x = "", y = haemoglobin)) +
+ggplot(anc_data_clean, aes(x = "", y = haemoglobin)) +
   geom_violin(fill = "lightblue") +
   geom_boxplot(width = 0.1, fill = "orange", outlier.colour = "red", outlier.shape = 8) +
   labs(title = "Violin Plot of Haemoglobin Levels", y = "Hemoglobin Level") +
   theme_minimal()
 
 
-##Violin plot-aneamic data
+##Violin plot-anaemic data
 anaemia_data <- anc_data_clean[anc_data_clean$anaemia_status == TRUE, ]
 ggplot(anaemia_data, aes(x = anaemia_status, y = haemoglobin, fill = anaemia_status)) +
   geom_violin(fill = "lightblue") +
@@ -459,7 +459,7 @@ table_anaemicstatus_data <- table(anc_data_clean$age, anc_data_clean$anaemia_sta
 chisq.test(table_anaemicstatus_data)
 #logical regression
 logistic_age_anaemia_model <- glm(anaemia_status ~ age, data = anc_data_clean, family = binomial)
-summary(logistic_model)
+summary(logistic_age_anaemia_model)
 coefficients(logistic_age_anaemia_model)
 
 ##correlation analysis ->0.1336585
@@ -498,13 +498,7 @@ labs(title = "Logistic Regression Line",
 
 
 ##relationship between different anaemia category and age
-multinom_model <- multinom(anaemia_category ~ age, data = anc_data_clean)
 
-summary(multinom_model)
-
-z <- summary(multinom_model)$coefficients / summary(multinom_model)$standard.errors
-p_values <- (1 - pnorm(abs(z), 0, 1)) * 2
-print(p_values)
 
 
 # ANOVA test
@@ -559,7 +553,7 @@ chi_square_test <- chisq.test(table_anaemiastatus_profession)
 print(chi_square_test)
 # logic model
 logit_anaemia_profession_model <- glm(anaemia_status ~ profession, data = anc_data_clean, family = "binomial")
-summary(logit_model)
+summary(logit_anaemia_profession_model)
 
 coefficients(logit_anaemia_profession_model)
 
@@ -606,7 +600,7 @@ chi_square_test <- chisq.test(table_anaemiastatus_educationlevel)
 print(chi_square_test)
 # logic model
 logit_anaemia_education_model <- glm(anaemia_status ~ education_level, data = anc_data_clean, family = "binomial")
-summary(logit_model)
+summary(logit_anaemia_education_model)
 
 coefficients(logit_anaemia_education_model)
 
@@ -649,7 +643,7 @@ chi_square_test <- chisq.test(table_anaemiastatus_marital_status)
 print(chi_square_test)
 # logic model
 logit_anaemia_marital_model <- glm(anaemia_status ~ marital_status, data = anc_data_clean, family = "binomial")
-summary(logit_model)
+summary(logit_anaemia_marital_model)
 coefficients(logit_anaemia_marital_model)
 
 
@@ -699,7 +693,7 @@ chi_square_test <- chisq.test(table_anaemiastatus_address)
 print(chi_square_test)
 # logic model
 logit_anaemia_address_model <- glm(anaemia_status ~ address, data = anc_data_clean, family = "binomial")
-summary(logit_model)
+summary(logit_anaemia_address_model)
 
 coefficients(logit_anaemia_address_model)
 
