@@ -11,11 +11,13 @@ detect_anaemia_pregnant(hb = anc_data_clean$haemoglobin * 10)
 
 
 anc_data_clean$anaemia_category<-detect_anaemia_pregnant(hb = anc_data_clean$haemoglobin * 10)
-detect_anaemia <- function(hemoglobin_levels) {
+detect_anaemia <- function(haemoglobin_levels) {
   anaemia_threshold <- 11
-  is_anaemic <- hemoglobin_levels < anaemia_threshold
+  is_anaemic <- haemoglobin_levels < anaemia_threshold
   return(is_anaemic)
 }
+
+
 anc_data_clean$anaemia_status <- detect_anaemia(anc_data_clean$haemoglobin)
 
 anc_data_clean$anaemia_status<-c(detect_anaemia(anc_data_clean$haemoglobin))
