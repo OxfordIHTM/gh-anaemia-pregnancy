@@ -1,83 +1,96 @@
 
 #####-------------------------------------------------------------------------------------------########
-###Q22 Age answer
+###Q22+Q34+Q35 Age answer
 ###data clean
-anc_data_processed_in_%>%
+anc_data_clean<-anc_data_processed_in_%>%
   dplyr::filter(age > 1)
 
 ##Anaemia status yes and no, mild,moderate and severe
-detect_anaemia_pregnant(hb = anc_data_processed_in_$haemoglobin * 10)
-anc_data_processed_in_$anaemia<-detect_anaemia_pregnant(hb = anc_data_processed_in_$haemoglobin * 10)
-detect_anemia1 <- function(hemoglobin_levels) {
-  anemia_threshold <- 11
-  is_anemic <- hemoglobin_levels < anemia_threshold
-  return(is_anemic)
-}
-anc_data_processed_in_$anaemia_status <- detect_anemia1(anc_data_processed_in_$haemoglobin)
+detect_anaemia_pregnant(hb = anc_data_clean$haemoglobin * 10)
 
-anc_data_processed_in_$anaemia_status<-c(detect_anemia1(anc_data_processed_in_$haemoglobin))
+
+
+anc_data_clean$anaemia_category<-detect_anaemia_pregnant(hb = anc_data_clean$haemoglobin * 10)
+detect_anaemia <- function(hemoglobin_levels) {
+  anaemia_threshold <- 11
+  is_anaemic <- hemoglobin_levels < anaemia_threshold
+  return(is_anaemic)
+}
+anc_data_clean$anaemia_status <- detect_anaemia(anc_data_clean$haemoglobin)
+
+anc_data_clean$anaemia_status<-c(detect_anaemia(anc_data_clean$haemoglobin))
+
+#boxplot Comparison of haemoglobin by Anemia Status
+ggplot(anc_data_clean, aes(x = anaemia_status, y = haemoglobin, fill = anaemia_status)) +
+  geom_boxplot() +
+  labs(title = "Comparison of Haemoglobin by Anemia Status", 
+       x = "Anemia Status", y = "haemoglobin") +
+  scale_fill_manual(values = c("True" = "red", "False" = "blue")) +
+  theme_minimal()
+
 
 ##Age variable ---total 
-# definition of sum of age function
-sum_of_ages <- function(anc_data_processed_in_) {
-  # "age"
-  total_age <- sum(anc_data_processed_in_$age, na.rm = TRUE)  
-  return(total_age)
-}
 
-# total age
-total_age <- sum_of_ages(anc_data_processed_in_)
-
-# sum age 5860
-
-
-##max 47 min 1 mean 26.88073 median 26 first_quartile 25% 21  third_quartile 75%32 
-
-
-# statistic
-
-age_statistics <- function(anc_data_processed_in_) {
-  max_age <- max(anc_data_processed_in_$age, na.rm = TRUE)          
-  min_age <- min(anc_data_processed_in_$age, na.rm = TRUE)                
-  mean_age <- mean(anc_data_processed_in_$age, na.rm = TRUE)
-  median_age <- median(anc_data_processed_in_$age, na.rm = TRUE)    
-  quartiles <- quantile(anc_data_processed_in_$age, probs = c(0.25, 0.75), na.rm = TRUE) 
-  
-  return(list(
-    max = max_age,
-    min = min_age,
-    mean = mean_age,
-    median = median_age,
-    first_quartile = quartiles[1],
-    third_quartile = quartiles[2]
-  ))}
+# statistic age  five number summary 
+fivenum(anc_data_clean$age)
 
 ##Age Histogram
-ggplot(anc_data_processed_in_, aes(x = age)) +
+ggplot(anc_data_clean, aes(x = age)) +
   geom_histogram(binwidth = 0.5, fill = "lightblue", color = "black", alpha = 0.7) +
   labs(title = "Histogram of age ", x = "Age", y = "number") +
   theme_minimal()
 
+##Age Histogram in one picture  
+ggplot(anc_data_clean, aes(x = age, fill = anaemia_status)) +
+  geom_histogram(position = "identity", alpha = 0.7, binwidth = 5,fill="blue") +
+  facet_wrap(~ anaemia_status, ncol = 1) +
+  labs(title = "Histogram of Age by Anemia Status", 
+       x = "Age", y = "Count") +
+  scale_fill_manual(values = c("Yes" = "lightcoral", "No" = "lightblue")) +
+  theme_minimal()
 
 # Age Boxplot
-ggplot(anc_data_processed_in_, aes(x = "", y =age, fill = age)) +
+ggplot(anc_data_clean, aes(x = "", y =age, fill = age)) +
   geom_boxplot(outlier.colour = "orange", fill = "orange", outlier.shape = 8) +
   labs(title = "Boxplot of Age ", x = "", y = "Age") +
   theme_minimal()
 
+##five number summary in anaemic 
+fivenum(filtered_anaemic_data$age)
 
-##calculate anaemic and non anaemic age 
-group_stats <- anc_data_processed_in_ %>%
-  group_by(anaemia_status) %>%
-  summarise(
-    max = max(age, na.rm = TRUE),
-    min = min(age, na.rm = TRUE),
-    mean = mean(age, na.rm = TRUE),
-    median = median(age, na.rm = TRUE),
-    first_quartile = quantile(age, probs = 0.25, na.rm = TRUE),
-    third_quartile = quantile(age, probs = 0.75, na.rm = TRUE)
-  )
 
+# histogram of age
+ggplot(data = anc_data_clean, mapping = aes(x = age, fill = anaemia_status)) +
+  geom_bar(position = "dodge")
+
+
+#histogram of profession
+
+ggplot(data = anc_data_clean, mapping = aes(x = profession, fill = anaemia_status)) +
+  geom_bar(position = "dodge")
+
+# histogram of education level
+ggplot(data = anc_data_clean, mapping = aes(x = education_level, fill = anaemia_status)) +
+  geom_bar(position = "dodge")
+
+
+# histogram of sickle cell
+ggplot(data = anc_data_clean, mapping = aes(x = sickle_cell, fill = anaemia_status)) +
+  geom_bar(position = "dodge")
+
+
+# histogram of marital status
+ggplot(data = anc_data_clean, mapping = aes(x = marital_status, fill = anaemia_status)) +
+  geom_bar(position = "dodge")
+
+
+#histogram
+ggplot(anc_data_clean, aes(x = age, fill = anaemia_status)) +
+  geom_histogram(position = "identity", alpha = 0.7, binwidth = 5) +
+  facet_wrap(~ anaemia_status, ncol = 1) +
+  labs(title = "Histogram of Age by Anemia Status", x = "Age", y = "Count") +
+  scale_fill_manual(values = c("Yes" = "lightcoral", "No" = "lightblue")) +
+  theme_minimal()
 
 #######------------------------------------------------------------------------------------------#####
 
@@ -85,7 +98,7 @@ group_stats <- anc_data_processed_in_ %>%
 ### Q23
 ##profession
 #number of all profession
-occupation_stats <- anc_data_processed_in_ %>%
+occupation_stats <- anc_data_clean %>%
   group_by(profession) %>%
   summarise(
     count = n()  
@@ -101,7 +114,7 @@ kable(occupation_stats, format = "markdown", col.names = c("profession", "number
 ggplot(occupation_stats, aes(x = "", y = percentage, fill = profession)) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar(theta = "y") +
-  labs(title = "Proportion of Occupations", x = "", y = "Percentage") +
+  labs(title = "Proportion of profession", x = "", y = "Percentage") +
   theme_minimal() +
   geom_text(aes(label = sprintf("%.1f%%", percentage)), position = position_stack(vjust = 0.5))
 
@@ -109,7 +122,7 @@ ggplot(occupation_stats, aes(x = "", y = percentage, fill = profession)) +
 ##Q24
 ##education level
 #number of all education level
-educationlevel <- anc_data_processed_in_ %>%
+educationlevel <- anc_data_clean %>%
   group_by(education_level) %>%
   summarise(
     count = n()  
@@ -122,11 +135,15 @@ educationlevel <- educationlevel %>%
 #table
 kable(educationlevel, format = "markdown", col.names = c("education level", "number", "%"))
 
+##linear regression of education level and haemoglobin
+model <- lm(haemoglobin ~ education_level, data = anc_data_clean)
+summary(model)
+
 ###---------------------------------------------------------------------------------------------##
 ##Q25
 ##marriage status
 #number of all marriage
-marriage <- anc_data_processed_in_ %>%
+marriage <- anc_data_clean %>%
   group_by(marital_status) %>%
   summarise(
     count = n()  
@@ -138,11 +155,17 @@ marriage <- marriage %>%
 
 #table
 kable(marriage, format = "markdown", col.names = c("marriage", "number", "%"))
+
+##linear regression of marital status and haemoglobin
+model <- lm(haemoglobin ~ marital_status, data = anc_data_clean)
+summary(model)
+
+
 ###-----------------------------------------------------------------------------------------------------###
 ###Q26
 ##Address
 #number of all address
-address_stats <- anc_data_processed_in_ %>%
+address_stats <- anc_data_clean %>%
   group_by(address) %>%
   summarise(
     count = n()  
@@ -155,11 +178,15 @@ address_stats <- address_stats%>%
 #table
 kable(address_stats, format = "markdown", col.names = c("address", "number", "%"))
 
+##linear regression of address and haemoglobin
+model <- lm(haemoglobin ~ address, data = anc_data_clean)
+summary(model)
+
 ##---------------------------------------------------------------------------------------------------###
 #Q27
 ##sickle cell
 #number of all sickle cell
-sickle_cell_stats <- anc_data_processed_in_ %>%
+sickle_cell_stats <- anc_data_clean %>%
   group_by(sickle_cell) %>%
   summarise(
     count = n()  
@@ -173,12 +200,17 @@ sickle_cell_stats <- sickle_cell_stats %>%
 kable(sickle_cell_stats, format = "markdown", col.names = c("sickle cell", "number", "%"))
 
 
+##linear regression of sickle cell and haemoglobin
+model <- lm(haemoglobin ~ sickle_cell, data = anc_data_clean)
+summary(model)
+
+
 ####------------------------------------------------------------------------------------------------##
 
 ##Q28
 ##malaria
 
-malaria_stats <- anc_data_processed_in_ %>%
+malaria_stats <- anc_data_clean %>%
   group_by(malaria) %>%
   summarise(
     count = n()  
@@ -196,6 +228,8 @@ kable(malaria_stats, format = "markdown", col.names = c("malaria", "number", "%"
 ###----------------------------------------------------------------------------------------------###
 
 ##Anaemic descriptive data
+anc_data_processed_in_%>%
+  dplyr::filter(age > 1)
 
 age_threshold <- 1
 
@@ -204,22 +238,8 @@ filtered_anaemic_data <- subset(anc_data_processed_in_, age> age_threshold& anae
 write.csv(filtered_anaemic_data, "filtered_anaemic_data.csv", row.names = FALSE)
 
 # statistic
+fivenum(filtered_anaemic_data$age)
 
-age_statistics <- function(filtered_anaemic_data) {
-  max_age <- max(filtered_anaemic_data$age, na.rm = TRUE)          
-  min_age <- min(filtered_anaemic_data$age, na.rm = TRUE)                
-  mean_age <- mean(filtered_anaemic_data$age, na.rm = TRUE)
-  median_age <- median(filtered_anaemic_data$age, na.rm = TRUE)    
-  quartiles <- quantile(filtered_anaemic_data$age, probs = c(0.25, 0.75), na.rm = TRUE) 
-  
-  return(list(
-    max = max_age,
-    min = min_age,
-    mean = mean_age,
-    median = median_age,
-    first_quartile = quartiles[1],
-    third_quartile = quartiles[2]
-  ))}
 
 
 ##anaemic women Age Histogram
@@ -256,7 +276,7 @@ kable(occupation_anaemic_stats, format = "markdown", col.names = c("profession",
 ggplot(occupation_stats, aes(x = "", y = percentage, fill = profession)) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar(theta = "y") +
-  labs(title = "Proportion of Occupations", x = "", y = "Percentage") +
+  labs(title = "Proportion of profession of anaemic women", x = "", y = "Percentage") +
   theme_minimal() +
   geom_text(aes(label = sprintf("%.1f%%", percentage)), position = position_stack(vjust = 0.5))
 
@@ -275,7 +295,7 @@ anaemiceducationlevel <- anaemiceducationlevel %>%
   mutate(percentage = count / total_count * 100)
 
 #table
-kable(anaemiceducationlevel, format = "markdown", col.names = c("education level", "number", "%"))
+kable(anaemiceducationlevel, format = "markdown", col.names = c("education level of anaemic women", "number", "%"))
 
 ##marriage status
 #number of all marriage
@@ -290,7 +310,7 @@ marriage <- marriage %>%
   mutate(percentage = count / total_count * 100)
 
 #table
-kable(marriage, format = "markdown", col.names = c("marriage", "number", "%"))
+kable(marriage, format = "markdown", col.names = c("marital status", "number", "%"))
 
 ##Address
 #number of all address
@@ -308,74 +328,58 @@ address_stats <- address_stats%>%
 kable(address_stats, format = "markdown", col.names = c("address", "number", "%"))
 
 
-
+###------------------------------------------------------------------------------------------###
 
 ###Hb
 
-
-haemoglobin_statistics <- function(anc_data_processed_in_) {
-  max_Hb <- max(anc_data_processed_in_$haemoglobin, na.rm = TRUE)          
-  min_Hb <- min(anc_data_processed_in_$haemoglobin, na.rm = TRUE)                
-  mean_Hb <- mean(anc_data_processed_in_$haemoglobin, na.rm = TRUE)
-  median_Hb <- median(anc_data_processed_in_$haemoglobin, na.rm = TRUE)    
-  quartiles <- quantile(anc_data_processed_in_$haemoglobin, probs = c(0.25, 0.75), na.rm = TRUE) 
-  
-  return(list(
-    max = max_Hb,
-    min = min_Hb,
-    mean = mean_Hb,
-    median = median_Hb,
-    first_quartile = quartiles[1],
-    third_quartile = quartiles[2]
-  ))}
+#five summary
+fivenum(anc_data_clean$haemoglobin)
+#boxplot
+boxplot(anc_data_clean$haemoglobin,main = "Box Plot of Hb among women", col.main = "blue",ylab="haemoglobin level")
 
 
-# Anaemic
+
+# Anaemia
 
 anc_data_processed_in_%>%
   dplyr::filter(age > 1)
 
 
-anemia_data <- anc_data_processed_in_[anc_data_processed_in_$anaemia_status == TRUE, ]
+anaemia_data <- anc_data_clean[anc_data_clean$anaemia_status == TRUE, ]
+haemoglobin_anaemia <- anaemia_data$haemoglobin
 
 
-haemoglobin_levels <- anemia_data$haemoglobin
 
-median_haemoglobin <- median(haemoglobin_levels, na.rm = TRUE)
-
-quartiles <- quantile(haemoglobin_levels, probs = c(0.25, 0.5, 0.75))
-
-
-# five number summary
-summary_stats <- summary(hemoglobin_levels)
-
+# five number summary of anaemic women
+fivenum(haemoglobin_anaemia)
+boxplot(haemoglobin_anaemia, main = "Box Plot of Hb in anaemic women", col.main = "blue",ylab="haemoglobin level" )
 
 
 
 # Histogram
-ggplot(anc_data_processed_in_, aes(x = haemoglobin)) +
+ggplot(anc_data_clean, aes(x = haemoglobin)) +
   geom_histogram(binwidth = 0.5, fill = "lightblue", color = "black", alpha = 0.7) +
   labs(title = "Histogram of Hemoglobin Levels ", x = "Hemoglobin Level", y = "Frequency") +
   theme_minimal()
 
 
 #Anaemic women
-anemia_data <- anc_data_processed_in_[anc_data_processed_in_$anaemia_status == TRUE, ]
+anaemia_data <- anc_data_clean[anc_data_clean$anaemia_status == TRUE, ]
 
-ggplot(anemia_data, aes(x = haemoglobin)) +
+ggplot(anaemia_data, aes(x = haemoglobin)) +
   geom_histogram(binwidth = 0.5, fill = "blue", color = "black", alpha = 0.7) +
   labs(title = "Histogram of Hemoglobin Levels for Anaemic Pregnant Women", x = "Hemoglobin Level", y = "Frequency") +
   theme_minimal()
 
 
 # Boxplot
-ggplot(Haemoglobin_data, aes(x = "", y = haemoglobin, fill = haemoglobin)) +
+boxplot(anaemia_data$haemoglobin, main = "Box Plot of Hb in anaemic women", col.main = "blue",ylab="haemoglobin level")
+ggplot(anaemia_data, aes(x = "", y = haemoglobin, fill = haemoglobin)) +
   geom_boxplot(outlier.colour = "orange", outlier.shape = 8) +
-  labs(title = "Boxplot of Hemoglobin Levels ", x = "", y = "Hemoglobin Level") +
+  labs(title = "Boxplot of Hemoglobin Levels in anaemic women ", x = "", y = "Hemoglobin Level") +
   theme_minimal()
 
-#Anaemic women
-anemia_data <- anc_data_processed_in_[anc_data_processed_in_$anaemia_status == TRUE, ]
+anemia_data <- anc_data_clean[anc_data_clean$anaemia_status == TRUE, ]
 ggplot(anemia_data, aes(x = anaemia_status, y = haemoglobin, fill = anaemia_status)) +
   geom_boxplot(outlier.colour = "orange", outlier.shape = 8) +
   labs(title = "Boxplot of Hemoglobin Levels for Anemic Pregnant Women", x = "Anemia Status", y = "Hemoglobin Level") +
@@ -391,71 +395,108 @@ ggplot(anemia_data, aes(x = anaemia_status, y = haemoglobin, fill = anaemia_stat
 ggplot(Haemoglobin_data, aes(x = "", y = haemoglobin)) +
   geom_violin(fill = "lightblue") +
   geom_boxplot(width = 0.1, fill = "orange", outlier.colour = "red", outlier.shape = 8) +
-  labs(title = "Violin Plot of Hemoglobin Levels", y = "Hemoglobin Level") +
+  labs(title = "Violin Plot of Haemoglobin Levels", y = "Hemoglobin Level") +
   theme_minimal()
 
 
 ##Violin plot-aneamic data
-anaemia_data <- anc_data_processed_in_[anc_data_processed_in_$anaemia_status == TRUE, ]
+anaemia_data <- anc_data_clean[anc_data_clean$anaemia_status == TRUE, ]
 ggplot(anaemia_data, aes(x = anaemia_status, y = haemoglobin, fill = anaemia_status)) +
-  geom_violin() +
-  geom_boxplot(width = 0.1, outlier.colour = "red", outlier.shape = 8) +
-  labs(title = "Violin Plot of Hemoglobin Levels for Anaemic Pregnant Women", x = "Anaemia Status", y = "Hemoglobin Level") +
+  geom_violin(fill = "lightblue") +
+  geom_boxplot(width = 0.1,fill = "orange", outlier.colour = "red", outlier.shape = 8) +
+  labs(title = "Violin Plot of Haemoglobin Levels for Anaemic Pregnant Women", x = "Anaemia Status", y = "Hemoglobin Level") +
   theme_minimal()
 
-###age and Hb
-# Descriptive statistics of Hb values by age
-print(anc_data_processed_in_$haemoglobin, group = anc_data_processed_in_$age)
 
-# Assuming Hb_status is a categorical variable
-table(anc_data_processed_in_$haemoglobin, anc_data_processed_in_$age)
-
-# Proportion table for more insight
-prop.table(table(anc_data_processed_in_$haemoglobin, anc_data_processed_in_$age), 2)
-
-
-system('git remote remove origin')
-system('git remote add origin https://github.com/OxfordIHTM/gh-anaemia-pregnancy')
-
-getOption("repos")
 
 
 
 ###------------------------------------------------------------------------------------------------------###
 #Q37
 ##Relationship between Haemoglobin and age
-correlation <- cor(anc_data_processed_in_$age, anc_data_processed_in_$haemoglobin, method = "pearson")
+correlation <- cor(anc_data_clean$age, anc_data_clean$haemoglobin, method = "pearson")
 
-plot <- ggplot(anc_data_processed_in_, aes(x = age, y = haemoglobin)) +
+##correlation NA
+cor(anc_data_clean$age, anc_data_clean$haemoglobin)
+
+
+#linear regression
+summary(anc_data_clean$age,anc_data_clean$haemoglobin)
+summary(anc_data_clean)
+model <- lm(haemoglobin ~ age, data = anc_data_clean)
+summary(model)
+
+
+# Plotting the data and the regression line
+ggplot(anc_data_clean, aes(x = age, y = haemoglobin)) +
   geom_point() +
-  geom_smooth(method = "lm", col = "blue") +  
-  labs(title = "relationship between Haemoglobin and age",
-       x = "age",
-       y = "haemoglobin")
+  geom_smooth(method = "lm", col = "blue") + 
+  labs(title = "relationship between haemoglobin and Age",
+       x = "Age",
+       y = "Haemoglobin")
 
-print(plot)
+# Displaying the coefficients
+coefficients(model)
+# Diagnostic plots to check for homoscedasticity, normality, etc.
+par(mfrow = c(2, 2))  # Arrange plots in a 2x2 grid
+plot(model)
+##histogram of residual
+residuals <- residuals(model)
+hist(residuals, breaks = 30, main = "Histogram of Residuals", xlab = "Residuals")
 
-# Relationship between anaemic status and age
-correlation <- cor(anc_data_processed_in_$age, anc_data_processed_in_$anaemia_status, method = "pearson")
+
+
+
+## Relationship between anaemic status and age
+correlation <- cor(anc_data_clean$age, anc_data_clean$anaemia_status, method = "pearson")
 print(paste("binary relationship:", correlation))
-
-# logical regression
-logistic_model <- glm(anaemia_status ~ age, data =  anc_data_processed_in_, family = binomial)
+#t test
+t.test(age ~ anaemia_status, data = anc_data_clean)
+#chisquare test
+table_anaemicstatus_data <- table(anc_data_clean$age, anc_data_clean$anaemia_status)
+chisq.test(table_anaemicstatus_data)
+#logical regression
+logistic_age_anaemia_model <- glm(anaemia_status ~ age, data = anc_data_clean, family = binomial)
 summary(logistic_model)
+coefficients(logistic_age_anaemia_model)
 
-anc_data_processed_in_$Predicted <- predict(logistic_model, type = "response")
+##correlation analysis ->0.1336585
+cor(filtered_anaemic_data$age, filtered_anaemic_data$haemoglobin)
 
-plot <- ggplot(anc_data_processed_in_, aes(x = age, y = anaemia_status)) +
-  geom_point() +  
-  geom_line(aes(y = Predicted), color = "blue") +  
-  labs(title = "anaemic status and age",
-       x = "age",
-       y = "anaemic status")
+#boxplot Comparison of Age by Anemia Status
+ggplot(anc_data_clean, aes(x = anaemia_status, y = age, fill = anaemia_status)) +
+  geom_boxplot() +
+  labs(title = "Comparison of Age by Anemia Status", 
+       x = "Anemia Status", y = "Age") +
+  scale_fill_manual(values = c("True" = "red", "False" = "blue")) +
+  theme_minimal()
 
-print(plot)
 
-##relationship between different anamia and Hb
-multinom_model <- multinom(anaemia ~ age, data = anc_data_processed_in_)
+
+
+
+
+
+####???
+# Predict probabilities
+predicted_prob_anaemicstatus <- predict(logistic_age_anaemia_model, type = "response")
+
+# Create the plot
+ggplot(anc_data_clean, aes(x = age, y = anaemia_status)) +
+  geom_point(alpha = 0.5) +  # Scatter plot of the data
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), se = FALSE) + # Logistic regression line
+  geom_line(color="blue")
+labs(title = "Logistic Regression Line",
+     x = "Age",
+     y = "Probability of Anemia") +
+  theme_minimal()
+
+
+
+
+
+##relationship between different anaemia category and age
+multinom_model <- multinom(anaemia_category ~ age, data = anc_data_clean)
 
 summary(multinom_model)
 
@@ -464,20 +505,36 @@ p_values <- (1 - pnorm(abs(z), 0, 1)) * 2
 print(p_values)
 
 
+# ANOVA test
+anova_result <- aov(age ~ anaemia_category, data = anc_data_clean)
+summary(anova_result)
+
+TukeyHSD(anova_result)
+
+# Kruskal-Wallis test
+kruskal.test(age ~ anaemia_category, data = anc_data_clean)
+
 
 # plot
-plot <- ggplot(anc_data_processed_in_, aes(x = age, y = anaemia)) +
+ggplot(anc_data_clean, aes(x = anaemia_category, y = age, fill = anaemia_category)) +
+  geom_boxplot() +
+  labs(title = "Hemoglobin Levels by Anemia Category",
+       x = "Anemia Category",
+       y = "Age") +
+  theme_minimal()
+
+plot <- ggplot(anc_data_clean, aes(x = age, y = anaemia_category)) +
   geom_jitter(width = 0.2, height = 0.1) + 
-  labs(title = "the relationship between differentlevel anaemia and age",
+  labs(title = "the relationship between anaemia category and age",
        x = "age",
-       y = "anaemia level")
+       y = "anaemia category")
 
 print(plot)
 
 ##-------------------------------------------------------------------------------##
 #Q38
 ##Relationship between Haemoglobin and profession
-boxplot_Hb_profession <- ggplot(anc_data_processed_in_, aes(x = profession, y = haemoglobin)) +
+boxplot_Hb_profession <- ggplot(anc_data_clean, aes(x = profession, y = haemoglobin)) +
   geom_boxplot() +
   labs(title = "profession and haemoglobin",
        x = "profession",
@@ -485,29 +542,38 @@ boxplot_Hb_profession <- ggplot(anc_data_processed_in_, aes(x = profession, y = 
 
 print(boxplot_Hb_profession)
 # ANOVA
-anova_result <- aov(haemoglobin ~ profession, data = anc_data_processed_in_)
+anova_result <- aov(haemoglobin ~ profession, data = anc_data_clean)
 summary(anova_result)
 
 
 
 # Relationship between anaemic status and profession
 # table
-table_anaemiastatus_profession <- table(anc_data_processed_in_$anaemia_status, anc_data_processed_in_$profession)
+table_anaemiastatus_profession <- table(anc_data_clean$anaemia_status, anc_data_clean$profession)
 print(table_anaemiastatus_profession)
 
 # chi square test
 chi_square_test <- chisq.test(table_anaemiastatus_profession)
 print(chi_square_test)
+# logic model
+logit_anaemia_profession_model <- glm(anaemia_status ~ profession, data = anc_data_clean, family = "binomial")
+summary(logit_model)
+
+coefficients(logit_anaemia_profession_model)
 
 
 
-##relationship between different anaemia and profession
+
+
+
+
+##relationship between different anaemia category and profession
 # table
-table_anaemia_profession <- table(anc_data_processed_in_$anaemia, anc_data_processed_in_$profession)
-print(table_anaemia_profession)
+table_anaemiacategory_profession <- table(anc_data_clean$anaemia_category, anc_data_clean$profession)
+print(table_anaemiacategory_profession)
 
 # chi square
-chi_square_test <- chisq.test(table_anaemia_profession)
+chi_square_test <- chisq.test(table_anaemiacategory_profession)
 print(chi_square_test)
 
 
@@ -515,7 +581,7 @@ print(chi_square_test)
 ##-------------------------------------------------------------------------------##
 #Q39
 ##Relationship between Haemoglobin and education level
-boxplot_Hb_educationlevel <- ggplot(anc_data_processed_in_, aes(x = education_level, y = haemoglobin)) +
+boxplot_Hb_educationlevel <- ggplot(anc_data_clean, aes(x = education_level, y = haemoglobin)) +
   geom_boxplot() +
   labs(title = "education level and haemoglobin",
        x = "education level",
@@ -523,35 +589,42 @@ boxplot_Hb_educationlevel <- ggplot(anc_data_processed_in_, aes(x = education_le
 print(boxplot_Hb_educationlevel)
 
 # ANOVA
-anova_Hb_educationlevel_result <- aov(haemoglobin ~ education_level, data = anc_data_processed_in_)
+anova_Hb_educationlevel_result <- aov(haemoglobin ~ education_level, data = anc_data_clean)
 summary(anova_Hb_educationlevel_result)
 
 
 
 # Relationship between anaemia status and education level
 # table
-table_anaemiastatus_educationlevel <- table(anc_data_processed_in_$anaemia_status, anc_data_processed_in_$education_level)
+table_anaemiastatus_educationlevel <- table(anc_data_clean$anaemia_status, anc_data_clean$education_level)
 print(table_anaemiastatus_educationlevel)
 
 # chi square test
 chi_square_test <- chisq.test(table_anaemiastatus_educationlevel)
 print(chi_square_test)
+# logic model
+logit_anaemia_education_model <- glm(anaemia_status ~ education_level, data = anc_data_clean, family = "binomial")
+summary(logit_model)
+
+coefficients(logit_anaemia_education_model)
 
 
 
-##relationship between different anaemia and profession
+##relationship between anaemia category and education level
 # table
-table_anaemia_educationlevel <- table(anc_data_processed_in_$anaemia, anc_data_processed_in_$education_level)
-print(table_anaemia_educationlevel)
+table_anaemiacategory_educationlevel <- table(anc_data_clean$anaemia_category, anc_data_clean$education_level)
+print(table_anaemiacategory_educationlevel)
 
 # chi square
-chi_square_test <- chisq.test(table_anaemia_educationlevel)
+chi_square_test <- chisq.test(table_anaemiacategory_educationlevel)
 print(chi_square_test)
+
+
 
 ##-------------------------------------------------------------------------------##
 #Q40
 ##Relationship between haemoglobin and marital status
-boxplot_Hb_maritalstatus <- ggplot(anc_data_processed_in_, aes(x = marital_status, y = haemoglobin)) +
+boxplot_Hb_maritalstatus <- ggplot(anc_data_clean, aes(x = marital_status, y = haemoglobin)) +
   geom_boxplot() +
   labs(title = "marital status and haemoglobin",
        x = "marital status",
@@ -559,36 +632,49 @@ boxplot_Hb_maritalstatus <- ggplot(anc_data_processed_in_, aes(x = marital_statu
 print(boxplot_Hb_maritalstatus)
 
 # ANOVA
-anova_Hb_maritalstatus_result <- aov(haemoglobin ~ marital_status, data = anc_data_processed_in_)
+anova_Hb_maritalstatus_result <- aov(haemoglobin ~ marital_status, data = anc_data_clean)
 summary(anova_Hb_maritalstatus_result)
 
 
 
 # Relationship between anaemia status and marital status
 # table
-table_anaemiastatus_marital_status <- table(anc_data_processed_in_$anaemia_status, anc_data_processed_in_$marital_status)
+table_anaemiastatus_marital_status <- table(anc_data_clean$anaemia_status, anc_data_clean$marital_status)
 print(table_anaemiastatus_marital_status)
 
 # chi square test
 chi_square_test <- chisq.test(table_anaemiastatus_marital_status)
 print(chi_square_test)
+# logic model
+logit_anaemia_marital_model <- glm(anaemia_status ~ marital_status, data = anc_data_clean, family = "binomial")
+summary(logit_model)
+coefficients(logit_anaemia_marital_model)
+
+
+#boxplot Comparison of marital satus by Anemia Status
+ggplot(anc_data_clean, aes(x = anaemia_status, y = marital_status, fill = anaemia_status)) +
+  geom_boxplot() +
+  labs(title = "Comparison of marital status by Anemia Status", 
+       x = "Anemia Status", y = "marital status") +
+  scale_fill_manual(values = c("Yes" = "orange", "No" = "lightblue")) +
+  theme_minimal()
 
 
 
-##relationship between different anaemia and marital status
+##relationship between anaemia category and marital status
 # table
-table_anaemia_maritalstatus <- table(anc_data_processed_in_$anaemia, anc_data_processed_in_$marital_status)
-print(table_anaemia_maritalstatus)
+table_anaemiacategory_maritalstatus <- table(anc_data_clean$anaemia_category, anc_data_clean$marital_status)
+print(table_anaemiacategory_maritalstatus)
 
 # chi square
-chi_square_test <- chisq.test(table_anaemia_maritalstatus)
+chi_square_test <- chisq.test(table_anaemiacategory_maritalstatus)
 print(chi_square_test)
 
 
 ###-----------------------------------------------------------------------------------------------------------------###
 #Q41
 ##Relationship between haemoglobin and address
-boxplot_Hb_address <- ggplot(anc_data_processed_in_, aes(x = address, y = haemoglobin)) +
+boxplot_Hb_address <- ggplot(anc_data_clean, aes(x = address, y = haemoglobin)) +
   geom_boxplot() +
   labs(title = "address and haemoglobin",
        x = "address",
@@ -596,29 +682,33 @@ boxplot_Hb_address <- ggplot(anc_data_processed_in_, aes(x = address, y = haemog
 print(boxplot_Hb_address)
 
 # ANOVA
-anova_Hb_address_result <- aov(haemoglobin ~ address, data = anc_data_processed_in_)
+anova_Hb_address_result <- aov(haemoglobin ~ address, data = anc_data_clean)
 summary(anova_Hb_address_result)
 
 
 
 # Relationship between anaemia status and address
 # table
-table_anaemiastatus_address <- table(anc_data_processed_in_$anaemia_status, anc_data_processed_in_$address)
+table_anaemiastatus_address <- table(anc_data_clean$anaemia_status, anc_data_clean$address)
 print(table_anaemiastatus_address)
 
 # chi square test
 chi_square_test <- chisq.test(table_anaemiastatus_address)
 print(chi_square_test)
+# logic model
+logit_anaemia_address_model <- glm(anaemia_status ~ address, data = anc_data_clean, family = "binomial")
+summary(logit_model)
+
+coefficients(logit_anaemia_address_model)
 
 
-
-##relationship between different anaemia and profession
+##relationship between  anaemia category and profession
 # table
-table_anaemia_address <- table(anc_data_processed_in_$anaemia, anc_data_processed_in_$address)
-print(table_anaemia_address)
+table_anaemiacategory_address <- table(anc_data_clean$anaemia_category, anc_data_clean$address)
+print(table_anaemiacategory_address)
 
 # chi square
-chi_square_test <- chisq.test(table_anaemia_address)
+chi_square_test <- chisq.test(table_anaemiacategory_address)
 print(chi_square_test)
 
 
@@ -626,14 +716,14 @@ print(chi_square_test)
 #Q42
 ##Relationship between haemoglobin and sickle cell
 
-correlation <- biserial(anc_data_processed_in_$haemoglobin, anc_data_processed_in_$sickle_cell == "positive")
+correlation <- biserial(anc_data_clean$haemoglobin, anc_data_clean$sickle_cell == "positive")
 print(paste("binary test:", correlation))
 
 # t test
-t_test_result <- t.test(haemoglobin ~ sickle_cell, data = anc_data_processed_in_)
+t_test_result <- t.test(haemoglobin ~ sickle_cell, data = anc_data_clean)
 print(t_test_result)
 # box plot
-boxplot <- ggplot(anc_data_processed_in_, aes(x = sickle_cell, y = haemoglobin)) +
+boxplot <- ggplot(anc_data_clean, aes(x = sickle_cell, y = haemoglobin)) +
   geom_boxplot() +
   labs(title = "relationship between sickle cell and haemoglobin",
        x = "sickle cell test result",
@@ -643,42 +733,49 @@ print(boxplot)
 
 
 # ANOVA
-anova_Hb_sicklecell_result <- aov(haemoglobin ~ sickle_cell, data = anc_data_processed_in_)
+anova_Hb_sicklecell_result <- aov(haemoglobin ~ sickle_cell, data = anc_data_clean)
 summary(anova_Hb_sicklecell_result)
 
 
 
 # Relationship between anaemia status and sickle cell
 # table
-table_anaemiastatus_sickle <- table(anc_data_processed_in_$anaemia_status, anc_data_processed_in_$sickle_cell)
+table_anaemiastatus_sickle <- table(anc_data_clean$anaemia_status, anc_data_clean$sickle_cell)
 print(table_anaemiastatus_sickle)
 
 # chi square test
 chi_square_test <- chisq.test(table_anaemiastatus_sickle)
 print(chi_square_test)
 
+# logic model
+logit_anaemia_sickle_model <- glm(anaemia_status ~ sickle_cell, data = anc_data_clean, family = "binomial")
+summary(logit_model)
+coefficients(logit_anaemia_sickle_model)
 
 
-##relationship between different anaemia and sickle cell
+
+
+
+##relationship between anaemia category and sickle cell
 # table
-table_anaemia_sickle <- table(anc_data_processed_in_$anaemia, anc_data_processed_in_$sickle_cell)
-print(table_anaemia_sickle)
+table_anaemiacategory_sickle <- table(anc_data_clean$anaemia_category, anc_data_clean$sickle_cell)
+print(table_anaemiacategory_sickle)
 
 # chi square
-chi_square_test <- chisq.test(table_anaemia_sickle)
+chi_square_test <- chisq.test(table_anaemiacategory_sickle)
 print(chi_square_test)
 ###----------------------------------------------------------------------------------------------------------
 #Q43
 ##Relationship between haemoglobin and malaria
 
-correlation <- biserial(anc_data_processed_in_$haemoglobin, anc_data_processed_in_$malaria == "negative")
+correlation <- biserial(anc_data_clean$haemoglobin, anc_data_clean$malaria == "negative")
 print(paste("binary test:", correlation))
 
 # t test????--->do not know how to do 
-t_test_result <- t.test(haemoglobin ~ malaria, data = anc_data_processed_in_)
+t_test_result <- t.test(haemoglobin ~ malaria, data = anc_data_clean)
 print(t_test_result)
 # box plot
-boxplot <- ggplot(anc_data_processed_in_, aes(x = malaria, y = haemoglobin)) +
+boxplot <- ggplot(anc_data_clean, aes(x = malaria, y = haemoglobin)) +
   geom_boxplot() +
   labs(title = "relationship between malaria and haemoglobin",
        x = "malaria test result",
@@ -693,8 +790,9 @@ print(boxplot)
 
 # Relationship between anaemia status and malaria
 # table
-table_anaemiastatus_malaria <- table(anc_data_processed_in_$anaemia_status, anc_data_processed_in_$malaria)
+table_anaemiastatus_malaria <- table(anc_data_clean$anaemia_status, anc_data_clean$malaria)
 print(table_anaemiastatus_malaria)
+
 
 # chi square test
 chi_square_test <- chisq.test(table_anaemiastatus_malaria)
@@ -702,14 +800,24 @@ print(chi_square_test)
 
 
 
-##relationship between different anaemia and sickle cell
+##relationship between  anaemia category and malaria
 # table
-table_anaemia_malaria <- table(anc_data_processed_in_$anaemia, anc_data_processed_in_$malaria)
-print(table_anaemia_malaria)
+table_anaemiacategory_malaria <- table(anc_data_clean$anaemia_category, anc_data_clean$malaria)
+print(table_anaemiacategory_malaria)
 
 # chi square
-chi_square_test <- chisq.test(table_anaemia_malaria)
+chi_square_test <- chisq.test(table_anaemiacategory_malaria)
 print(chi_square_test)
+
+
+
+### multiple variable
+model <- lm(haemoglobin ~ age + address + education_level + profession + marital_status +sickle_cell, data = anc_data_clean)
+
+summary(model)
+# 
+par(mfrow = c(2, 2))
+plot(model)
 
 
 
