@@ -1,132 +1,132 @@
-"unique_id","age","profession","education_level","marital_status","address","haemoglobin","sickle_cell","malaria","anaemia_status","anaemia","anaemia_category"
-1,47,"Trader","Senior High School","married","Insanfo",10.7,NA,NA,TRUE,"mild anaemia","mild anaemia"
-4,41,"Fishmonger","Junior High School","married","Biriwa",9.3,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-7,41,NA,NA,NA,NA,10.3,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-8,40,"Trader","Junior High School","married","Anomabo",10.7,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-9,40,NA,NA,NA,NA,5.8,"negative",NA,TRUE,"severe anaemia","severe anaemia"
-10,40,"Trader","None","married","Anomabo",9.8,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-11,40,"Trader","Junior High School","single",NA,8.6,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-14,39,"Trader","Junior High School","married","Yamoransa",9.6,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-15,38,"Trader","Senior High School","married","Biriwa",10.9,NA,NA,TRUE,"mild anaemia","mild anaemia"
-17,38,"None","None","single","Biriwa",10.9,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-18,38,"Trader","Tertiary","married","Yamoransa",8.1,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-19,38,"Hair Dresser","Junior High School","married","Egyirefa",9.7,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-20,38,"Hair Dresser","Junior High School","married","Yamoransa",10.2,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-21,38,"Trader","Primary","married","Anomabo",8.9,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-23,38,"Trader","Senior High School","married","Amissakrom",10.9,"positive",NA,TRUE,"mild anaemia","mild anaemia"
-25,37,"Trader","Senior High School","married","Makassium",8.5,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-26,37,"Hair Dresser","Primary","married","Aketekyiwa",8.6,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-27,37,"Trader","Junior High School","married","Biriwa",9.1,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-28,37,"Hair Dresser","Junior High School","married","Biriwa",9,NA,"negative",TRUE,"moderate anaemia","moderate anaemia"
-29,34,"None","None","married","Yamoransa",7.9,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-30,36,"Trader","Junior High School","single","Amissakrom",10.9,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-31,34,"Fishmonger","None","married","Biriwa",8.9,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-35,35,"Trader","None","married","Abandze",9.5,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-38,34,"Trader","Junior High School","married","Yamoransa",6.6,"negative",NA,TRUE,"severe anaemia","severe anaemia"
-39,34,"Seamstress","Senior High School","married","Biriwa",9.6,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-40,34,"Trader","Senior High School","married","Amissakrom",10,NA,NA,TRUE,"mild anaemia","mild anaemia"
-41,34,"Catre","Senior High School","single","Cape Coast",10.1,"negative","negative",TRUE,"mild anaemia","mild anaemia"
-42,34,"Trader","Junior High School","single","Anomabo",10.8,"positive",NA,TRUE,"mild anaemia","mild anaemia"
-45,34,"Trader","Senior High School","married","Buranamoah",9.8,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-46,32,NA,NA,NA,NA,6.8,"positive",NA,TRUE,"severe anaemia","severe anaemia"
-47,33,"Fishmonger","Junior High School","married","Biriwa",9,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-48,32,"Hair Dresser","Junior High School","married","Kormantse",10.4,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-53,31,"Hair Dresser","Junior High School","married","Yamoransa",9.1,"positive",NA,TRUE,"moderate anaemia","moderate anaemia"
-54,32,"Teacher","Tertiary","single","Anomabo",9.2,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-55,32,"None","Senior High School","single","Biriwa",8.9,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-57,32,"Trader","Primary","married","Anomabo",10.6,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-58,31,"Teacher","Tertiary","married","Afrago Junction",8.4,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-59,31,"Teacher","Senior High School","single","Aketekyiwa",9.5,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-61,30,"Trader","Junior High School","single","Amonda",9.4,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-64,31,"Trader","Junior High School","married","Saltpond Zongo",9,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-65,31,"Trader","Junior High School","single","Anomabo",10.6,NA,NA,TRUE,"mild anaemia","mild anaemia"
-68,29,"Trader","Junior High School","single","Kormantse",9.6,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-69,30,"Trader","Junior High School","single","Biriwa",9.7,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-70,30,"Trader","Senior High School","married","Mfanteman",8,NA,"negative",TRUE,"moderate anaemia","moderate anaemia"
-72,29,"Trader","Junior High School","married","Eguase",10.4,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-73,28,"Fishmonger","Junior High School","married","Biriwa",9.5,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-74,28,"Trader","Junior High School","married","Amissakrom",10.2,NA,NA,TRUE,"mild anaemia","mild anaemia"
-75,30,"Trader","Senior High School","married","Pomasi",8.1,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-76,29,"Teacher","Tertiary","married","Saltpond Zongo",8.4,"positive",NA,TRUE,"moderate anaemia","moderate anaemia"
-77,29,"Trader","Junior High School","married","Biriwa",9.8,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-78,28,"Trader","Primary","married","Asafora",9.9,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-79,28,"Trader","Junior High School","married","Biriwa",10.1,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-81,28,"Trader","Senior High School","married","Waakrom",10.2,"positive",NA,TRUE,"mild anaemia","mild anaemia"
-83,28,"Seamstress","Junior High School","single","Kormantse",10.1,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-85,27,"None","Junior High School","single","Waakrom",6,"negative",NA,TRUE,"severe anaemia","severe anaemia"
-87,28,"Decorator","Senior High School","single","Anomabo",10.6,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-89,28,"Trader","Primary","married","Egyirefa",8.9,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-92,27,"Trader","Junior High School","married","Saltpond Zongo",8.7,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-93,28,"None","Tertiary","married","Anomabo",10.4,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-94,27,NA,NA,NA,NA,7.5,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-96,26,"None","Junior High School","married","Biriwa",10.2,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-97,27,"Fishmonger","Junior High School","married","Biriwa",10.4,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-99,28,"Trader","Senior High School","married","Biriwa",9.7,"positive",NA,TRUE,"moderate anaemia","moderate anaemia"
-100,28,"Seamstress","Senior High School","single",NA,10.3,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-101,25,"None","Primary","married","Yamoransa",8.5,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-103,26,"None","Senior High School","married","Waakrom",9.7,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-105,27,"None","Senior High School","married","Biriwa",9.4,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-107,26,"None","Junior High School","married","Insanfo",7.4,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-109,25,"None","Junior High School","married","Biriwa",8.2,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-110,26,"None","Junior High School","married","Asafora",9.5,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-113,26,"Seamstress","Junior High School","married","Asafora",8.4,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-115,26,"Trader","Senior High School","single","Biriwa",8.8,"negative","negative",TRUE,"moderate anaemia","moderate anaemia"
-116,26,"Seamstress","Junior High School","single","Anomabo",8.2,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-119,25,"None","Junior High School","married","Saltpond Zongo",9.2,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-121,24,"Trader","Senior High School","single","Yamoransa",10.2,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-123,24,"None","Junior High School","married","Insanfo",10.1,"positive",NA,TRUE,"mild anaemia","mild anaemia"
-124,24,"Trader","Junior High School","married","Aketekyiwa",8.4,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-125,24,"Trader","None","married","Biriwa",8.6,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-126,24,"None","Junior High School","single","Biriwa",9.7,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-128,24,"Trader","Junior High School","single","Buranamoah",8.8,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-129,24,"Trader","Senior High School","single","Anomabo",10.1,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-130,24,"None","None","married","Yamoransa",8,"positive",NA,TRUE,"moderate anaemia","moderate anaemia"
-132,24,"None","Primary","married","Yamoransa",9.9,"negative","negative",TRUE,"moderate anaemia","moderate anaemia"
-133,24,"Student","Senior High School","single","Egyirefa",9.3,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-134,21,"Trader","Senior High School","single","Biriwa",9.5,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-136,23,"Trader","Primary","single","Biriwa",10.2,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-137,24,"None","None","married","Biriwa",10.3,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-141,23,"Seamstress","Junior High School","single","Insanfo",7,"positive",NA,TRUE,"moderate anaemia","moderate anaemia"
-142,23,"Trader","Primary","married","Anomabo",9.5,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-143,22,NA,NA,NA,NA,9.7,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-145,23,"Trader","Junior High School","single","Anomabo",7.7,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-147,21,"Trader","Junior High School","single","Biriwa",8.2,"positive",NA,TRUE,"moderate anaemia","moderate anaemia"
-149,21,"Student","Junior High School","single","Biriwa",9.5,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-153,22,"None","Junior High School","single","Asafora",10.8,NA,NA,TRUE,"mild anaemia","mild anaemia"
-155,22,"None","Senior High School","single","Anomabo",10.9,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-156,21,"None","Primary","married","Biriwa",9.9,"positive",NA,TRUE,"moderate anaemia","moderate anaemia"
-157,20,"None","Junior High School","single","Biriwa",10.3,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-159,20,"None","Junior High School","single","Buranamoah",5.3,NA,NA,TRUE,"severe anaemia","severe anaemia"
-160,20,"Trader","Junior High School","single",NA,9.6,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-163,20,"Hair Dresser","Junior High School","single","Insanfo",10.6,"positive",NA,TRUE,"mild anaemia","mild anaemia"
-167,19,"Trader","None","single","Biriwa",10,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-168,20,"Seamstress","Junior High School","single","Ekotokrom",8.9,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-171,20,"Hair Dresser","Junior High School","single","Anomabo",10.1,NA,NA,TRUE,"mild anaemia","mild anaemia"
-172,20,"None","Junior High School","married","Egyirefa",9.4,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-173,20,"None","Primary","single","Biriwa",7.3,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-174,19,"None","Junior High School","married","Biriwa",6.9,"negative",NA,TRUE,"severe anaemia","severe anaemia"
-177,20,"Student","Senior High School","single","Insanfo",10.6,"positive",NA,TRUE,"mild anaemia","mild anaemia"
-178,20,"Trader","Junior High School","single","Biriwa",10.3,"negative","negative",TRUE,"mild anaemia","mild anaemia"
-179,19,"Hair Dresser","Junior High School","single","Yamoransa",10.3,"positive",NA,TRUE,"mild anaemia","mild anaemia"
-180,19,"None","None","single","Biriwa",5.5,"negative",NA,TRUE,"severe anaemia","severe anaemia"
-181,18,"Trader","Junior High School","single","Biriwa",9.6,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-182,18,"None","Junior High School","married","Biriwa",7.2,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-183,18,"None","Junior High School","single","More",9,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-186,18,"Student","Junior High School","single","Anomabo",6.9,"negative",NA,TRUE,"severe anaemia","severe anaemia"
-188,18,"None","Junior High School","single","Biriwa",7.6,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-194,17,"Trader","Junior High School","married",NA,10.1,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-195,16,"None","Junior High School","single","Egyirefa",8.8,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-196,17,"None","Junior High School","single","Yamoransa",9.5,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-197,18,"Student","Junior High School","single","Mfanteman",10.3,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-198,15,"None","Junior High School","single","Ekon",10.8,"negative",NA,TRUE,"mild anaemia","mild anaemia"
-199,17,"None","Primary","single","Biriwa",9,"positive",NA,TRUE,"moderate anaemia","moderate anaemia"
-200,16,"None","Junior High School","single","Biriwa",8,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-201,17,"Seamstress","Junior High School","married","Anomabo",8,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-203,17,"None","Junior High School","single","Aketekyiwa",9.9,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-205,16,"None","Junior High School","single","Anomabo",7.9,"negative","negative",TRUE,"moderate anaemia","moderate anaemia"
-207,15,"Student","Junior High School","single","Biriwa",10.9,"positive",NA,TRUE,"mild anaemia","mild anaemia"
-211,35,"Trader","Primary","married","Anomabo",9.8,NA,NA,TRUE,"moderate anaemia","moderate anaemia"
-213,21,"None","Junior High School","single","Biriwa",8.6,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-214,31,NA,NA,NA,NA,9.9,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-216,27,"Trader","Junior High School","married","Yamoransa",9.8,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
-218,27,"Trader","Junior High School","married","Anomabo",8.3,"negative",NA,TRUE,"moderate anaemia","moderate anaemia"
+"unique_id","age","profession","education_level","marital_status","address","haemoglobin","sickle_cell","malaria"
+1,47,"Trader","Senior High School","married","Insanfo",10.7,NA,NA
+4,41,"Fishmonger","Junior High School","married","Biriwa",9.3,"negative",NA
+7,41,NA,NA,NA,NA,10.3,"negative",NA
+8,40,"Trader","Junior High School","married","Anomabo",10.7,"negative",NA
+9,40,NA,NA,NA,NA,5.8,"negative",NA
+10,40,"Trader","None","married","Anomabo",9.8,"negative",NA
+11,40,"Trader","Junior High School","single",NA,8.6,"negative",NA
+14,39,"Trader","Junior High School","married","Yamoransa",9.6,"negative",NA
+15,38,"Trader","Senior High School","married","Biriwa",10.9,NA,NA
+17,38,"None","None","single","Biriwa",10.9,"negative",NA
+18,38,"Trader","Tertiary","married","Yamoransa",8.1,"negative",NA
+19,38,"Hair Dresser","Junior High School","married","Egyirefa",9.7,"negative",NA
+20,38,"Hair Dresser","Junior High School","married","Yamoransa",10.2,"negative",NA
+21,38,"Trader","Primary","married","Anomabo",8.9,"negative",NA
+23,38,"Trader","Senior High School","married","Amissakrom",10.9,"positive",NA
+25,37,"Trader","Senior High School","married","Makassium",8.5,NA,NA
+26,37,"Hair Dresser","Primary","married","Aketekyiwa",8.6,NA,NA
+27,37,"Trader","Junior High School","married","Biriwa",9.1,"negative",NA
+28,37,"Hair Dresser","Junior High School","married","Biriwa",9,NA,"negative"
+29,34,"None","None","married","Yamoransa",7.9,NA,NA
+30,36,"Trader","Junior High School","single","Amissakrom",10.9,"negative",NA
+31,34,"Fishmonger","None","married","Biriwa",8.9,NA,NA
+35,35,"Trader","None","married","Abandze",9.5,"negative",NA
+38,34,"Trader","Junior High School","married","Yamoransa",6.6,"negative",NA
+39,34,"Seamstress","Senior High School","married","Biriwa",9.6,NA,NA
+40,34,"Trader","Senior High School","married","Amissakrom",10,NA,NA
+41,34,"Catre","Senior High School","single","Cape Coast",10.1,"negative","negative"
+42,34,"Trader","Junior High School","single","Anomabo",10.8,"positive",NA
+45,34,"Trader","Senior High School","married","Buranamoah",9.8,NA,NA
+46,32,NA,NA,NA,NA,6.8,"positive",NA
+47,33,"Fishmonger","Junior High School","married","Biriwa",9,"negative",NA
+48,32,"Hair Dresser","Junior High School","married","Kormantse",10.4,"negative",NA
+53,31,"Hair Dresser","Junior High School","married","Yamoransa",9.1,"positive",NA
+54,32,"Teacher","Tertiary","single","Anomabo",9.2,NA,NA
+55,32,"None","Senior High School","single","Biriwa",8.9,"negative",NA
+57,32,"Trader","Primary","married","Anomabo",10.6,"negative",NA
+58,31,"Teacher","Tertiary","married","Afrago Junction",8.4,"negative",NA
+59,31,"Teacher","Senior High School","single","Aketekyiwa",9.5,"negative",NA
+61,30,"Trader","Junior High School","single","Amonda",9.4,"negative",NA
+64,31,"Trader","Junior High School","married","Saltpond Zongo",9,"negative",NA
+65,31,"Trader","Junior High School","single","Anomabo",10.6,NA,NA
+68,29,"Trader","Junior High School","single","Kormantse",9.6,"negative",NA
+69,30,"Trader","Junior High School","single","Biriwa",9.7,"negative",NA
+70,30,"Trader","Senior High School","married","Mfanteman",8,NA,"negative"
+72,29,"Trader","Junior High School","married","Eguase",10.4,"negative",NA
+73,28,"Fishmonger","Junior High School","married","Biriwa",9.5,NA,NA
+74,28,"Trader","Junior High School","married","Amissakrom",10.2,NA,NA
+75,30,"Trader","Senior High School","married","Pomasi",8.1,"negative",NA
+76,29,"Teacher","Tertiary","married","Saltpond Zongo",8.4,"positive",NA
+77,29,"Trader","Junior High School","married","Biriwa",9.8,"negative",NA
+78,28,"Trader","Primary","married","Asafora",9.9,"negative",NA
+79,28,"Trader","Junior High School","married","Biriwa",10.1,"negative",NA
+81,28,"Trader","Senior High School","married","Waakrom",10.2,"positive",NA
+83,28,"Seamstress","Junior High School","single","Kormantse",10.1,"negative",NA
+85,27,"None","Junior High School","single","Waakrom",6,"negative",NA
+87,28,"Decorator","Senior High School","single","Anomabo",10.6,"negative",NA
+89,28,"Trader","Primary","married","Egyirefa",8.9,"negative",NA
+92,27,"Trader","Junior High School","married","Saltpond Zongo",8.7,NA,NA
+93,28,"None","Tertiary","married","Anomabo",10.4,"negative",NA
+94,27,NA,NA,NA,NA,7.5,"negative",NA
+96,26,"None","Junior High School","married","Biriwa",10.2,"negative",NA
+97,27,"Fishmonger","Junior High School","married","Biriwa",10.4,"negative",NA
+99,28,"Trader","Senior High School","married","Biriwa",9.7,"positive",NA
+100,28,"Seamstress","Senior High School","single",NA,10.3,"negative",NA
+101,25,"None","Primary","married","Yamoransa",8.5,"negative",NA
+103,26,"None","Senior High School","married","Waakrom",9.7,NA,NA
+105,27,"None","Senior High School","married","Biriwa",9.4,"negative",NA
+107,26,"None","Junior High School","married","Insanfo",7.4,NA,NA
+109,25,"None","Junior High School","married","Biriwa",8.2,"negative",NA
+110,26,"None","Junior High School","married","Asafora",9.5,NA,NA
+113,26,"Seamstress","Junior High School","married","Asafora",8.4,NA,NA
+115,26,"Trader","Senior High School","single","Biriwa",8.8,"negative","negative"
+116,26,"Seamstress","Junior High School","single","Anomabo",8.2,"negative",NA
+119,25,"None","Junior High School","married","Saltpond Zongo",9.2,"negative",NA
+121,24,"Trader","Senior High School","single","Yamoransa",10.2,"negative",NA
+123,24,"None","Junior High School","married","Insanfo",10.1,"positive",NA
+124,24,"Trader","Junior High School","married","Aketekyiwa",8.4,"negative",NA
+125,24,"Trader","None","married","Biriwa",8.6,"negative",NA
+126,24,"None","Junior High School","single","Biriwa",9.7,"negative",NA
+128,24,"Trader","Junior High School","single","Buranamoah",8.8,NA,NA
+129,24,"Trader","Senior High School","single","Anomabo",10.1,"negative",NA
+130,24,"None","None","married","Yamoransa",8,"positive",NA
+132,24,"None","Primary","married","Yamoransa",9.9,"negative","negative"
+133,24,"Student","Senior High School","single","Egyirefa",9.3,NA,NA
+134,21,"Trader","Senior High School","single","Biriwa",9.5,NA,NA
+136,23,"Trader","Primary","single","Biriwa",10.2,"negative",NA
+137,24,"None","None","married","Biriwa",10.3,"negative",NA
+141,23,"Seamstress","Junior High School","single","Insanfo",7,"positive",NA
+142,23,"Trader","Primary","married","Anomabo",9.5,"negative",NA
+143,22,NA,NA,NA,NA,9.7,"negative",NA
+145,23,"Trader","Junior High School","single","Anomabo",7.7,"negative",NA
+147,21,"Trader","Junior High School","single","Biriwa",8.2,"positive",NA
+149,21,"Student","Junior High School","single","Biriwa",9.5,"negative",NA
+153,22,"None","Junior High School","single","Asafora",10.8,NA,NA
+155,22,"None","Senior High School","single","Anomabo",10.9,"negative",NA
+156,21,"None","Primary","married","Biriwa",9.9,"positive",NA
+157,20,"None","Junior High School","single","Biriwa",10.3,"negative",NA
+159,20,"None","Junior High School","single","Buranamoah",5.3,NA,NA
+160,20,"Trader","Junior High School","single",NA,9.6,"negative",NA
+163,20,"Hair Dresser","Junior High School","single","Insanfo",10.6,"positive",NA
+167,19,"Trader","None","single","Biriwa",10,"negative",NA
+168,20,"Seamstress","Junior High School","single","Ekotokrom",8.9,"negative",NA
+171,20,"Hair Dresser","Junior High School","single","Anomabo",10.1,NA,NA
+172,20,"None","Junior High School","married","Egyirefa",9.4,"negative",NA
+173,20,"None","Primary","single","Biriwa",7.3,"negative",NA
+174,19,"None","Junior High School","married","Biriwa",6.9,"negative",NA
+177,20,"Student","Senior High School","single","Insanfo",10.6,"positive",NA
+178,20,"Trader","Junior High School","single","Biriwa",10.3,"negative","negative"
+179,19,"Hair Dresser","Junior High School","single","Yamoransa",10.3,"positive",NA
+180,19,"None","None","single","Biriwa",5.5,"negative",NA
+181,18,"Trader","Junior High School","single","Biriwa",9.6,"negative",NA
+182,18,"None","Junior High School","married","Biriwa",7.2,"negative",NA
+183,18,"None","Junior High School","single","More",9,"negative",NA
+186,18,"Student","Junior High School","single","Anomabo",6.9,"negative",NA
+188,18,"None","Junior High School","single","Biriwa",7.6,"negative",NA
+194,17,"Trader","Junior High School","married",NA,10.1,"negative",NA
+195,16,"None","Junior High School","single","Egyirefa",8.8,"negative",NA
+196,17,"None","Junior High School","single","Yamoransa",9.5,"negative",NA
+197,18,"Student","Junior High School","single","Mfanteman",10.3,"negative",NA
+198,15,"None","Junior High School","single","Ekon",10.8,"negative",NA
+199,17,"None","Primary","single","Biriwa",9,"positive",NA
+200,16,"None","Junior High School","single","Biriwa",8,"negative",NA
+201,17,"Seamstress","Junior High School","married","Anomabo",8,"negative",NA
+203,17,"None","Junior High School","single","Aketekyiwa",9.9,"negative",NA
+205,16,"None","Junior High School","single","Anomabo",7.9,"negative","negative"
+207,15,"Student","Junior High School","single","Biriwa",10.9,"positive",NA
+211,35,"Trader","Primary","married","Anomabo",9.8,NA,NA
+213,21,"None","Junior High School","single","Biriwa",8.6,"negative",NA
+214,31,NA,NA,NA,NA,9.9,"negative",NA
+216,27,"Trader","Junior High School","married","Yamoransa",9.8,"negative",NA
+218,27,"Trader","Junior High School","married","Anomabo",8.3,"negative",NA
