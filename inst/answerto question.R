@@ -549,7 +549,7 @@ kruskal.test(age ~ anaemia_category, data = anc_data_clean)
 # plot
 ggplot(anc_data_clean, aes(x = anaemia_category, y = age, fill = anaemia_category)) +
   geom_boxplot() +
-  labs(title = "Hemoglobin Levels by Anemia Category",
+  labs(title = "age by Anemia Category",
        x = "Anemia Category",
        y = "Age") +
   theme_minimal()
