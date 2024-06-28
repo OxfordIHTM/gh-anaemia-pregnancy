@@ -3,6 +3,28 @@
 
 source(here::here("packages.R"))
 
+anc_data_processed_subset <- anc_data_processed %>%
+  filter(age != 1) %>%
+  dplyr::mutate(
+    total_n = n(),
+    age_group = cut(
+      x = age,
+      breaks = c(-Inf, 15, 20, 25, 30, 35, 40, 45, Inf),
+      labels = c(
+        "under 15 years", "15 to 19 years", "20 to 24 years", "25 to 29 years", 
+        "30 to 34 years", "35 to 39, years", 
+        "40 to 44 years", "45 years and older"
+      ),
+      include.lowest = TRUE, right = FALSE
+    ),
+    anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
+    profession_group= case_when(
+      profession %in% c( "Teacher", "Company Employee", "Business Owner","Midwife") ~ "Employed",
+      profession %in% c("Undertaker", "Trader", "Seamstress", "Hair Dresser", "Fishmonger", "Farmer", "Decorator", "Caterer", "Student") ~ "Self-Employed",
+      TRUE ~ "NA"
+    )
+  )
+
 ###Q22+Q34+Q35 Age answer
 ###data clean
 anc_data_clean<-read.csv(here::here("data/anc_data_processed.csv"))%>% 
@@ -451,6 +473,15 @@ residuals <- residuals(model)
 hist(residuals, breaks = 30, main = "Histogram of Residuals", xlab = "Residuals")
 
 
+#dot plot
+ggplot(anc_data_clean, aes(x = age, y = haemoglobin)) +
+  geom_point(color = "black", size = 2) +
+  geom_hline(yintercept = 11, linetype = "dashed", color = "blue", size = 1) +  
+  geom_vline(xintercept = 30, linetype = "dashed", color = "red", size = 1) +  
+  labs(title = "Scatter Plot of Age and Haemoglobin Levels", x = "Age (years)", y = "Haemoglobin (g/dL)") +
+  theme_minimal()
+
+
 
 
 ## Relationship between anaemic status and age
@@ -869,3 +900,30 @@ summary(logit_groupprofession)
 coefficients(logit_groupprofession)
 
 ##It looks like statistic significant in the profession group
+
+###-----------------------------------------------------------------------------------------------------------###
+#Age group
+##Relationship between haemoglobin and age group
+
+boxplot_Hb_adgegroup <- ggplot(anc_data_processed_subset, aes(x = age_group, y = haemoglobin)) +
+  geom_boxplot() +
+  labs(title = "age group and haemoglobin",
+       x = "age group",
+       y = "haemoglobin")
+print(boxplot_Hb_adgegroup)
+
+# ANOVA
+anova_Hb_agegroup_result <- aov(haemoglobin ~ age_group, data = anc_data_processed_subset)
+summary(anova_Hb_agegroup_result)
+
+
+
+# Relationship between anaemia status and age group
+# table
+table_anaemiastatus_agegroup <- table(anc_data_processed_subset$anaemia_status, anc_data_processed_subset$age_group)
+print(table_anaemiastatus_agegroup )
+
+# chi square test
+chi_square_test <- chisq.test(table_anaemiastatus_agegroup )
+print(chi_square_test)
+

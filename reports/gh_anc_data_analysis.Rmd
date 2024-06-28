@@ -43,7 +43,12 @@ anc_data_processed_subset <- anc_data_processed %>%
       ),
       include.lowest = TRUE, right = FALSE
     ),
-    anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia")
+    anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
+    profession_group= case_when(
+    profession %in% c( "Teacher", "Company Employee", "Business Owner","Midwife") ~ "Employed",
+    profession %in% c("Undertaker", "Trader", "Seamstress", "Hair Dresser", "Fishmonger", "Farmer", "Decorator", "Caterer", "Student") ~ "Self-Employed",
+    TRUE ~ "NA"
+  )
   )
 
 # Table of age groups ----
@@ -62,6 +67,14 @@ profession_tab <- anc_data_processed_subset %>%
   dplyr::arrange(desc(n)) %>%
   dplyr::mutate(prop = n / unique(anc_data_processed_subset$total_n)) %>%
   dplyr::rename(var = profession)
+
+# Table of professions group ----
+profession_tab <- anc_data_processed_subset %>%
+  dplyr::count(profession_group) %>%
+  dplyr::arrange(desc(n)) %>%
+  dplyr::mutate(prop = n / unique(anc_data_processed_subset$total_n)) %>%
+  dplyr::rename(var = profession_group)
+
   
 # Education Level ---
 education_tab <- anc_data_processed_subset %>%
@@ -149,6 +162,7 @@ anc_data_processed_subset %>%
   ggplot(aes(x = education_level, y = n)) +
   geom_col() +
   facet_wrap(. ~ anaemia_status, ncol = 3)
+
 #histogram of profession
 anc_data_processed_subset %>%
   dplyr::count(anaemia_status)
@@ -158,6 +172,17 @@ anc_data_processed_subset %>%
   ggplot(aes(x = profession, y = n)) +
   geom_col() +
   facet_wrap(. ~ anaemia_status, ncol = 3)
+
+#histogram of profession group
+anc_data_processed_subset %>%
+  dplyr::count(anaemia_status)
+anc_data_processed_subset %>%
+  dplyr::count(anaemia_status, profession_group) %>%
+  dplyr::arrange(desc(n)) %>%
+  ggplot(aes(x = profession_group, y = n)) +
+  geom_col() +
+  facet_wrap(. ~ anaemia_status, ncol = 3)
+
 #marital status
 anc_data_processed_subset %>%
   dplyr::count(anaemia_status)
