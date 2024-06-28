@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
   echo = FALSE
 )
 
-suppressPackageStartupMessages(source("packages.R"))
+suppressPackageStartupMessages(source(here::here("packages.R")))
 for (f in list.files(here::here("R"), full.names = TRUE)) source (f)
 
 targets::tar_load(

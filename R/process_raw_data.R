@@ -224,6 +224,7 @@ process_anc_data_raw <- function(anc_data_raw) {
         Profession == "Decoration" ~ "Decorator",
         Profession == "Fishmonga" ~ "Fishmonger",
         Profession == "Farming" ~ "Farmer",
+        Profession == "Catre"~"Caterer",
         .default = Profession
       ),
       EducationLevel = dplyr::case_when(

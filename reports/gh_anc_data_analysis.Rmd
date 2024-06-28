@@ -7,7 +7,7 @@ output:
   html_document:
     toc: true
     toc_depth: 3
-    self_contained: true
+    #self_contained: true
     code_download: true
 ---
 
@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
   echo = FALSE
 )
 
-suppressPackageStartupMessages(source("packages.R"))
+suppressPackageStartupMessages(source(here::here("packages.R")))
 for (f in list.files(here::here("R"), full.names = TRUE)) source (f)
 
 targets::tar_load(c(anc_data_raw, anc_data_raw_metadata, anc_data_processed, anc_data_processed_metadata))
@@ -29,7 +29,7 @@ targets::tar_load(c(anc_data_raw, anc_data_raw_metadata, anc_data_processed, anc
 ## Description of the sample
 
 ```{r sample-description}
-anc_data_processed_subset <- anc_data_processed_in_ %>%
+anc_data_processed_subset <- anc_data_processed %>%
   filter(age != 1) %>%
   dplyr::mutate(
     total_n = n(),
