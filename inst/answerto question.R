@@ -776,7 +776,7 @@ print(chi_square_test)
 
 # logic model
 logit_anaemia_sickle_model <- glm(anaemia_status ~ sickle_cell, data = anc_data_clean, family = "binomial")
-summary(logit_model)
+summary(logit_anaemia_sickle_model)
 coefficients(logit_anaemia_sickle_model)
 
 
@@ -794,9 +794,6 @@ print(chi_square_test)
 ###----------------------------------------------------------------------------------------------------------
 #Q43
 ##Relationship between haemoglobin and malaria
-
-correlation <- biserial(anc_data_clean$haemoglobin, anc_data_clean$malaria == "negative")
-print(paste("binary test:", correlation))
 
 # t test????--->do not know how to do 
 t_test_result <- t.test(haemoglobin ~ malaria, data = anc_data_clean)
@@ -850,7 +847,7 @@ plot(model)
 #other variable 
 # Relationship between education and profession
 # table
-  table_educationlevel_profession <- table(anc_data_clean$education_level, anc_data_clean$profession)
+  table_educationlevel_profession<-table(anc_data_clean$education_level, anc_data_clean$profession)
 print(table_educationlevel_profession)
 
 # chi square test
