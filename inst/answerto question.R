@@ -815,5 +815,57 @@ summary(model)
 par(mfrow = c(2, 2))
 plot(model)
 
+---------------------------------------------------------------------------------
+#other variable 
+# Relationship between education and profession
+# table
+  table_educationlevel_profession <- table(anc_data_clean$education_level, anc_data_clean$profession)
+print(table_educationlevel_profession)
+
+# chi square test
+chi_square_test <- chisq.test(table_educationlevel_profession)
+print(chi_square_test)
 
 
+
+
+##Relationship between age and education level
+
+ggplot(anc_data_clean, aes(x = age, fill = education_level)) +
+  geom_histogram(binwidth = 2, position = "dodge") +
+  facet_wrap(~education_level, scales = "free_y") +
+  theme_minimal() +
+  labs(title = "Age Distribution by Education Level", x = "Age", y = "Count")
+
+# ANOVA
+anova_age_educationlevel_result <- aov(age ~ education_level, data = anc_data_clean)
+summary(anova_age_educationlevel_result)
+###-----------------------------------------------------------------------------------------------------------------
+
+##group profession-employee and self employee
+grouped_profession_data <- anc_data_clean %>%
+  mutate(profession_Group = case_when(
+    profession %in% c( "Teacher", "Company Employee", "Business Owner","Midwife") ~ "Employed",
+    profession %in% c("Undertaker", "Trader", "Seamstress", "Hair Dresser", "Fishmonger", "Farmer", "Decorator", "Caterer", "Student") ~ "Self-Employed",
+    TRUE ~ "NA"
+  ))
+summary_data <- grouped_profession_data %>%
+  group_by(profession_Group) %>%
+  summarize(mean_age = mean(age), count = n())
+
+
+# Relationship between anaemia status and group profession
+# table
+table_groupprofession <- table(grouped_profession_data$anaemia_status, grouped_profession_data$profession_Group)
+print(table_groupprofession)
+
+# chi square test
+chi_square_test <- chisq.test(table_groupprofession)
+print(chi_square_test)
+
+# logic model
+logit_groupprofession<- glm(anaemia_status ~ profession_Group, data = grouped_profession_data, family = "binomial")
+summary(logit_groupprofession)
+coefficients(logit_groupprofession)
+
+##It looks like statistic significant in the profession group
