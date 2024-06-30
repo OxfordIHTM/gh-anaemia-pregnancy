@@ -48,6 +48,29 @@ anc_data_clean$anaemia_status <- detect_anaemia(anc_data_clean$haemoglobin)
 
 anc_data_clean$anaemia_status<-c(detect_anaemia(anc_data_clean$haemoglobin))
 
+
+#table of anaemia staus
+anaemia_table <- table(anc_data_clean$anaemia_status)
+anaemia_proportion <- prop.table(anaemia_table)
+anaemia_summary <- data.frame(
+  Status = names(anaemia_table),
+  Count = as.integer(anaemia_table),
+  Proportion = round(anaemia_proportion, 2)
+)
+print(anaemia_summary)
+
+#table of anaemia catergory
+anaemiac_table <- table(anc_data_clean$anaemia_category)
+anaemiac_proportion <- prop.table(anaemiac_table)
+anaemiac_summary <- data.frame(
+  Status = names(anaemiac_table),
+  Count = as.integer(anaemiac_table),
+  Proportion = round(anaemiac_proportion, 2)
+)
+print(anaemiac_summary)
+
+
+
 #boxplot Comparison of haemoglobin by Anemia Status
 ggplot(anc_data_clean, aes(x = anaemia_status, y = haemoglobin, fill = anaemia_status)) +
   geom_boxplot() +
@@ -868,6 +891,9 @@ ggplot(anc_data_clean, aes(x = age, fill = education_level)) +
 # ANOVA
 anova_age_educationlevel_result <- aov(age ~ education_level, data = anc_data_clean)
 summary(anova_age_educationlevel_result)
+
+
+
 ###-----------------------------------------------------------------------------------------------------------------
 
 ##group profession-employee and self employee
@@ -880,6 +906,15 @@ grouped_profession_data <- anc_data_clean %>%
 summary_data <- grouped_profession_data %>%
   group_by(profession_Group) %>%
   summarize(mean_age = mean(age), count = n())
+
+##Relationship between Haemoglobin and profession group
+boxplot_Hb_professiongroup<- ggplot(grouped_profession_data, aes(x = profession_Group, y = haemoglobin)) +
+  geom_boxplot() +
+  labs(title = "profession group and haemoglobin",
+       x = "profession",
+       y = "haemoglobin")
+
+print(boxplot_Hb_professiongroup)
 
 
 # Relationship between anaemia status and group profession
@@ -908,6 +943,8 @@ boxplot_Hb_adgegroup <- ggplot(anc_data_processed_subset, aes(x = age_group, y =
        x = "age group",
        y = "haemoglobin")
 print(boxplot_Hb_adgegroup)
+
+
 
 # ANOVA
 anova_Hb_agegroup_result <- aov(haemoglobin ~ age_group, data = anc_data_processed_subset)
