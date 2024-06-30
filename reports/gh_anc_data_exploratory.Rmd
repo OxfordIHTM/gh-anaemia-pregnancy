@@ -1,14 +1,19 @@
 ---
 title: "Anaemia in pregnancy in Ghana"
-subtitle: "Data analysis"
-author: "" 
-date: '`r format(Sys.time(), format = "%d %B %Y %H:%M")`'
-output: 
+author: ''
+date: "`r format(Sys.time(), format = "%d %B %Y %H:%M")`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: '3'
   html_document:
     toc: true
     toc_depth: 3
-    #self_contained: true
     code_download: true
+  word_document:
+    toc: true
+    toc_depth: '3'
+subtitle: Data analysis
 ---
 
 ```{r setup, include=FALSE}
@@ -64,6 +69,10 @@ knitr::kable(
   ) |>
   kableExtra::pack_rows(
     group_label = "Profession",
+    start_row = 18, end_row = 32
+  ) |>
+    kableExtra::pack_rows(
+    group_label = "Profession Group",
     start_row = 18, end_row = 32
   ) |>
   kableExtra::pack_rows(
