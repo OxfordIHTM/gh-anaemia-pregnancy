@@ -80,6 +80,13 @@ ggplot(anc_data_clean, aes(x = anaemia_status, y = haemoglobin, fill = anaemia_s
   theme_minimal()
 
 
+
+# statistic Hb  five number summary 
+fivenum(anc_data_clean$haemoglobin)
+
+# statistic Hb  five number summary 
+fivenum(filtered_anaemic_data$haemoglobin)
+
 ##Age variable ---total 
 
 # statistic age  five number summary 
@@ -601,6 +608,10 @@ summary(anova_result)
 
 
 
+
+
+
+
 # Relationship between anaemic status and profession
 # table
 table_anaemiastatus_profession <- table(anc_data_clean$anaemia_status, anc_data_clean$profession)
@@ -895,7 +906,44 @@ summary(anova_age_educationlevel_result)
 
 
 ###-----------------------------------------------------------------------------------------------------------------
+##education Grouping
+##group profession-employee and self employee
+grouped_education_data <- anc_data_clean %>%
+  mutate(education_Group = case_when(
+    education_level %in% c( "Primary", "Junior High School") ~ "basic education",
+    education_level %in% c("Senior High School", "Tertiary") ~ "advance education",
+    TRUE ~ "NA"
+  ))
+summary_data <- grouped_education_data %>%
+  group_by(education_Group) %>%
+  summarize(mean_age = mean(age), count = n())
 
+##Relationship between Haemoglobin and education group
+boxplot_Hb_educationgroup<- ggplot(grouped_education_data, aes(x = education_Group, y = haemoglobin)) +
+  geom_boxplot() +
+  labs(title = "education group and haemoglobin",
+       x = "profession",
+       y = "haemoglobin")
+
+print(boxplot_Hb_educationgroup)
+
+# Relationship between anaemia status and group profession
+# table
+table_groupeducation <- table(grouped_education_data$anaemia_status, grouped_education_data$education_Group)
+print(table_groupeducation)
+
+# chi square test
+chi_square_test <- chisq.test(table_groupeducation)
+print(chi_square_test)
+
+# logic model
+logit_groupeducation<- glm(anaemia_status ~ education_Group, data = grouped_education_data, family = "binomial")
+summary(logit_groupeducation)
+coefficients(logit_groupeducation)
+##-------------------------------------------------------------------------------------------------------------------
+
+
+##profesion grouping
 ##group profession-employee and self employee
 grouped_profession_data <- anc_data_clean %>%
   mutate(profession_Group = case_when(
@@ -916,7 +964,6 @@ boxplot_Hb_professiongroup<- ggplot(grouped_profession_data, aes(x = profession_
 
 print(boxplot_Hb_professiongroup)
 
-
 # Relationship between anaemia status and group profession
 # table
 table_groupprofession <- table(grouped_profession_data$anaemia_status, grouped_profession_data$profession_Group)
@@ -932,6 +979,47 @@ summary(logit_groupprofession)
 coefficients(logit_groupprofession)
 
 ##It looks like statistic significant in the profession group
+
+
+##grouping by advance profession
+grouped_ad_profession_data <- anc_data_clean %>%
+  mutate(profession_ad_Group = case_when(
+    profession %in% c( "Teacher", "Company Employee", "Business Owner","Midwife") ~ "Employed",
+    profession %in% c("Trader",   "Fishmonger", "Farmer", "Caterer", "Student") ~ "Self-Employed",
+    profession %in% c("Undertaker",  "Seamstress", "Hair Dresser", "Decorator") ~ "Self-Employed with vaocational training",
+    TRUE ~ "NA"
+  ))
+summary_data <- grouped_ad_profession_data %>%
+  group_by(profession_ad_Group) %>%
+  summarize(mean_age = mean(age), count = n())
+
+boxplot_Hb_adprofessiongroup<- ggplot(grouped_ad_profession_data, aes(x = profession_ad_Group, y = haemoglobin)) +
+  geom_boxplot() +
+  labs(title = "profession group and haemoglobin",
+       x = "profession",
+       y = "haemoglobin")
+
+print(boxplot_Hb_adprofessiongroup)
+
+# Relationship between anaemia status and group profession
+# table
+table_groupadprofession <- table(grouped_ad_profession_data$anaemia_status, grouped_ad_profession_data$profession_ad_Group)
+print(table_groupprofession)
+
+# chi square test
+chi_square_test <- chisq.test(table_groupadprofession)
+print(chi_square_test)
+
+# logic model
+logit_groupadprofession<- glm(anaemia_status ~ profession_ad_Group, data = grouped_ad_profession_data, family = "binomial")
+summary(logit_groupadprofession)
+coefficients(logit_groupadprofession)
+
+
+
+
+
+
 
 ###-----------------------------------------------------------------------------------------------------------###
 #Age group
