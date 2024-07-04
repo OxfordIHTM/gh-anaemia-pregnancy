@@ -110,9 +110,13 @@ create_metadata_processed <- function(anc_data_processed) {
   ## Field description ----
   field_description <- c(
     "Unique identifier",
+    "Month woman attended antenatal care",
+    "Year woman attended antenatal care",
     "Age of woman attending antenatal care in years",
     "Profession of woman attending antenatal care",
+    "Profession of woman attending antenatal care (summary)",
     "Education level of woman attending antenatal care",
+    "Education level of woman attending antenatal care (summary)",
     "Marital status of woman attending antenatal care",
     "Address (in general settelment/neighbourhood terms)",
     "Haemoglobin value (in micrograms/L)",
@@ -123,8 +127,12 @@ create_metadata_processed <- function(anc_data_processed) {
   field_values <- c(
     "unique identifier values",
     "age values in years",
+    "month values",
+    "year: 2023 or 2024",
     unique(anc_data_processed$profession) |> paste(collapse = "; "),
+    "summary categories for profession",
     unique(anc_data_processed$education_level) |> paste(collapse = "; "),
+    "summary categories for education level",
     unique(anc_data_processed$marital_status) |> paste(collapse = "; "),
     unique(anc_data_processed$address) |> paste(collapse = "; "),
     "haemoglobin values in microgram/L",
