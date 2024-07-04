@@ -206,11 +206,15 @@ process_anc_data_raw <- function(anc_data_raw) {
   zz7 <- dplyr::bind_rows(zz7, .id = "unique_id")
   
   anc_data <- rbind(zz1, zz2, zz3, zz4, zz5, zz6, zz7) |>
-    dplyr::select(
-      unique_id, Profile, Result_Num, Age, Profession, EducationLevel, 
-      MarriageStatus, Address
+    dplyr::mutate(
+      unique_id = as.integer(unique_id),
+      month = format(resDate, "%b"),
+      year = format(resDate, "%Y")
     ) |>
-    dplyr::mutate(unique_id = as.integer(unique_id)) |>
+    dplyr::select(
+      unique_id, month, year, Profile, Result_Num, Age, Profession, 
+      EducationLevel, MarriageStatus, Address
+    ) |>
     tidyr::pivot_wider(names_from = Profile, values_from = Result_Num) |>
     dplyr::arrange(unique_id) |>
     dplyr::mutate(
@@ -227,12 +231,28 @@ process_anc_data_raw <- function(anc_data_raw) {
         Profession == "Catre"~"Caterer",
         .default = Profession
       ),
+      Profession_Summary = dplyr::case_when(
+        Profession %in% c(
+          "Seamstress", "Hair Dresser", "Decorator", "Undertaker"
+        ) ~ "Self-employed with formal training",
+        Profession %in% c(
+          "Trader",   "Fishmonger", "Farmer", "Caterer", "Student"
+        ) ~ "Self-employed with no formal training",
+        Profession %in% c(
+          "Teacher", "Company Employee", "Business Owner", "Midwife"
+        ) ~ "Employed"
+      ),
       EducationLevel = dplyr::case_when(
         EducationLevel == "NONE" ~ "None",
         EducationLevel == "PRIMARY" ~ "Primary",
         stringr::str_detect(string = EducationLevel, pattern = "JHS|MIDDLE") ~ "Junior High School",
         stringr::str_detect(string = EducationLevel, pattern = "SHS") ~ "Senior High School",
         EducationLevel == "TERTIARY" ~ "Tertiary"
+      ),
+      EducationLevel_Summary = dplyr::case_when(
+        EducationLevel %in% c("Primary", "Junior High School") ~ "Primary/Junior High School",
+        EducationLevel %in% c("Senior High School", "Tertiary") ~ "Senior High School and higher",
+        .default = EducationLevel
       ),
       MarriageStatus = stringr::str_to_lower(MarriageStatus),
       Address = stringr::str_to_title(Address),
@@ -252,9 +272,16 @@ process_anc_data_raw <- function(anc_data_raw) {
     dplyr::rename(
       age = Age,
       profession = Profession,
+      profession_summary = Profession_Summary,
       education_level = EducationLevel,
+      education_level_summary = EducationLevel_Summary,
       marital_status = MarriageStatus,
       address = Address
+    ) |>
+    dplyr::select(
+      unique_id, month, year, age, profession, profession_summary,
+      education_level, education_level_summary, marital_status, address,
+      haemoglobin, sickle_cell, malaria
     )
   
   ## Filter out record with age of 1 year old ----
