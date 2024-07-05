@@ -19,8 +19,8 @@ anc_data_processed_subset <- anc_data_processed %>%
     ),
     anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
     profession_group= case_when(
-      profession %in% c( "Teacher", "Company Employee", "Business Owner","Midwife") ~ "Employed",
-      profession %in% c("Undertaker", "Trader", "Seamstress", "Hair Dresser", "Fishmonger", "Farmer", "Decorator", "Caterer", "Student") ~ "Self-Employed",
+      profession %in% c( "Teacher", "Company Employee", "Midwife") ~ "Employed",
+      profession %in% c("Undertaker", "Trader", "Seamstress", "Hair Dresser", "Fishmonger", "Farmer", "Decorator", "Caterer", "Business Owner","Student") ~ "Self-Employed",
       TRUE ~ "NA"
     )
   )
@@ -947,8 +947,8 @@ coefficients(logit_groupeducation)
 ##group profession-employee and self employee
 grouped_profession_data <- anc_data_clean %>%
   mutate(profession_Group = case_when(
-    profession %in% c( "Teacher", "Company Employee", "Business Owner","Midwife") ~ "Employed",
-    profession %in% c("Undertaker", "Trader", "Seamstress", "Hair Dresser", "Fishmonger", "Farmer", "Decorator", "Caterer", "Student") ~ "Self-Employed",
+    profession %in% c( "Teacher", "Company Employee", "Midwife") ~ "Employed",
+    profession %in% c("Undertaker", "Trader", "Seamstress", "Hair Dresser", "Fishmonger", "Farmer", "Decorator", "Caterer","Business Owner", "Student") ~ "Self-Employed",
     TRUE ~ "NA"
   ))
 summary_data <- grouped_profession_data %>%
@@ -984,9 +984,10 @@ coefficients(logit_groupprofession)
 ##grouping by advance profession
 grouped_ad_profession_data <- anc_data_clean %>%
   mutate(profession_ad_Group = case_when(
-    profession %in% c( "Teacher", "Company Employee", "Business Owner","Midwife") ~ "Employed",
-    profession %in% c("Trader",   "Fishmonger", "Farmer", "Caterer", "Student") ~ "Self-Employed",
+    profession %in% c( "Teacher", "Company Employee", "Midwife") ~ "Employed",
+    profession %in% c("Trader",   "Fishmonger", "Farmer", "Caterer","Business Owner") ~ "Self-Employed",
     profession %in% c("Undertaker",  "Seamstress", "Hair Dresser", "Decorator") ~ "Self-Employed with vaocational training",
+    profession %in% c( "none", "Student") ~ "None Income",
     TRUE ~ "NA"
   ))
 summary_data <- grouped_ad_profession_data %>%

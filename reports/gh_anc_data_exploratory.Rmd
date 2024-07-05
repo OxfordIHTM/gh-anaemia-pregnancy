@@ -71,10 +71,6 @@ knitr::kable(
     group_label = "Profession",
     start_row = 18, end_row = 32
   ) |>
-    kableExtra::pack_rows(
-    group_label = "Profession Group",
-    start_row = 18, end_row = 32
-  ) |>
   kableExtra::pack_rows(
     group_label = "Education Level",
     start_row = 33, end_row = 38
