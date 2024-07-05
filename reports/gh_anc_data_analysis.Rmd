@@ -45,8 +45,8 @@ anc_data_processed_subset <- anc_data_processed %>%
     ),
     anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
     profession_group= case_when(
-    profession %in% c( "Teacher", "Company Employee", "Business Owner","Midwife") ~ "Employed",
-    profession %in% c("Undertaker", "Trader", "Seamstress", "Hair Dresser", "Fishmonger", "Farmer", "Decorator", "Caterer", "Student") ~ "Self-Employed",
+    profession %in% c( "Teacher", "Company Employee", "Midwife") ~ "Employed",
+    profession %in% c("Undertaker", "Trader", "Seamstress", "Hair Dresser", "Fishmonger", "Farmer", "Decorator","Business Owner", "Caterer", "Student") ~ "Self-Employed",
     TRUE ~ "NA"
   )
   )
