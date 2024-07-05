@@ -1,5 +1,5 @@
 ---
-title: "Anaemia in pregnancy in Ghana"
+title: "Anaemia in pregnancy in Ghana in 2023"
 subtitle: "Data analysis"
 author: "" 
 date: '`r format(Sys.time(), format = "%d %B %Y %H:%M")`'
@@ -10,18 +10,16 @@ output:
     #self_contained: true
     code_download: true
 ---
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  warning = FALSE,
-  message = FALSE,
-  error = FALSE,
-  echo = FALSE
+    warning = FALSE,
+    message = FALSE,
+    error = FALSE,
+    echo = FALSE
 )
 
 suppressPackageStartupMessages(source(here::here("packages.R")))
 for (f in list.files(here::here("R"), full.names = TRUE)) source (f)
-
 targets::tar_load(c(anc_data_raw, anc_data_raw_metadata, anc_data_processed, anc_data_processed_metadata))
 ```
 
@@ -29,196 +27,8 @@ targets::tar_load(c(anc_data_raw, anc_data_raw_metadata, anc_data_processed, anc
 ## Description of the sample
 
 ```{r sample-description}
-anc_data_processed_subset <- anc_data_processed %>%
-  filter(age != 1) %>%
-  dplyr::mutate(
-    total_n = n(),
-    age_group = cut(
-      x = age,
-      breaks = c(-Inf, 15, 20, 25, 30, 35, 40, 45, Inf),
-      labels = c(
-        "under 15 years", "15 to 19 years", "20 to 24 years", "25 to 29 years", 
-        "30 to 34 years", "35 to 39, years", 
-        "40 to 44 years", "45 years and older"
-      ),
-      include.lowest = TRUE, right = FALSE
-    ),
-    anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
-    profession_group= case_when(
-    profession %in% c( "Teacher", "Company Employee", "Midwife") ~ "Employed",
-    profession %in% c("Undertaker", "Trader", "Seamstress", "Hair Dresser", "Fishmonger", "Farmer", "Decorator","Business Owner", "Caterer", "Student") ~ "Self-Employed",
-    TRUE ~ "NA"
-  )
-  )
-
-# Table of age groups ----
-age_group_tab <- anc_data_processed_subset %>%
-  dplyr::count(age_group) %>%
-  dplyr::arrange(desc(n)) %>%
-  dplyr::mutate(prop = n / unique(anc_data_processed_subset$total_n)) %>%
-  dplyr::rename(var = age_group)
-
-## NOTE: Good to make a population pyramid or bar plot for age groups to show
-## distribution
-
-# Table of professions ----
-profession_tab <- anc_data_processed_subset %>%
-  dplyr::count(profession) %>%
-  dplyr::arrange(desc(n)) %>%
-  dplyr::mutate(prop = n / unique(anc_data_processed_subset$total_n)) %>%
-  dplyr::rename(var = profession)
-
-# Table of professions group ----
-profession_tab <- anc_data_processed_subset %>%
-  dplyr::count(profession_group) %>%
-  dplyr::arrange(desc(n)) %>%
-  dplyr::mutate(prop = n / unique(anc_data_processed_subset$total_n)) %>%
-  dplyr::rename(var = profession_group)
-
-  
-# Education Level ---
-education_tab <- anc_data_processed_subset %>%
-  dplyr::count(education_level) %>%
-  dplyr::arrange(desc(n)) %>%
-  dplyr::mutate(prop = n / unique(anc_data_processed_subset$total_n)) %>%
-  dplyr::rename(var = education_level)
-
-# Marital status ----
-marital_tab <- anc_data_processed_subset %>%
-  dplyr::count(marital_status) %>%
-  dplyr::arrange(desc(n)) %>%
-  dplyr::mutate(prop = n / unique(anc_data_processed_subset$total_n)) %>%
-  dplyr::rename(var = marital_status)
-
-# Location/neighbourhood ---
-address_tab <- anc_data_processed_subset %>%
-  dplyr::count(address) %>%
-  dplyr::arrange(desc(n)) %>%
-  dplyr::mutate(prop = n / unique(anc_data_processed_subset$total_n)) %>%
-  dplyr::rename(var = address)
-
-# Sickle cell status ----
-sickle_tab <- anc_data_processed_subset %>%
-  dplyr::count(sickle_cell) %>%
-  dplyr::arrange(desc(n)) %>%
-  dplyr::mutate(prop = n / unique(anc_data_processed_subset$total_n)) %>%
-  dplyr::rename(var = sickle_cell)
-
-# Malaria ----
-malaria_tab <- anc_data_processed_subset %>%
-  dplyr::count(malaria) %>%
-  dplyr::arrange(desc(n)) %>%
-  dplyr::mutate(prop = n / unique(anc_data_processed_subset$total_n)) %>%
-  dplyr::rename(var = malaria)
-
-# Create overall summary table ----
-median_age_tab <- anc_data_processed_subset %>%
-  dplyr::summarise(
-    var = "median_age",
-    median_age = median(age, na.rm = TRUE)
-  )
-
-# Create overall table ----
-knitr::kable(
-  x = median_age_tab,
-  col.names = c("Variable", "Value")
-) |>
-  kableExtra::kable_paper()
-
-
-knitr::kable(
-  x = rbind(
-    age_group_tab,
-    marital_tab,
-    education_tab,
-    profession_tab,
-    address_tab,
-    sickle_tab
-  ),
-  col.names = c("Variable", "n", "%")
-) |>
-  kableExtra::kable_paper()
-```
-
-## Outcome variable and bivariate analysis
-
-```{r}
-#histogram of age group
-anc_data_processed_subset %>%
-  dplyr::count(anaemia_status)
-anc_data_processed_subset %>%
-  dplyr::count(anaemia_status, age_group) %>%
-  dplyr::arrange(desc(n)) %>%
-  ggplot(aes(x = age_group, y = n)) +
-  geom_col() +
-  facet_wrap(. ~ anaemia_status, ncol = 3)
-
-#histogram of education level
-anc_data_processed_subset %>%
-  dplyr::count(anaemia_status)
-anc_data_processed_subset %>%
-  dplyr::count(anaemia_status, education_level) %>%
-  dplyr::arrange(desc(n)) %>%
-  ggplot(aes(x = education_level, y = n)) +
-  geom_col() +
-  facet_wrap(. ~ anaemia_status, ncol = 3)
-
-#histogram of profession
-anc_data_processed_subset %>%
-  dplyr::count(anaemia_status)
-anc_data_processed_subset %>%
-  dplyr::count(anaemia_status, profession) %>%
-  dplyr::arrange(desc(n)) %>%
-  ggplot(aes(x = profession, y = n)) +
-  geom_col() +
-  facet_wrap(. ~ anaemia_status, ncol = 3)
-
-#histogram of profession group
-anc_data_processed_subset %>%
-  dplyr::count(anaemia_status)
-anc_data_processed_subset %>%
-  dplyr::count(anaemia_status, profession_group) %>%
-  dplyr::arrange(desc(n)) %>%
-  ggplot(aes(x = profession_group, y = n)) +
-  geom_col() +
-  facet_wrap(. ~ anaemia_status, ncol = 3)
-
-#marital status
-anc_data_processed_subset %>%
-  dplyr::count(anaemia_status)
-anc_data_processed_subset %>%
-  dplyr::count(anaemia_status, marital_status) %>%
-  dplyr::arrange(desc(n)) %>%
-  ggplot(aes(x = marital_status, y = n)) +
-  geom_col() +
-  facet_wrap(. ~ anaemia_status, ncol = 3)
-#sickle cell
-anc_data_processed_subset %>%
-  dplyr::count(anaemia_status)
-anc_data_processed_subset %>%
-  dplyr::count(anaemia_status, sickle_cell) %>%
-  dplyr::arrange(desc(n)) %>%
-  ggplot(aes(x = sickle_cell, y = n)) +
-  geom_col() +
-  facet_wrap(. ~ anaemia_status, ncol = 3)
-#malaria
-anc_data_processed_subset %>%
-  dplyr::count(anaemia_status)
-anc_data_processed_subset %>%
-  dplyr::count(anaemia_status, malaria) %>%
-  dplyr::arrange(desc(n)) %>%
-  ggplot(aes(x = malaria, y = n)) +
-  geom_col() +
-  facet_wrap(. ~ anaemia_status, ncol = 3)
-
-
-```
-
-## Description of the sample
-
-```{r sample-description}
-anc_data_processed_subset_2023 <- anc_data_processed %>%
-  filter(age != 1, year != 2024) %>%
+anc_data_processed_subset_2023<-read.csv(here::here("data/anc_data_processed.csv"))%>% 
+  dplyr::filter(age > 1, year != 2024)%>%
   dplyr::mutate(
     total_n = n(),
     age_group = cut(
