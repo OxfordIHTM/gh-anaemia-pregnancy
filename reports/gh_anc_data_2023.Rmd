@@ -21,7 +21,15 @@ knitr::opts_chunk$set(
 suppressPackageStartupMessages(source(here::here("packages.R")))
 for (f in list.files(here::here("R"), full.names = TRUE)) source (f)
 
-
+targets::tar_load(
+  c(anc_data_raw, anc_data_raw_metadata, 
+    anc_data_processed, anc_data_processed_metadata,
+    anc_data_recode,anc_data_summary_univariate_table,
+    anc_data_summary_bivariate_table,
+    anc_data_processed_subset_2023,
+    anc_data_recode_2023,anc_data_summary_univariate_table_2023,
+    anc_data_summary_bivariate_table_2023)
+)
 
 
 ```
@@ -310,7 +318,7 @@ knitr::kable(
 ### Age structure
 
 ```{r age-structure-1, fig.align = "center", fig.height = 6, fig.width = 8}
-anc_data_recode |>
+anc_data_processed_subset_2023 |>
   ggplot(mapping = aes(x = age)) +
   geom_bar(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
   scale_x_continuous(breaks = seq(from = 0, to = 50, by = 5)) +
@@ -355,7 +363,7 @@ anc_data_recode |>
 ### Distribution of haemoglobin values
 
 ```{r hb-histogram, fig.align = "center", fig.width = 8, fig.height = 6}
-anc_data_recode |>
+anc_data_processed_subset_2023 |>
   ggplot(aes(x = haemoglobin)) +
   geom_histogram(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
   labs(
@@ -368,7 +376,7 @@ anc_data_recode |>
 
 ```{r hb-boxplot, fig.align = "center", fig.height = 6, fig.width = 4}
 boxplot(
-  x = anc_data_recode$haemoglobin,
+  x = anc_data_processed_subset_2023$haemoglobin,
   border = oxthema::get_oxford_colours("Oxford blue"),
   col = oxthema::get_oxford_colours("sky"),
   lwd = 1.5,
@@ -429,7 +437,7 @@ knitr::kable(
 ### Anaemia status and age
 
 ```{r anaemia-status-age-barplot, fig.align = "center", fig.width = 8, fig.height = 6}
-anc_data_recode |>
+anc_data_processed_subset_2023 |>
   dplyr::filter(!is.na(anaemia_status)) |>
   ggplot(mapping = aes(x = age)) +
   geom_bar(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
@@ -446,7 +454,7 @@ anc_data_recode |>
 ```
 
 ```{r anaemia-status-age-group-barplot, fig.align = "center", fig.width = 6, fig.height = 8}
-anc_data_recode |>
+anc_data_processed_subset_2023 |>
   dplyr::filter(!is.na(anaemia_status)) |>
   dplyr::count(anaemia_status, age_group) |>
   ggplot(mapping = aes(x = age_group, y = n)) +
@@ -466,7 +474,7 @@ anc_data_recode |>
 ```
 
 ```{r anaemia-status-age-violin, fig.align = "center", fig.width = 8, fig.height = 6}
-anc_data_recode |>
+anc_data_processed_subset_2023 |>
   dplyr::filter(!is.na(anaemia_status)) |>
   ggplot(mapping = aes(x = anaemia_status, y = age)) +
   geom_violin(
