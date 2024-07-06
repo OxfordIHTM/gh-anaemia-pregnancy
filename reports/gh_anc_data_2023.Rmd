@@ -12,22 +12,25 @@ output:
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-    warning = FALSE,
-    message = FALSE,
-    error = FALSE,
-    echo = FALSE
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  echo = FALSE
 )
 
 suppressPackageStartupMessages(source(here::here("packages.R")))
 for (f in list.files(here::here("R"), full.names = TRUE)) source (f)
-targets::tar_load(c(anc_data_raw, anc_data_raw_metadata, anc_data_processed, anc_data_processed_metadata))
+
+
+
+
 ```
 
 
 ## Description of the sample
 
 ```{r sample-description}
-anc_data_processed_subset_2023<-read.csv(here::here("data/anc_data_processed.csv"))%>% 
+anc_data_processed_subset_2023<-read.csv(here::here("data/anc_data_processed07.csv"))%>% 
   dplyr::filter(age > 1, year != 2024)%>%
   dplyr::mutate(
     total_n = n(),
@@ -73,6 +76,12 @@ profession_tab <- anc_data_processed_subset_2023 %>%
   dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
   dplyr::rename(var = profession_group)
 
+# Table of detail professions group ----
+profession_tab <- anc_data_processed_subset_2023 %>%
+  dplyr::count(profession_summary) %>%
+  dplyr::arrange(desc(n)) %>%
+  dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
+  dplyr::rename(var = profession_summary)
   
 # Education Level ---
 education_tab <- anc_data_processed_subset_2023 %>%
@@ -80,6 +89,13 @@ education_tab <- anc_data_processed_subset_2023 %>%
   dplyr::arrange(desc(n)) %>%
   dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
   dplyr::rename(var = education_level)
+
+# Education Level ---
+education_tab <- anc_data_processed_subset_2023 %>%
+  dplyr::count(education_level_summary) %>%
+  dplyr::arrange(desc(n)) %>%
+  dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
+  dplyr::rename(var = education_level_summary)
 
 # Marital status ----
 marital_tab <- anc_data_processed_subset_2023 %>%
@@ -144,7 +160,7 @@ knitr::kable(
 #histogram of age group
 anc_data_processed_subset_2023 %>%
   dplyr::count(anaemia_status)
-anc_data_processed_subset %>%
+anc_data_processed_subset_2023 %>%
   dplyr::count(anaemia_status, age_group) %>%
   dplyr::arrange(desc(n)) %>%
   ggplot(aes(x = age_group, y = n)) +
@@ -231,3 +247,241 @@ anc_data_processed_subset_2023 %>%
 
 
 ```
+
+
+## Description of the sample
+
+### 2023 Summary statistics table
+
+```{r sample-description}
+anc_data_processed_univariate_table_2023<-anc_data_processed_subset_2023
+
+knitr::kable(
+  x = anc_data_summary_univariate_table_2023 |>
+    dplyr::select(-var_set),
+  col.names = c("", "")
+) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::pack_rows(
+    group_label = "Age",
+    start_row = 1, end_row = 1
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Age Group",
+    start_row = 2, end_row = 8
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Haemoglobin",
+    start_row = 9, end_row = 9
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Anaemia Status",
+    start_row = 10, end_row = 12
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Anaemia Category",
+    start_row = 13, end_row = 17
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Profession",
+    start_row = 18, end_row = 28
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Education Level",
+    start_row = 29, end_row = 34
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Marital Status",
+    start_row = 35, end_row = 37
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Location",
+    start_row = 38, end_row = 56
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Sickle Cell",
+    start_row = 57, end_row = 59
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Malaria",
+    start_row = 60, end_row = 62
+  )
+```
+### Age structure
+
+```{r age-structure-1, fig.align = "center", fig.height = 6, fig.width = 8}
+anc_data_recode |>
+  ggplot(mapping = aes(x = age)) +
+  geom_bar(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
+  scale_x_continuous(breaks = seq(from = 0, to = 50, by = 5)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 20, by = 4)) +
+  geom_vline(
+    xintercept = 26, 
+    colour = oxthema::get_oxford_colours("Oxford blue"),
+    linetype = 2
+  ) +
+  annotate(
+    geom = "text", x = 30, y = 14, label = "Median age: 26 years", 
+    colour = oxthema::get_oxford_colours("Oxford blue")
+  ) +
+  labs(
+    title = "Age Distribution",
+    subtitle = "Age (in years) of women attending ANC in 2023",
+    x = "Age (years)",
+    y = "Number of women"
+  ) +
+  oxthema::theme_oxford(grid = "Yy")
+```
+
+
+```{r age-structure-2, fig.align = "center", fig.height = 6, fig.width = 8}
+anc_data_recode |>
+  dplyr::count(age_group) |>
+  ggplot(mapping = aes(x = age_group, y = n)) +
+  geom_col(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
+  scale_y_continuous(
+    breaks = seq(from = 0, to = 60, by = 10)
+  ) +
+  labs(
+    title = "Age Distribution",
+    subtitle = "Age group of women attending ANC in 2023",
+    x = "Age group",
+    y = "Number of women"
+  ) +
+  coord_flip() +
+  oxthema::theme_oxford(grid = "X")
+```
+
+### Distribution of haemoglobin values
+
+```{r hb-histogram, fig.align = "center", fig.width = 8, fig.height = 6}
+anc_data_recode |>
+  ggplot(aes(x = haemoglobin)) +
+  geom_histogram(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
+  labs(
+    title = "Haemoglobin values distribution",
+    subtitle = "Haemoglobin values of women attending ANC in 2023",
+    x = "Hb (g/L)", y = "Number of women"
+  ) +
+  oxthema::theme_oxford(grid = "Yy")
+```
+
+```{r hb-boxplot, fig.align = "center", fig.height = 6, fig.width = 4}
+boxplot(
+  x = anc_data_recode$haemoglobin,
+  border = oxthema::get_oxford_colours("Oxford blue"),
+  col = oxthema::get_oxford_colours("sky"),
+  lwd = 1.5,
+  frame.plot = FALSE,
+  main = "Haemoglobin values distribution",
+  xlab = NULL, 
+  ylab = "Hb (g/L)"
+)
+```
+
+## Outcome variable and bivariate analysis
+
+```{r bivariate-table}
+knitr::kable(
+  x = anc_data_summary_bivariate_table |>
+    dplyr::select(-var_set),
+  col.names = c("", "", "")
+) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::pack_rows(
+    group_label = "Age",
+    start_row = 1, end_row = 1
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Age Group",
+    start_row = 2, end_row = 8
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Haemoglobin",
+    start_row = 9, end_row = 9
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Profession",
+    start_row = 10, end_row = 22
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Education Level",
+    start_row = 23, end_row = 28
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Marital Status",
+    start_row = 29, end_row = 31
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Location",
+    start_row = 32, end_row = 55
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Sickle Cell",
+    start_row = 56, end_row = 58
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Malaria",
+    start_row = 59, end_row = 60
+  )
+```
+
+### Anaemia status and age
+
+```{r anaemia-status-age-barplot, fig.align = "center", fig.width = 8, fig.height = 6}
+anc_data_recode |>
+  dplyr::filter(!is.na(anaemia_status)) |>
+  ggplot(mapping = aes(x = age)) +
+  geom_bar(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
+  scale_x_continuous(breaks = seq(from = 0, to = 50, by = 5)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 20, by = 4)) +
+  labs(
+    title = "Age Distribution by Anaemia Status",
+    subtitle = "Women attending ANC in 2023",
+    x = "Age (years)",
+    y = "Number of women"
+  ) +
+  facet_wrap(. ~ anaemia_status, ncol = 2) +
+  oxthema::theme_oxford(grid = "Yy")
+```
+
+```{r anaemia-status-age-group-barplot, fig.align = "center", fig.width = 6, fig.height = 8}
+anc_data_recode |>
+  dplyr::filter(!is.na(anaemia_status)) |>
+  dplyr::count(anaemia_status, age_group) |>
+  ggplot(mapping = aes(x = age_group, y = n)) +
+  geom_col(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
+  scale_y_continuous(
+    breaks = seq(from = 0, to = 40, by = 10)
+  ) +
+  labs(
+    title = "Age Distribution",
+    subtitle = "Age group of women attending ANC in 2023",
+    x = "Age group",
+    y = "Number of women"
+  ) +
+  coord_flip() +
+  facet_wrap(. ~ anaemia_status, nrow = 2) +
+  oxthema::theme_oxford(grid = "Xx")
+```
+
+```{r anaemia-status-age-violin, fig.align = "center", fig.width = 8, fig.height = 6}
+anc_data_recode |>
+  dplyr::filter(!is.na(anaemia_status)) |>
+  ggplot(mapping = aes(x = anaemia_status, y = age)) +
+  geom_violin(
+    fill = oxthema::get_oxford_colours("sky"), alpha = 0.8,
+    colour = oxthema::get_oxford_colours("Oxford blue")
+  ) + 
+  labs(
+    title = "Age Distribution by Anaemia Status",
+    subtitle = "Women attending ANC in 2023",
+    x = "",
+    y = "Age (years)"
+  ) + 
+  oxthema::theme_oxford(grid = "Yy")
+```
+
+`
+
+

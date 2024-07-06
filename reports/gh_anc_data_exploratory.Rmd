@@ -30,8 +30,11 @@ for (f in list.files(here::here("R"), full.names = TRUE)) source (f)
 targets::tar_load(
   c(anc_data_raw, anc_data_raw_metadata, 
     anc_data_processed, anc_data_processed_metadata,
-    anc_data_recode, anc_data_summary_univariate_table,
-    anc_data_summary_bivariate_table)
+    anc_data_recode,anc_data_summary_univariate_table,
+    anc_data_summary_bivariate_table,
+    anc_data_processed_subset_2023,
+    anc_data_recode_2023,anc_data_summary_univariate_table_2023,
+    anc_data_summary_bivariate_table_2023)
 )
 ```
 
@@ -92,7 +95,6 @@ knitr::kable(
     start_row = 69, end_row = 70
   )
 ```
-
 ### Age structure
 
 ```{r age-structure-1, fig.align = "center", fig.height = 6, fig.width = 8}
@@ -118,6 +120,8 @@ anc_data_recode |>
   ) +
   oxthema::theme_oxford(grid = "Yy")
 ```
+
+
 
 
 ```{r age-structure-2, fig.align = "center", fig.height = 6, fig.width = 8}
@@ -267,4 +271,7 @@ anc_data_recode |>
   ) + 
   oxthema::theme_oxford(grid = "Yy")
 ```
+
+`
+
 
