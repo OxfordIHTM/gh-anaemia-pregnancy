@@ -3,6 +3,7 @@
 
 source(here::here("packages.R"))
 
+##all data
 anc_data_processed_subset <- anc_data_processed %>%
   filter(age != 1) %>%
   dplyr::mutate(
@@ -24,6 +25,105 @@ anc_data_processed_subset <- anc_data_processed %>%
       TRUE ~ "NA"
     )
   )
+
+#only 2023 data
+anc_data_processed_subset_2023 <- anc_data_processed07 %>%
+  filter(age != 1,year <2024) %>%
+  dplyr::mutate(
+    total_n = n(),
+    age_group = cut(
+      x = age,
+      breaks = c(-Inf, 15, 20, 25, 30, 35, 40, 45, Inf),
+      labels = c(
+        "under 15 years", "15 to 19 years", "20 to 24 years", "25 to 29 years", 
+        "30 to 34 years", "35 to 39, years", 
+        "40 to 44 years", "45 years and older"
+      ),
+      include.lowest = TRUE, right = FALSE
+    ),
+    anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
+    anaemia_category = case_when(
+      haemoglobin >= 11 & haemoglobin < 12 ~ "Mild Anaemia",
+      haemoglobin >= 8 & haemoglobin < 11 ~ "Moderate Anaemia",
+      haemoglobin < 8 ~ "Severe Anaemia",
+      haemoglobin >= 12 ~ "Non-anaemic",
+      TRUE ~ NA_character_
+    )
+  )
+
+
+
+
+
+anc_data_by_year <- anc_data_processed07 %>%
+  group_by(year) %>%
+  summarise(
+    mean_age = mean(age, na.rm = TRUE),
+    mean_haemoglobin = mean(haemoglobin, na.rm = TRUE),
+    total_records = n(),
+    anaemia_cases = sum(haemoglobin < 11, na.rm = TRUE),
+    non_anaemia_cases = sum(haemoglobin >= 11, na.rm = TRUE),
+    mild_anaemia_cases = sum(haemoglobin >= 11 & haemoglobin < 12, na.rm = TRUE),
+    moderate_anaemia_cases = sum(haemoglobin >= 8 & haemoglobin < 11, na.rm = TRUE),
+    severe_anaemia_cases = sum(haemoglobin < 8, na.rm = TRUE),
+    non_anaemic_cases = sum(haemoglobin >= 12, na.rm = TRUE)
+  )
+year_table <- anc_data_by_year %>%
+  knitr::kable(
+    caption = "year difference",
+    col.names = c("year", "median age", "heamoglobin", "all number", "anaemic", "no anaemic", "mild anaemic", "moderate anaemic", "severe anaemic", "no anaemic")
+  ) %>%
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  )
+print(year_table)
+
+transposed_year_data <- t(as.matrix(anc_data_by_year))
+colnames(transposed_year_data) <- transposed_year_data[1, ]  # 使用第一行作為列名
+transposed_year_data <- transposed_year_data[-1, ]  # 刪除第一行
+
+# transverse
+year_table_t <- transposed_year_data %>%
+  knitr::kable(
+    caption = "Year Difference",
+    col.names = colnames(transposed_year_data)
+  ) %>%
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  )
+print(year_table_t)
+
+#table of anaemia catergory in 2023
+anaemia_table <- table(anc_data_processed_subset_2023$anaemia_category)
+anaemia_proportion <- prop.table(anaemia_table)
+anaemia_summary <- data.frame(
+  Status = names(anaemia_table),
+  Count = as.integer(anaemia_table),
+  Proportion = round(anaemia_proportion, 2)
+)
+print(anaemia_summary)
+print(anaemia_table)
+
+
+#table of anaemia staus in2023
+anaemia_table_2023 <- table(anc_data_processed_subset_2023$anaemia_status)
+anaemia_proportion_2023 <- prop.table(anaemia_table_2023)
+anaemia_summary_2023 <- data.frame(
+  Status = names(anaemia_table_2023),
+  Count = as.integer(anaemia_table_2023),
+  Proportion = round(anaemia_proportion_2023)
+)
+print(anaemia_summary_2023)
+
+
+
+
+
+###------------------------------------------------------------------------------------------------------------------
 
 ###Q22+Q34+Q35 Age answer
 ###data clean
@@ -59,27 +159,48 @@ anaemia_summary <- data.frame(
 )
 print(anaemia_summary)
 
+# Print table to console
+kable(anaemia_summary, format = "markdown")
+
+# Save table as HTML
+kable(anaemia_summary, format = "html", table.attr = 'class="table"') %>%
+  cat(file = "anaemia_summary.html")
+
+# Save table as LaTeX (for PDF)
+kable(anaemia_summary, format = "latex", booktabs = TRUE) %>%
+  cat(file = "anaemia_summary.tex")
+
+
+
 #table of anaemia catergory
-anaemiac_table <- table(anc_data_clean$anaemia_category)
-anaemiac_proportion <- prop.table(anaemiac_table)
-anaemiac_summary <- data.frame(
-  Status = names(anaemiac_table),
-  Count = as.integer(anaemiac_table),
-  Proportion = round(anaemiac_proportion, 2)
+anaemia_table <- table(anc_data_clean$anaemia_category)
+anaemia_proportion <- prop.table(anaemia_table)
+anaemia_summary <- data.frame(
+  Status = names(anaemia_table),
+  Count = as.integer(anaemia_table),
+  Proportion = round(anaemia_proportion, 2)
 )
-print(anaemiac_summary)
+print(anaemia_summary)
+print(anaemia_table)
+
 
 
 
 #boxplot Comparison of haemoglobin by Anemia Status
 ggplot(anc_data_clean, aes(x = anaemia_status, y = haemoglobin, fill = anaemia_status)) +
   geom_boxplot() +
-  labs(title = "Comparison of Haemoglobin by Anemia Status", 
-       x = "Anemia Status", y = "haemoglobin") +
+  labs(title = "Comparison of Haemoglobin by Anaemia Status", 
+       x = "Anaemia Status", y = "haemoglobin") +
   scale_fill_manual(values = c("True" = "red", "False" = "blue")) +
   theme_minimal()
 
-
+#boxplot Comparison of haemoglobin by Anemia Status 2023
+ggplot(anc_data_processed_subset_2023, aes(x = anaemia_status, y = haemoglobin, fill = anaemia_status)) +
+  geom_boxplot() +
+  labs(title = "Comparison of Haemoglobin by Anaemia Status in 2023", 
+       x = "Anaemia Status", y = "haemoglobin") +
+  scale_fill_manual(values = c("True" = "red", "False" = "blue")) +
+  theme_minimal()
 
 # statistic Hb  five number summary 
 fivenum(anc_data_clean$haemoglobin)
@@ -103,6 +224,14 @@ ggplot(anc_data_clean, aes(x = age, fill = anaemia_status)) +
   geom_histogram(position = "identity", alpha = 0.7, binwidth = 5,fill="blue") +
   facet_wrap(~ anaemia_status, ncol = 1) +
   labs(title = "Histogram of Age by Anemia Status", 
+       x = "Age", y = "Count") +
+  scale_fill_manual(values = c("Yes" = "lightcoral", "No" = "lightblue")) +
+  theme_minimal()
+##Age Histogram in one picture  in 2023
+ggplot(anc_data_processed_subset_2023, aes(x = age, fill = anaemia_status)) +
+  geom_histogram(position = "identity", alpha = 0.7, binwidth = 5,fill="blue") +
+  facet_wrap(~ anaemia_status, ncol = 1) +
+  labs(title = "Histogram of Age by Anemia Status in 2023", 
        x = "Age", y = "Count") +
   scale_fill_manual(values = c("Yes" = "lightcoral", "No" = "lightblue")) +
   theme_minimal()
@@ -172,7 +301,33 @@ kable(occupation_stats, format = "markdown", col.names = c("profession", "number
 ggplot(occupation_stats, aes(x = "", y = percentage, fill = profession)) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar(theta = "y") +
-  labs(title = "Proportion of profession", x = "", y = "Percentage") +
+  labs(title = "Proportion of profession ", x = "", y = "Percentage") +
+  theme_minimal() +
+  geom_text(aes(label = sprintf("%.1f%%", percentage)), position = position_stack(vjust = 0.5))
+
+
+
+##2023 profession
+#number of all profession
+occupation_stats <- anc_data_processed_subset_2023 %>%
+  group_by(profession) %>%
+  summarise(
+    count = n()  
+  )
+# percentage
+total_count <- sum(occupation_stats$count)
+occupation_stats <- occupation_stats %>%
+  mutate(percentage = count / total_count * 100)
+
+
+
+#table
+kable(occupation_stats, format = "markdown", col.names = c("profession", "number", "%"))
+##pie chart
+ggplot(occupation_stats, aes(x = "", y = percentage, fill = profession)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  labs(title = "Proportion of profession in 2023", x = "", y = "Percentage") +
   theme_minimal() +
   geom_text(aes(label = sprintf("%.1f%%", percentage)), position = position_stack(vjust = 0.5))
 
