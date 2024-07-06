@@ -307,3 +307,47 @@ summarise_anc_data_bivariate <- function(anc_data_recode,
   
   summary_tab
 }
+
+#' Create overall summary table - bivariate-2023
+#'
+
+summarise_anc_data_bivariate_2023 <- function(anc_data_processed_subset_2023,
+                                         outcome = "anaemia_status",
+                                         predictor = c("age", "age_group", 
+                                                       "haemoglobin", 
+                                                       "profession", 
+                                                       "education_level", 
+                                                       "marital_status", 
+                                                       "address", 
+                                                       "sickle_cell", 
+                                                       "malaria"),
+                                         predictor_label = c("Age", "Age Group",
+                                                             "Haemoglobin",
+                                                             "Profession",
+                                                             "Education Level",
+                                                             "Marital Status",
+                                                             "Address",
+                                                             "Sickle Cell",
+                                                             "Malaria"),
+                                         predictor_type = c("continuous",
+                                                            "categorical",
+                                                            "continuous",
+                                                            rep("categorical", 6)),
+                                         simplify = TRUE) {
+  summary_tab <- Map(
+    f = summarise_bivariate,
+    df = rep(list(anc_data_processed_subset_2023), length(predictor)),
+    outcome = rep(as.list(outcome), length(predictor)),
+    predictor = as.list(predictor),
+    predictor_type = as.list(predictor_type)
+  )
+  
+  names(summary_tab) <- predictor_label
+  
+  if (simplify) {
+    summary_tab <- summary_tab |>
+      dplyr::bind_rows(.id = "var_set")
+  }
+  
+  summary_tab
+}
