@@ -53,11 +53,6 @@ anc_data_processed_subset_2023<-read.csv(here::here("data/anc_data_processed07.c
       include.lowest = TRUE, right = FALSE
     ),
     anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
-    profession_group= case_when(
-    profession %in% c( "Teacher", "Company Employee", "Midwife") ~ "Employed",
-    profession %in% c("Undertaker", "Trader", "Seamstress", "Hair Dresser", "Fishmonger", "Farmer", "Decorator","Business Owner", "Caterer", "Student") ~ "Self-Employed",
-    TRUE ~ "NA"
-  )
   )
 
 # Table of age groups ----
@@ -77,12 +72,6 @@ profession_tab <- anc_data_processed_subset_2023 %>%
   dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
   dplyr::rename(var = profession)
 
-# Table of professions group ----
-profession_tab <- anc_data_processed_subset_2023 %>%
-  dplyr::count(profession_group) %>%
-  dplyr::arrange(desc(n)) %>%
-  dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
-  dplyr::rename(var = profession_group)
 
 # Table of detail professions group ----
 profession_tab <- anc_data_processed_subset_2023 %>%
@@ -343,7 +332,7 @@ anc_data_processed_subset_2023 |>
 
 
 ```{r age-structure-2, fig.align = "center", fig.height = 6, fig.width = 8}
-anc_data_recode |>
+anc_data_processed_subset_2023 |>
   dplyr::count(age_group) |>
   ggplot(mapping = aes(x = age_group, y = n)) +
   geom_col(fill = oxthema::get_oxford_colours("sky"), alpha = 0.8) +
@@ -387,11 +376,79 @@ boxplot(
 )
 ```
 
+#2023 BOXPLOT 
+```{r hb-boxplot, fig.align = "center", fig.height = 6, fig.width = 4}
+boxplot(
+  x = anc_data_processed_subset_2023$haemoglobin,
+  border = oxthema::get_oxford_colours("Oxford blue"),
+  col = oxthema::get_oxford_colours("sky"),
+  lwd = 1.5,
+  frame.plot = FALSE,
+  main = "Haemoglobin values distribution",
+  xlab = NULL, 
+  ylab = "Hb (g/L)"
+)
+
+#boxplot of age and anaemia status in 2023
+ggplot(anc_data_processed_subset_2023, aes(x = anaemia_status, y = age, fill = anaemia_status)) +
+  geom_boxplot() +
+  labs(title = "Comparison of Age by Anaemia Status in 2023", 
+       x = "Anaemia Status", y = "Age(year)") +
+  scale_fill_manual(values = c("True" = "red", "False" = "blue")) +
+  theme_minimal()
+
+#boxplot of haemoglobin and education
+ggplot(anc_data_processed_subset_2023, aes(x = education_level_summary, y =haemoglobin , fill = education_level_summary)) +
+  geom_boxplot() +
+  labs(title = "Comparison of haemoglobin level by education in 2023", 
+       x = "education level", y = "haemoglobin level(g/L)") +
+  scale_fill_manual(values = c("True" = "red", "False" = "blue")) +
+  theme_minimal()+
+ theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+#boxplot of haemoglobin and profession
+ggplot(anc_data_processed_subset_2023, aes(x = profession_summary, y =haemoglobin , fill = profession_summary)) +
+  geom_boxplot() +
+  labs(title = "Comparison of haemoglobin level by profession in 2023", 
+       x = "profession group", y = "haemoglobin level(g/L)") +
+  scale_fill_manual(values = c("True" = "red", "False" = "blue")) +
+  theme_minimal()+
+ theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+#boxplot of haemoglobin and maraital status
+ggplot(anc_data_processed_subset_2023, aes(x = marital_status, y =haemoglobin , fill = marital_status)) +
+  geom_boxplot() +
+  labs(title = "Comparison of haemoglobin level by marital status in 2023", 
+       x = "maraital status", y = "haemoglobin level(g/L)") +
+  scale_fill_manual(values = c("True" = "red", "False" = "blue")) +
+  theme_minimal()
+
+
+#boxplot of haemoglobin and sickle cell
+ggplot(anc_data_processed_subset_2023, aes(x = sickle_cell, y =haemoglobin , fill = sickle_cell)) +
+  geom_boxplot() +
+  labs(title = "Comparison of haemoglobin level by sickle cell in 2023", 
+       x = "sickle cell test result", y = "haemoglobin level(g/L)") +
+  scale_fill_manual(values = c("True" = "red", "False" = "blue")) +
+  theme_minimal()
+#boxplot of haemoglobin and malaria 
+ggplot(anc_data_processed_subset_2023, aes(x = malaria, y =haemoglobin , fill = malaria)) +
+  geom_boxplot() +
+  labs(title = "Comparison of haemoglobin level by malaria in 2023", 
+       x = "malaria test", y = "haemoglobin level(g/L)") +
+  scale_fill_manual(values = c("True" = "red", "False" = "blue")) +
+  theme_minimal()
+
+
+```
+
+
 ## Outcome variable and bivariate analysis
 
 ```{r bivariate-table}
 knitr::kable(
-  x = anc_data_summary_bivariate_table |>
+  x = anc_data_summary_bivariate_table_2023 |>
     dplyr::select(-var_set),
   col.names = c("", "", "")
 ) |>
