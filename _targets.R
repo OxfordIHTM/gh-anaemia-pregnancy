@@ -54,6 +54,12 @@ processing_targets <- tar_plan(
     command = create_anc_data_processed_csv(anc_data_processed),
     format = "file"
   ),
+  ### Create processed ANC data CSV ----
+  tar_target(
+    name = anc_data_processed07_csv,
+    command = create_anc_data_processed07_csv(anc_data_processed07),
+    format = "file"
+  ),
   ### Create processed ANC data metadata ----
   tar_target(
     name = anc_data_processed_metadata,

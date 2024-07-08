@@ -26,6 +26,7 @@ anc_data_processed_subset <- anc_data_processed %>%
     )
   )
 
+
 #only 2023 data
 anc_data_processed_subset_2023 <- anc_data_processed07 %>%
   filter(age != 1,year <2024) %>%
@@ -51,7 +52,103 @@ anc_data_processed_subset_2023 <- anc_data_processed07 %>%
     )
   )
 
+anc_data_processed_subset_2023 <- anc_data_processed07 %>%
+  filter(age != 1,year <2024) %>%
+  dplyr::mutate(
+    total_n = n(),
+    age_group = cut(
+      x = age,
+      breaks = c(-Inf, 15, 20, 25, 30, 35, 40, 45, Inf),
+      labels = c(
+        "under 15 years", "15 to 19 years", "20 to 24 years", "25 to 29 years", 
+        "30 to 34 years", "35 to 39, years", 
+        "40 to 44 years", "45 years and older"
+      ),
+      include.lowest = TRUE, right = FALSE
+    ),
+    anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
+    anaemia_category = case_when(
+      haemoglobin >= 11 & haemoglobin < 12 ~ "Mild Anaemia",
+      haemoglobin >= 8 & haemoglobin < 11 ~ "Moderate Anaemia",
+      haemoglobin < 8 ~ "Severe Anaemia",
+      haemoglobin >= 12 ~ "Non-anaemic",
+      TRUE ~ NA_character_
+    )
+  )
+# Table of age groups ----
+age_group_tab <- anc_data_processed_subset_2023 %>%
+  dplyr::count(age_group) %>%
+  dplyr::arrange(desc(n)) %>%
+  dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
+  dplyr::rename(var = age_group)
 
+
+## NOTE: Good to make a population pyramid or bar plot for age groups to show
+## distribution
+
+# Table of professions ----
+profession_tab <- anc_data_processed_subset_2023 %>%
+  dplyr::count(profession) %>%
+  dplyr::arrange(desc(n)) %>%
+  dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
+  dplyr::rename(var = profession)
+
+
+# Table of detail professions group ----
+profession_group_tab <- anc_data_processed_subset_2023 %>%
+  dplyr::count(profession_summary) %>%
+  dplyr::arrange(desc(n)) %>%
+  dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
+  dplyr::rename(var = profession_summary)
+
+# Education Level ---
+education_summary_tab <- anc_data_processed_subset_2023 %>%
+  dplyr::count(education_level_summary) %>%
+  dplyr::arrange(desc(n)) %>%
+  dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
+  dplyr::rename(var = education_level_summary)
+
+# Education Level ---
+education_tab <- anc_data_processed_subset_2023 %>%
+  dplyr::count(education_level) %>%
+  dplyr::arrange(desc(n)) %>%
+  dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
+  dplyr::rename(var = education_level)
+
+# Marital status ----
+marital_tab <- anc_data_processed_subset_2023 %>%
+  dplyr::count(marital_status) %>%
+  dplyr::arrange(desc(n)) %>%
+  dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
+  dplyr::rename(var = marital_status)
+
+# Location/neighbourhood ---
+address_tab <- anc_data_processed_subset_2023 %>%
+  dplyr::count(address) %>%
+  dplyr::arrange(desc(n)) %>%
+  dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
+  dplyr::rename(var = address)
+
+# Sickle cell status ----
+sickle_tab <- anc_data_processed_subset_2023 %>%
+  dplyr::count(sickle_cell) %>%
+  dplyr::arrange(desc(n)) %>%
+  dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
+  dplyr::rename(var = sickle_cell)
+
+# Malaria ----
+malaria_tab <- anc_data_processed_subset_2023 %>%
+  dplyr::count(malaria) %>%
+  dplyr::arrange(desc(n)) %>%
+  dplyr::mutate(prop = n / unique(anc_data_processed_subset_2023$total_n)) %>%
+  dplyr::rename(var = malaria)
+
+# Create overall summary table ----
+median_age_tab <- anc_data_processed_subset_2023 %>%
+  dplyr::summarise(
+    var = "median_age",
+    median_age = median(age, na.rm = TRUE)
+  )
 
 
 
@@ -119,9 +216,203 @@ anaemia_summary_2023 <- data.frame(
 )
 print(anaemia_summary_2023)
 
+#---------------------------------------------------------------------------------------------------------------------
+
+# anaemia status and age group
+anaemia_age_group_2023 <- anc_data_processed_subset_2023 %>%
+  group_by(anaemia_status, age_group) %>%
+  summarize(count = n()) %>%
+  ungroup() %>%
+  group_by(anaemia_status) %>%
+  mutate(percent = count / sum(count) * 100) %>%
+  ungroup()
+# long
+anaemia_age_group_2023_long <- anaemia_age_group_2023  %>%
+  pivot_longer(cols = c(count, percent), names_to = "measure", values_to = "value")
+
+age_group_2023_table <- anaemia_age_group_2023_long  %>%
+  pivot_wider(names_from = c(anaemia_status, measure), values_from = value)
+
+print(age_group_2023_table)
+write_xlsx(age_group_2023_table, "age_group.xlsx")
+
+# anaemia status and education group
+anaemia_education_group_2023 <- anc_data_processed_subset_2023 %>%
+  group_by(anaemia_status, education_level_summary) %>%
+  summarize(count = n()) %>%
+  ungroup() %>%
+  group_by(anaemia_status) %>%
+  mutate(percent = count / sum(count) * 100) %>%
+  ungroup()
+# long
+anaemia_education_group_2023_long <- anaemia_education_group_2023  %>%
+  pivot_longer(cols = c(count, percent), names_to = "measure", values_to = "value")
+
+education_group_2023_table <- anaemia_education_group_2023_long  %>%
+  pivot_wider(names_from = c(anaemia_status, measure), values_from = value)
 
 
+# anaemia status and profession group
+anaemia_profession_group_2023 <- anc_data_processed_subset_2023 %>%
+  group_by(anaemia_status, profession_summary) %>%
+  summarize(count = n()) %>%
+  ungroup() %>%
+  group_by(anaemia_status) %>%
+  mutate(percent = count / sum(count) * 100) %>%
+  ungroup()
+# long
+anaemia_profession_group_2023_long <- anaemia_profession_group_2023  %>%
+  pivot_longer(cols = c(count, percent), names_to = "measure", values_to = "value")
 
+profession_group_2023_table <- anaemia_profession_group_2023_long  %>%
+  pivot_wider(names_from = c(anaemia_status, measure), values_from = value)
+
+# anaemia status and profession group
+anaemia_profession_group_2023 <- anc_data_processed_subset_2023 %>%
+  group_by(anaemia_status, profession_summary) %>%
+  summarize(count = n()) %>%
+  ungroup() %>%
+  group_by(anaemia_status) %>%
+  mutate(percent = count / sum(count) * 100) %>%
+  ungroup()
+# long
+anaemia_profession_group_2023_long <- anaemia_profession_group_2023  %>%
+  pivot_longer(cols = c(count, percent), names_to = "measure", values_to = "value")
+
+profession_group_2023_table <- anaemia_profession_group_2023_long  %>%
+  pivot_wider(names_from = c(anaemia_status, measure), values_from = value)
+
+# anaemia status and location
+anaemia_location_2023 <- anc_data_processed_subset_2023 %>%
+  group_by(anaemia_status, address) %>%
+  summarize(count = n()) %>%
+  ungroup() %>%
+  group_by(anaemia_status) %>%
+  mutate(percent = count / sum(count) * 100) %>%
+  ungroup()
+# long
+anaemia_location_2023_long <- anaemia_location_2023  %>%
+  pivot_longer(cols = c(count, percent), names_to = "measure", values_to = "value")
+
+location_2023_table <- anaemia_location_2023_long  %>%
+  pivot_wider(names_from = c(anaemia_status, measure), values_from = value)
+
+
+# anaemia status and marital group
+anaemia_marital_2023 <- anc_data_processed_subset_2023 %>%
+  group_by(anaemia_status, marital_status) %>%
+  summarize(count = n()) %>%
+  ungroup() %>%
+  group_by(anaemia_status) %>%
+  mutate(percent = count / sum(count) * 100) %>%
+  ungroup()
+# long
+anaemia_marital_2023_long <- anaemia_marital_2023  %>%
+  pivot_longer(cols = c(count, percent), names_to = "measure", values_to = "value")
+
+marital_2023_table <- anaemia_marital_2023_long  %>%
+  pivot_wider(names_from = c(anaemia_status, measure), values_from = value)
+
+# anaemia status and sickle cell
+anaemia_sicklecell_2023 <- anc_data_processed_subset_2023 %>%
+  group_by(anaemia_status, sickle_cell) %>%
+  summarize(count = n()) %>%
+  ungroup() %>%
+  group_by(anaemia_status) %>%
+  mutate(percent = count / sum(count) * 100) %>%
+  ungroup()
+# long
+anaemia_sicklecell_2023_long <- anaemia_sicklecell_2023  %>%
+  pivot_longer(cols = c(count, percent), names_to = "measure", values_to = "value")
+
+sicklecell_2023_table <- anaemia_sicklecell_2023_long  %>%
+  pivot_wider(names_from = c(anaemia_status, measure), values_from = value)
+
+# anaemia status and malaria
+anaemia_malaria_2023 <- anc_data_processed_subset_2023 %>%
+  group_by(anaemia_status, malaria) %>%
+  summarize(count = n()) %>%
+  ungroup() %>%
+  group_by(anaemia_status) %>%
+  mutate(percent = count / sum(count) * 100) %>%
+  ungroup()
+# long
+anaemia_malaria_2023_long <- anaemia_malaria_2023  %>%
+  pivot_longer(cols = c(count, percent), names_to = "measure", values_to = "value")
+
+malaria_2023__table <- anaemia_malaria_2023_long  %>%
+  pivot_wider(names_from = c(anaemia_status, measure), values_from = value)
+
+
+# Create overall summary table ----
+median_age_tab <- anc_data_processed_subset_2023 %>%
+  dplyr::summarise(
+    var = "median_age",
+    median_age = median(age, na.rm = TRUE)
+  )
+overall_table <- bind_rows(
+  age_group_2023_table %>% mutate(Variable = "Age Group"),
+  marital_2023_table %>% mutate(Variable = "Marital Status"),
+  education_group_2023_table %>% mutate(Variable = "Education Level"),
+  profession_group_2023_table %>% mutate(Variable = "Profession"),
+  location_2023_table %>% mutate(Variable = "Location"),
+  sicklecell_2023_table %>% mutate(Variable = "Sickle Cell"),
+)
+print(overall_table)
+write_xlsx(overall_table, "overall.xlsx")
+
+# Print the table
+# Render the table in R Markdown
+knitr::kable(
+  x = overall_table |>
+    dplyr::select(-var_set),
+  col.names = c("", "")
+) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::pack_rows(
+    group_label = "Age",
+    start_row = 1, end_row = 1
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Age Group",
+    start_row = 2, end_row = 8
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Haemoglobin",
+    start_row = 9, end_row = 9
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Anaemia Status",
+    start_row = 10, end_row = 12
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Anaemia Category",
+    start_row = 13, end_row = 17
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Profession",
+    start_row = 18, end_row = 32
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Education Level",
+    start_row = 33, end_row = 38
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Marital Status",
+    start_row = 39, end_row = 41
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Location",
+    start_row = 42, end_row = 65
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Sickle Cell",
+    start_row = 66, end_row = 68
+  ) |>
+  kableExtra::pack_rows(
+    group_label = "Malaria",
+    start_row = 69, end_row = 70
+  )
 
 ###------------------------------------------------------------------------------------------------------------------
 
