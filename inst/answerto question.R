@@ -3,6 +3,7 @@
 
 source(here::here("packages.R"))
 
+
 ##all data
 anc_data_processed_subset <- anc_data_processed %>%
   filter(age != 1) %>%
@@ -52,29 +53,7 @@ anc_data_processed_subset_2023 <- anc_data_processed07 %>%
     )
   )
 
-anc_data_processed_subset_2023 <- anc_data_processed07 %>%
-  filter(age != 1,year <2024) %>%
-  dplyr::mutate(
-    total_n = n(),
-    age_group = cut(
-      x = age,
-      breaks = c(-Inf, 15, 20, 25, 30, 35, 40, 45, Inf),
-      labels = c(
-        "under 15 years", "15 to 19 years", "20 to 24 years", "25 to 29 years", 
-        "30 to 34 years", "35 to 39, years", 
-        "40 to 44 years", "45 years and older"
-      ),
-      include.lowest = TRUE, right = FALSE
-    ),
-    anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
-    anaemia_category = case_when(
-      haemoglobin >= 11 & haemoglobin < 12 ~ "Mild Anaemia",
-      haemoglobin >= 8 & haemoglobin < 11 ~ "Moderate Anaemia",
-      haemoglobin < 8 ~ "Severe Anaemia",
-      haemoglobin >= 12 ~ "Non-anaemic",
-      TRUE ~ NA_character_
-    )
-  )
+
 # Table of age groups ----
 age_group_tab <- anc_data_processed_subset_2023 %>%
   dplyr::count(age_group) %>%
@@ -359,6 +338,7 @@ overall_table <- bind_rows(
   sicklecell_2023_table %>% mutate(Variable = "Sickle Cell"),
 )
 print(overall_table)
+
 write_xlsx(overall_table, "overall.xlsx")
 
 # Print the table
