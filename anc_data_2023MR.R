@@ -1,5 +1,48 @@
-####only 2023 DATA SET###
-anc_data_processed07 <- read_csv("data/anc_data_processed07.csv")
+#### Section 1-data cleaning ####
+
+#### Load Data and Initial filtering ####
+originaldataset <- read_csv("data/anc_data_processed07.csv")
+data <- filter(originaldataset, age != 1, year == 2023, !is.na(haemoglobin))
+data <- mutate(data, Anaemic = haemoglobin < 11)
+
+#### Section 1 ####
+# Calculate the total count by education level
+
+total_by_education <- data %>%
+  filter(education_level %in% c("Senior High School", "Junior High School", "None", "Tertiary", "Primary")) %>%
+  group_by(education_level) %>%
+  summarise(Total = n(), .groups = 'drop')
+
+# Calculate the count and percentage of anaemic individuals by education level
+anaemic_by_education <- data %>%
+  filter(education_level %in% c("Senior High School", "Junior High School", "None", "Tertiary", "Primary"), Anaemic == TRUE) %>%
+  group_by(education_level) %>%
+  summarise(Anaemic_Count = n(), .groups = 'drop') %>%
+  left_join(total_by_education, by = "education_level") %>%
+  mutate(Anaemic_Percentage = (Anaemic_Count / Total) * 100)
+
+# Calculate the count and percentage of non-anaemic individuals by education level
+non_anaemic_by_education <- data %>%
+  filter(education_level %in% c("Senior High School", "Junior High School", "None", "Tertiary", "Primary"), Anaemic == FALSE) %>%
+  group_by(education_level) %>%
+  summarise(Non_Anaemic_Count = n(), .groups = 'drop') %>%
+  left_join(total_by_education, by = "education_level") %>%
+  mutate(Non_Anaemic_Percentage = (Non_Anaemic_Count / Total) * 100)
+
+# Combine the anaemic and non-anaemic data into one table
+final_table <- anaemic_by_education %>%
+  select(education_level, Anaemic_Count, Anaemic_Percentage) %>%
+  left_join(non_anaemic_by_education %>%
+              select(education_level, Non_Anaemic_Count, Non_Anaemic_Percentage), by = "education_level") %>%
+  mutate(Anaemic = paste0(Anaemic_Count, " (", round(Anaemic_Percentage, 1), "%)"),
+         Non_Anaemic = paste0(Non_Anaemic_Count, " (", round(Non_Anaemic_Percentage, 1), "%)")) %>%
+  select(education_level, Anaemic, Non_Anaemic)
+
+# Convert to data frame
+table1 <- as.data.frame(final_table)
+colnames(table1) <- c("Education Level", "Anaemia (%)", "Non Anaemia (%)")
+
+
 #only 2023 data
 anc_data_processed_subset_2023 <- anc_data_processed07 %>%
   filter(age != 1,year <2024) %>%
@@ -26,10 +69,12 @@ anc_data_processed_subset_2023 <- anc_data_processed07 %>%
   )
 
 
-  
 
+
+  
 ##-----------------------------------------------------------------------------------------------------------------------##
-#### Mean, Standard Deviation,Median,Interquartile Range, IQR####
+####mean, SD,Median,IQR####
+# Mean, Standard Deviation,Median,Interquartile Range, IQR
 
 
 
@@ -51,6 +96,7 @@ IQR(anaemia_data_2023$age)
 #Shapiro-Wilk test
 shapiro.test(anaemia_data_2023$age)
 
+#### lalala ####
 
 #---in nonanaemia group
 nonanaemia_data_2023<-anc_data_processed_subset_2023%>% filter(haemoglobin>=11)
@@ -309,7 +355,7 @@ median_age_tab <- anc_data_processed_subset_2023 %>%
 
 ##--------------------------------------------------------------------------
 
-####95%CI
+#95%CI
 #all
 all_age_ci <- t.test(anc_data_processed_subset_2023$age)
 cat("95% Confidence Interval for Age using t.test: [", all_age_ci$conf.int[1], ", ", all_age_ci$conf.int[2], "]\n")
@@ -335,7 +381,7 @@ cat("95% Confidence Interval for Age using t.test: [", nonan_hb_ci$conf.int[1], 
 
 
 ###---------------------------------------------------------------------------------------------------------------
-####Analysis
+#Analysis
 #linaer 
 linear_model <- lm(haemoglobin ~ age, data = anc_data_processed_subset_2023)
 # Summarize the model
@@ -393,7 +439,7 @@ print(mal_cross_tab)
 mal_chi_square_test <- chisq.test(mal_cross_tab)
 print(mal_chi_square_test)
 ###---------------------------------------------------------------------------------------------------------------
-####Visualzation
+#Visualzation
 # education
 ggplot(anc_data_processed_subset_2023, aes(x = education_level_summary, fill = anaemia_status)) +
   geom_bar(position = "fill") +
@@ -405,20 +451,6 @@ ggplot(anc_data_processed_subset_2023, aes(x = education_level_summary, fill = a
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 # profession
-ggplot(anc_data_processed_subset_2023, aes(x = profession_summary, fill = anaemia_status)) +
-  geom_bar(position = "fill") +
-  labs(title = "Proportion of Anaemia Status by Profession",
-       x = "Profession",
-       y = "Proportion",
-       fill = "Anaemia Status") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-anc_data_processed_subset_2023 <- anc_data_processed_subset_2023 %>%
-  mutate(profession_summary2 = ifelse(is.na(profession_summary2), "No Data", profession_summary2),
-         anaemia_status = ifelse(is.na(anaemia_status), "No Data", anaemia_status))
-
-# Create the plot with modified labels
 ggplot(anc_data_processed_subset_2023, aes(x = profession_summary2, fill = anaemia_status)) +
   geom_bar(position = "fill") +
   labs(title = "Proportion of Anaemia Status by Profession",
@@ -426,10 +458,8 @@ ggplot(anc_data_processed_subset_2023, aes(x = profession_summary2, fill = anaem
        y = "Proportion",
        fill = "Anaemia Status") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_x_discrete(labels = c("No Data" = "No Data")) +  # Adjust labels for x-axis if necessary
-  scale_fill_discrete(labels = c("No Data" = "No Data"))  # Adjust labels for fill legend
-
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+#
 # distance 
 ggplot(anc_data_processed_subset_2023, aes(x = address_group, fill = anaemia_status)) +
   geom_bar(position = "fill") +
@@ -615,35 +645,12 @@ anc_data_processed_subset_2023 |>
 #boxplot
 
 #profession and Hb
-levels(anc_data_processed_subset_2023$profession_summary) <- c("Employed", "Self-employed (Formal)", "Self-employed (Informal)", "No Data")
-ggplot(anc_data_processed_subset_2023, aes(x = profession_summary, y = haemoglobin, fill = profession_summary)) +
+levels(anc_data_processed_subset_2023$profession_summary2) <- c("Employed", "Self-employed (Formal)", "Self-employed (Informal)", "No Data")
+ggplot(anc_data_processed_subset_2023, aes(x = profession_summary2, y = haemoglobin, fill = profession_summary2)) +
   geom_boxplot() +
   labs(title = "Boxplot of Haemoglobin Levels by Profession",
        x = "Profession",
        y = "Haemoglobin Level (g/dL)") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_brewer(palette = "Set3")
-
-
-
-# Replace NA values with "No data"
-anc_data_processed_subset_2023 <- anc_data_processed_subset_2023 %>%
-  mutate(profession_summary = ifelse(is.na(profession_summary), "No Data", profession_summary),
-         anaemia_status = ifelse(is.na(anaemia_status), "No Data", anaemia_status))
-
-# Update factor levels to change the labels
-anc_data_processed_subset_2023$profession_summary <- factor(anc_data_processed_subset_2023$profession_summary2,
-                                                            levels = c("Employed", "Self-employed with formal training", "Self-employed with no formal training", "None", "N/A"),
-                                                            labels = c("Employed", "Self-employed (Formal)", "Self-employed (Informal)", "No Profession", "No data"))
-
-# Create the plot with modified labels
-ggplot(anc_data_processed_subset_2023, aes(x = profession_summary, y = haemoglobin, fill = profession_summary)) +
-  geom_boxplot() +
-  labs(title = "Boxplot of Haemoglobin Levels by Profession",
-       x = "Profession",
-       y = "Haemoglobin Level (g/dL)",
-       fill = "Profession") +  # Change legend title
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set3")
@@ -653,8 +660,7 @@ ggplot(anc_data_processed_subset_2023, aes(x = education_level_summary, y = haem
   geom_boxplot() +
   labs(title = "Boxplot of Haemoglobin Levels by Education",
        x = "Education",
-       y = "Haemoglobin Level (g/dL)",
-       fill= "Eduction") +
+       y = "Haemoglobin Level (g/dL)") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set3")
@@ -664,8 +670,7 @@ ggplot(anc_data_processed_subset_2023, aes(x = address_group, y = haemoglobin, f
   geom_boxplot() +
   labs(title = "Boxplot of Haemoglobin Levels by Distance",
        x = "Location(Distance)",
-       y = "Haemoglobin Level (g/dL)",
-       fill= "Location")  +
+       y = "Haemoglobin Level (g/dL)") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set3")
@@ -676,8 +681,7 @@ ggplot(anc_data_processed_subset_2023, aes(x = marital_status, y = haemoglobin, 
   geom_boxplot() +
   labs(title = "Boxplot of Haemoglobin Levels by Marital status",
        x = "Marital Status",
-       y = "Haemoglobin Level (g/dL)",
-       fill= "Marital Status") +
+       y = "Haemoglobin Level (g/dL)") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set3")
@@ -687,8 +691,7 @@ ggplot(anc_data_processed_subset_2023, aes(x = sickle_cell, y = haemoglobin, fil
   geom_boxplot() +
   labs(title = "Boxplot of Haemoglobin Levels by Sickle Cell Test result",
        x = "Sickle Cell Test Result",
-       y = "Haemoglobin Level (g/dL)",
-       fill= "Sickle Cell Test result") +
+       y = "Haemoglobin Level (g/dL)") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set3")
@@ -699,8 +702,7 @@ ggplot(anc_data_processed_subset_2023, aes(x = malaria, y = haemoglobin, fill = 
   geom_boxplot() +
   labs(title = "Boxplot of Haemoglobin Levels by Malaria Test result",
        x = "Malaria Test Result",
-       y = "Haemoglobin Level (g/dL)",
-       fill= "Malaria Test Result ") +
+       y = "Haemoglobin Level (g/dL)") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set3")
@@ -724,7 +726,7 @@ print(meanci_by_ed)
 
 #profession
 meanci_by_profession <- anc_data_processed_subset_2023 %>%
-  group_by(profession_summary) %>%
+  group_by(profession_summary2) %>%
   summarise(
     mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
     sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),

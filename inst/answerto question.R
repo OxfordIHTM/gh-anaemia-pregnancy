@@ -45,10 +45,10 @@ anc_data_processed_subset_2023 <- anc_data_processed07 %>%
     ),
     anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
     anaemia_category = case_when(
-      haemoglobin >= 11 & haemoglobin < 12 ~ "Mild Anaemia",
-      haemoglobin >= 8 & haemoglobin < 11 ~ "Moderate Anaemia",
-      haemoglobin < 8 ~ "Severe Anaemia",
-      haemoglobin >= 12 ~ "Non-anaemic",
+      haemoglobin >= 10 & haemoglobin < 11 ~ "Mild Anaemia",
+      haemoglobin >= 7 & haemoglobin < 10 ~ "Moderate Anaemia",
+      haemoglobin < 7 ~ "Severe Anaemia",
+      haemoglobin >= 11 ~ "Non-anaemic",
       TRUE ~ NA_character_
     )
   )

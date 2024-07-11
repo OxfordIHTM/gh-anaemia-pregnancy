@@ -120,15 +120,17 @@ knitr::kable(
 knitr::kable(
   x = rbind(
     age_group_tab,
-    marital_tab,
     education_tab,
     profession_tab,
     address_tab,
-    sickle_tab
+    marital_tab,
+    sickle_tab,
+    malaria_tab
   ),
   col.names = c("Variable", "n", "%")
 ) |>
   kableExtra::kable_paper()
+
 ```
 
 
