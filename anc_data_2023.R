@@ -15,6 +15,11 @@ anc_data_processed_subset_2023 <- anc_data_processed07 %>%
       ),
       include.lowest = TRUE, right = FALSE
     ),
+    profession_group= case_when(
+      profession %in% c( "Teacher", "Company Employee", "Midwife") ~ "Employed",
+      profession %in% c("Undertaker", "Trader", "Seamstress", "Hair Dresser", "Fishmonger", "Farmer", "Decorator", "Caterer", "Business Owner","Student") ~ "Self-Employed",
+      TRUE ~ "NA"
+      ),
     anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
     anaemia_category = case_when(
       haemoglobin >= 10 & haemoglobin < 11 ~ "Mild Anaemia",
@@ -31,7 +36,15 @@ anc_data_processed_subset_2023 <- anc_data_processed07 %>%
 ##-----------------------------------------------------------------------------------------------------------------------##
 #### Mean, Standard Deviation,Median,Interquartile Range, IQR####
 
+overall_stats <- anc_data_processed_subset_2023 %>%
+  summarize(
+    mean_age = mean(age, na.rm = TRUE),
+    youngest_age = min(age, na.rm = TRUE),
+    oldest_age = max(age, na.rm = TRUE)
+  )
 
+print("Overall Age Statistics:")
+print(overall_stats)
 
 #age mean, Standard Deviation,Median,Interquartile Range, IQR
 mean(anc_data_processed_subset_2023$age)
@@ -48,8 +61,23 @@ mean(anaemia_data_2023$age)
 sd(anaemia_data_2023$age)
 median(anaemia_data_2023$age)
 IQR(anaemia_data_2023$age)
+
 #Shapiro-Wilk test
 shapiro.test(anaemia_data_2023$age)
+
+group_astats <- anaemia_data_2023 %>%
+  summarize(
+    mean_age = mean(age, na.rm = TRUE),
+    youngest_age = min(age, na.rm = TRUE),
+    oldest_age = max(age, na.rm = TRUE)
+  )
+
+print("Age Statistics by Anaemia Status:")
+print(group_astats)
+
+
+
+
 
 
 #---in nonanaemia group
@@ -62,14 +90,32 @@ IQR(nonanaemia_data_2023$age)
 shapiro.test(nonanaemia_data_2023$age)
 
 
+group_nstats <- nonanaemia_data_2023 %>%
+  summarize(
+    mean_age = mean(age, na.rm = TRUE),
+    youngest_age = min(age, na.rm = TRUE),
+    oldest_age = max(age, na.rm = TRUE)
+  )
+
+print("Age Statistics by Anaemia Status:")
+print(group_nstats)
+
+
+
 
 #hb mean, Standard Deviation,Median,Interquartile Range, IQR
 mean(anc_data_processed_subset_2023$haemoglobin,na.rm=TRUE)
 sd(anc_data_processed_subset_2023$haemoglobin,na.rm=TRUE)
 median(anc_data_processed_subset_2023$haemoglobin,na.rm=TRUE)
+min(anc_data_processed_subset_2023$haemoglobin,na.rm=TRUE)
+max(anc_data_processed_subset_2023$haemoglobin,na.rm=TRUE)
 IQR(anc_data_processed_subset_2023$haemoglobin,na.rm=TRUE)
+median(anc_data_processed_subset_2023$haemoglobin,na.rm=TRUE)
+
 #Shapiro-Wilk test
 shapiro.test(anc_data_processed_subset_2023$haemoglobin)
+
+
 
 
 
@@ -106,7 +152,7 @@ shapiro.test(anc_data_processed_subset_2023$age)
 
 
 ##-----------------------------------------------------------------------------------------------------##
-
+####anaemia status and different varable####
 # anaemia status and age group
 anaemia_age_group_2023 <- anc_data_processed_subset_2023 %>%
   group_by(anaemia_status, age_group) %>%
@@ -307,9 +353,8 @@ median_age_tab <- anc_data_processed_subset_2023 %>%
   )
 
 
-##--------------------------------------------------------------------------
-
-####95%CI
+#--------------------------------------------------------------------------
+####95%CI####
 #all
 all_age_ci <- t.test(anc_data_processed_subset_2023$age)
 cat("95% Confidence Interval for Age using t.test: [", all_age_ci$conf.int[1], ", ", all_age_ci$conf.int[2], "]\n")
@@ -335,7 +380,7 @@ cat("95% Confidence Interval for Age using t.test: [", nonan_hb_ci$conf.int[1], 
 
 
 ###---------------------------------------------------------------------------------------------------------------
-####Analysis
+####Analysis:linear,chi-square####
 #linaer 
 linear_model <- lm(haemoglobin ~ age, data = anc_data_processed_subset_2023)
 # Summarize the model
@@ -365,12 +410,32 @@ print(po_cross_tab)
 po_chi_square_test <- chisq.test(po_cross_tab)
 print(po_chi_square_test)
 
+#location summary3  #p=0.0393 X-squared = 8.9179, df = 3, p-value = 0.0304
+pro_cross_tab <- table(anc_data_processed_subset_2023$profession_group, anc_data_processed_subset_2023$anaemia_status)
+print(pro_cross_tab)
+pro_chi_square_test <- chisq.test(pro_cross_tab)
+print(pro_chi_square_test)
+
+
 
 #location summary
 lo_cross_tab <- table(anc_data_processed_subset_2023$address_group, anc_data_processed_subset_2023$anaemia_status)
 print(lo_cross_tab)
 lo_chi_square_test <- chisq.test(lo_cross_tab)
 print(lo_chi_square_test)
+#location summary3  #p=0.0393 X-squared = 8.9179, df = 3, p-value = 0.0304
+lo_cross_tab <- table(anc_data_processed_subset_2023$address_group3, anc_data_processed_subset_2023$anaemia_status)
+print(lo_cross_tab)
+lo_chi_square_test <- chisq.test(lo_cross_tab)
+print(lo_chi_square_test)
+
+anc_data_processed_subset_2023$anaemia_status <- as.factor(ifelse(anc_data_processed_subset_2023$anaemia_status == "Yes", 1, 0))
+#logical regression
+model <- glm(anaemia_status ~ address_group3, data = anc_data_processed_subset_2023, family = binomial)
+# Step 4: Extract coefficients
+coefficients <- summary(model)$coefficients
+
+
 
 
 
@@ -393,7 +458,7 @@ print(mal_cross_tab)
 mal_chi_square_test <- chisq.test(mal_cross_tab)
 print(mal_chi_square_test)
 ###---------------------------------------------------------------------------------------------------------------
-####Visualzation
+####Visualzation####
 # education
 ggplot(anc_data_processed_subset_2023, aes(x = education_level_summary, fill = anaemia_status)) +
   geom_bar(position = "fill") +
@@ -481,7 +546,7 @@ print(spearman_cor)
 
 
 ###-----------------------------------------------------------------------------------------------------
-
+####all varible summary table####
 # Age group summary
 ag_cross_tab <- table(anc_data_processed_subset_2023$age_group, anc_data_processed_subset_2023$anaemia_status)
 ag_chi_square_test <- chisq.test(ag_cross_tab)
@@ -565,9 +630,7 @@ combined_results <- bind_rows(
 
 print(combined_results)
 ##-----------------------------------------------------------------------------------------------------------------------------
-
-
-
+#### histogram####
 #age distribution histogram
 anc_data_processed_subset_2023 |>
   dplyr::filter(!is.na(anaemia_status)) |>
@@ -612,7 +675,7 @@ anc_data_processed_subset_2023 |>
   ) + 
   oxthema::theme_oxford(grid = "Yy")
 ##------------------------------------------------------------------------------------------
-#boxplot
+####boxplot###3
 
 #profession and Hb
 levels(anc_data_processed_subset_2023$profession_summary) <- c("Employed", "Self-employed (Formal)", "Self-employed (Informal)", "No Data")
