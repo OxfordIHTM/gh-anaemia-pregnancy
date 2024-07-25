@@ -1,5 +1,5 @@
 ####only 2023 DATA SET###
-anc_data_processed07 <- read_csv("data/anc_data_processed07.csv")
+
 #only 2023 data
 anc_data_processed_subset_2023 <- anc_data_processed07 %>%
   filter(age != 1,year <2024) %>%
@@ -20,6 +20,12 @@ anc_data_processed_subset_2023 <- anc_data_processed07 %>%
       profession %in% c("Undertaker", "Trader", "Seamstress", "Hair Dresser", "Fishmonger", "Farmer", "Decorator", "Caterer", "Business Owner","Student") ~ "Self-Employed",
       TRUE ~ "NA"
       ),
+    location_group= case_when(
+      address %in% c( "Makassium","Saltpond Zongo") ~ "Urban",
+      address %in% c( "Anomabo", "Biriwa", "Abandze", "Yamoransa","Kormantse","Ekon") ~ "Semi-Urban",
+      address %in% c("Amoanda","Buranamoah","Moree","Asafora", "Aketekyiwa","Egyirefa","Pomasi(Pomase)", "Waakrom", "Afrago Junction", "Amissakrom", "Egyierefa","Insanfo(NSANFO)") ~ "Rural Town",
+      TRUE ~ "NA"
+    ),
     anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
     anaemia_category = case_when(
       haemoglobin >= 10 & haemoglobin < 11 ~ "Mild Anaemia",
@@ -147,8 +153,84 @@ IQR(anc_data_processed_subset_2023$age)
 #Shapiro-Wilk test
 shapiro.test(anc_data_processed_subset_2023$age)
 
+####variable summary####
+# Calculate the number of people with different education levels
+education_counts <- table(anc_data_processed_subset_2023$education_level)
+print(education_counts)
+
+# Calculate the percentage of people with different education levels
+education_percentages <- prop.table(education_counts) * 100
+
+# Combine counts and percentages into a single table
+education_summary <- data.frame(
+  Education_Level = names(education_counts),
+  Count_and_Percentage = paste(education_counts, "(", round(education_percentages, 2), "%)", sep = "")
+)
+
+print(education_summary)
+
+# Calculate the number of people in each profession group
+profession_counts <- table(anc_data_processed_subset_2023$profession_summary1)
+print(profession_counts)
+profession_percentages <- prop.table(profession_counts) * 100
+profession_summary <- data.frame(
+  Profession = names(profession_counts),
+  Count_and_Percentage = paste(profession_counts, "(", round(profession_percentages, 2), "%)", sep = "")
+)
+print(profession_summary)
+
+# Calculate the number of people in each profession
+profession_c <- table(anc_data_processed_subset_2023$profession)
+print(profession_c)
+profession_per <- prop.table(profession_c) * 100
+profession <- data.frame(
+  Profession = names(profession_c),
+  Count_and_Percentage = paste(profession_c, "(", round(profession_per, 2), "%)", sep = "")
+)
+print(profession)
+
+# Calculate the number of people in each location group
+location_counts <- table(anc_data_processed_subset_2023$location_group)
+print(location_counts)
+location_percentages <- prop.table(location_counts) * 100
+location_summary <- data.frame(
+  Location_Group = names(location_counts),
+  Count_and_Percentage = paste(location_counts, "(", round(location_percentages, 2), "%)", sep = "")
+)
+print(location_summary)
+
+# Calculate the number of people in each location 
+address_counts <- table(anc_data_processed_subset_2023$address)
+print(address_counts)
+address_percentages <- prop.table(address_counts) * 100
+address_summary <- data.frame(
+  Address_Group = names(address_counts),
+  Count_and_Percentage = paste(address_counts, "(", round(address_percentages, 2), "%)", sep = "")
+)
+print(address_summary)
 
 
+# Calculate the number of people in each marital status category
+marital_counts <- table(anc_data_processed_subset_2023$marital_status)
+print(marital_counts)
+marital_percentages <- prop.table(marital_counts) * 100
+marital_summary <- data.frame(
+  Marital_Status = names(marital_counts),
+  Count_and_Percentage = paste(marital_counts, "(", round(marital_percentages, 2), "%)", sep = "")
+)
+
+print(marital_summary)
+
+# Calculate the number of people in sickle cell
+sicklecell_counts <- table(anc_data_processed_subset_2023$sickle_cell)
+print(sicklecell_counts)
+sicklecell_percentages <- prop.table(sicklecell_counts) * 100
+sicklecell_summary <- data.frame(
+  sicklecell = names(sicklecell_counts),
+  Count_and_Percentage = paste(sicklecell_counts, "(", round(sicklecell_percentages, 2), "%)", sep = "")
+)
+
+print(sicklecell_summary)
 
 
 ##-----------------------------------------------------------------------------------------------------##
@@ -191,7 +273,7 @@ anaemia_education_group_2023_long <- anaemia_education_group_2023  %>%
 education_group_2023_table <- anaemia_education_group_2023_long  %>%
   pivot_wider(names_from = c(anaemia_status, measure), values_from = value)
 print(education_group_2023_table)
-write_xlsx(education_group_2023_table, "education_group.xlsx")
+
 
 
 
@@ -214,14 +296,16 @@ print(education_2023_table)
 write_xlsx(education_2023_table, "education.xlsx")
 
 
-# anaemia status and profession group
 anaemia_profession_group_2023 <- anc_data_processed_subset_2023 %>%
-  group_by(anaemia_status, profession_summary) %>%
-  summarize(count = n()) %>%
-  ungroup() %>%
+  filter(!is.na(anaemia_status) & !is.na(profession_summary1)) %>%  # 去除NA值
+  group_by(anaemia_status, profession_summary1) %>%
+  summarize(count = n(), .groups = 'drop') %>%  # 使用.drop來避免分組信息被保留
   group_by(anaemia_status) %>%
   mutate(percent = count / sum(count) * 100) %>%
   ungroup()
+
+# 檢查結果
+print(anaemia_profession_group_2023)
 # 
 anaemia_profession_group_2023_long <- anaemia_profession_group_2023  %>%
   pivot_longer(cols = c(count, percent), names_to = "measure", values_to = "value")
@@ -229,7 +313,7 @@ anaemia_profession_group_2023_long <- anaemia_profession_group_2023  %>%
 profession_group_2023_table <- anaemia_profession_group_2023_long  %>%
   pivot_wider(names_from = c(anaemia_status, measure), values_from = value)
 print(profession_group_2023_table)
-write_xlsx(profession_group_2023_table, "profession_group.xlsx")
+
 
 
 # anaemia status and profession 
@@ -246,13 +330,13 @@ anaemia_profession_2023_long <- anaemia_profession_2023  %>%
 profession_2023_table <- anaemia_profession_2023_long  %>%
   pivot_wider(names_from = c(anaemia_status, measure), values_from = value)
 print(profession_2023_table)
-write_xlsx(profession_2023_table, "profession.xlsx")
+
 
 
 
 # anaemia status and location summary
 anaemia_location_group_2023 <- anc_data_processed_subset_2023 %>%
-  group_by(anaemia_status, address_group) %>%
+  group_by(anaemia_status, location_group) %>%
   summarize(count = n()) %>%
   ungroup() %>%
   group_by(anaemia_status) %>%
@@ -265,25 +349,27 @@ location_group_2023_table <- anaemia_location_group_2023_long  %>%
   pivot_wider(names_from = c(anaemia_status, measure), values_from = value)
 print(location_group_2023_table)
 
-write_xlsx(location_group_2023_table, "location_group.xlsx")
 
 
-# anaemia status and location
+# Calculate counts and percentages
 anaemia_location_2023 <- anc_data_processed_subset_2023 %>%
   group_by(anaemia_status, address) %>%
-  summarize(count = n()) %>%
-  ungroup() %>%
+  summarize(count = n(), .groups = 'drop') %>%
   group_by(anaemia_status) %>%
   mutate(percent = count / sum(count) * 100) %>%
   ungroup()
-# long
-anaemia_location_2023_long <- anaemia_location_2023  %>%
-  pivot_longer(cols = c(count, percent), names_to = "measure", values_to = "value")
-location_2023_table <- anaemia_location_2023_long  %>%
-  pivot_wider(names_from = c(anaemia_status, measure), values_from = value)
+
+# Combine count and percent into a single column
+anaemia_location_2023 <- anaemia_location_2023 %>%
+  mutate(count_and_percent = paste(count, "(", round(percent, 2), "%)", sep = ""))
+
+# Create the final table
+location_2023_table <- anaemia_location_2023 %>%
+  select(address, anaemia_status, count_and_percent) %>%
+  pivot_wider(names_from = anaemia_status, values_from = count_and_percent)
 
 print(location_2023_table)
-write_xlsx(location_2023_table, "location.xlsx")
+
 
 
 
@@ -392,6 +478,7 @@ print(t_test)
 wilcox_test <- wilcox.test(age ~ anaemia_status, data = anc_data_processed_subset_2023)
 print(wilcox_test)
 #chi square test
+####summary of bivariate anaylisis####
 #age group summary
 ag_cross_tab <- table(anc_data_processed_subset_2023$age_group, anc_data_processed_subset_2023$anaemia_status)
 print(ag_cross_tab)
@@ -411,10 +498,27 @@ po_chi_square_test <- chisq.test(po_cross_tab)
 print(po_chi_square_test)
 
 #location summary3  #p=0.0393 X-squared = 8.9179, df = 3, p-value = 0.0304
-pro_cross_tab <- table(anc_data_processed_subset_2023$profession_group, anc_data_processed_subset_2023$anaemia_status)
+pro_cross_tab <- table(anc_data_processed_subset_2023$address_group3, anc_data_processed_subset_2023$anaemia_status)
 print(pro_cross_tab)
 pro_chi_square_test <- chisq.test(pro_cross_tab)
 print(pro_chi_square_test)
+
+#location town 
+# Create the contingency table
+lot_cross_tab <- table(anc_data_processed_subset_2023$location_group, anc_data_processed_subset_2023$anaemia_status)
+print(lot_cross_tab)
+
+# Perform the chi-square test
+lot_chi_square_test <- chisq.test(lot_cross_tab)
+print(lot_chi_square_test)
+
+# Compute the percentage for each cell
+lot_cross_tab_percentage <- prop.table(lot_cross_tab, margin = 1) * 100
+print(lot_cross_tab_percentage)
+
+# Combine the count and percentage into a single table for easier interpretation
+lot_cross_tab_combined <- cbind(pro_cross_tab, round(lot_cross_tab_percentage, 2))
+print(lot_cross_tab_combined)
 
 
 
@@ -546,86 +650,118 @@ print(spearman_cor)
 
 
 ###-----------------------------------------------------------------------------------------------------
-####all varible summary table####
-# Age group summary
-ag_cross_tab <- table(anc_data_processed_subset_2023$age_group, anc_data_processed_subset_2023$anaemia_status)
-ag_chi_square_test <- chisq.test(ag_cross_tab)
-ag_result <- data.frame(
+####power####
+calculate_power <- function(observed_table, chi_square_statistic, df) {
+  n <- sum(observed_table)
+  w <- sqrt(chi_square_statistic / n)
+  power_result <- pwr.chisq.test(w = w, N = n, df = df, sig.level = 0.05)
+  return(power_result$power)
+}
+age_anaemia_table <- table(anc_data_processed_subset_2023$age_group, anc_data_processed_subset_2023$anaemia_status)
+
+# Perform the chi-square test
+age_anaemia_chi_square <- chisq.test(age_anaemia_table)
+
+# Calculate percentages
+age_anaemia_percentages <- prop.table(age_anaemia_table, margin = 1) * 100
+
+# Combine counts and percentages into a single table
+age_anaemia_summary <- as.data.frame.matrix(age_anaemia_table)
+age_anaemia_summary$Age_Group <- rownames(age_anaemia_summary)
+rownames(age_anaemia_summary) <- NULL
+
+# Combine counts and percentages into a single column
+for (col in colnames(age_anaemia_table)) {
+  age_anaemia_summary[[col]] <- paste0(age_anaemia_summary[[col]], " (", round(age_anaemia_percentages[, col], 2), "%)")
+}
+
+# Reorder columns to put Age_Group first
+age_anaemia_summary <- age_anaemia_summary %>%
+  select(Age_Group, everything())
+
+# Print the summary table
+print(age_anaemia_summary)
+
+# Print the chi-square test results
+age_anaemia_test_result <- data.frame(
   Variable = "Age Group",
-  Chi_Square = ag_chi_square_test$statistic,
-  DF = ag_chi_square_test$parameter,
-  P_Value = ag_chi_square_test$p.value
+  Chi_Square = age_anaemia_chi_square$statistic,
+  DF = age_anaemia_chi_square$parameter,
+  P_Value = age_anaemia_chi_square$p.value,
+  stringsAsFactors = FALSE
 )
+
+print(age_anaemia_test_result)
 
 # Education summary
 ed_cross_tab <- table(anc_data_processed_subset_2023$education_level_summary, anc_data_processed_subset_2023$anaemia_status)
 ed_chi_square_test <- chisq.test(ed_cross_tab)
+ed_power <- calculate_power(ed_cross_tab, ed_chi_square_test$statistic, ed_chi_square_test$parameter)
 ed_result <- data.frame(
   Variable = "Education Level",
   Chi_Square = ed_chi_square_test$statistic,
   DF = ed_chi_square_test$parameter,
-  P_Value = ed_chi_square_test$p.value
+  P_Value = ed_chi_square_test$p.value,
+  Power = ed_power
 )
 
 # Profession summary
-po_cross_tab <- table(anc_data_processed_subset_2023$profession_summary, anc_data_processed_subset_2023$anaemia_status)
+po_cross_tab <- table(anc_data_processed_subset_2023$profession_summary1, anc_data_processed_subset_2023$anaemia_status)
 po_chi_square_test <- chisq.test(po_cross_tab)
+po_power <- calculate_power(po_cross_tab, po_chi_square_test$statistic, po_chi_square_test$parameter)
 po_result <- data.frame(
   Variable = "Profession",
   Chi_Square = po_chi_square_test$statistic,
   DF = po_chi_square_test$parameter,
-  P_Value = po_chi_square_test$p.value
+  P_Value = po_chi_square_test$p.value,
+  Power = po_power
 )
 
 # Location summary
-lo_cross_tab <- table(anc_data_processed_subset_2023$address_group, anc_data_processed_subset_2023$anaemia_status)
+lo_cross_tab <- table(anc_data_processed_subset_2023$location_group, anc_data_processed_subset_2023$anaemia_status)
 lo_chi_square_test <- chisq.test(lo_cross_tab)
+lo_power <- calculate_power(lo_cross_tab, lo_chi_square_test$statistic, lo_chi_square_test$parameter)
 lo_result <- data.frame(
   Variable = "Location",
   Chi_Square = lo_chi_square_test$statistic,
   DF = lo_chi_square_test$parameter,
-  P_Value = lo_chi_square_test$p.value
+  P_Value = lo_chi_square_test$p.value,
+  Power = lo_power
 )
 
 # Marital summary
 ma_cross_tab <- table(anc_data_processed_subset_2023$marital_status, anc_data_processed_subset_2023$anaemia_status)
 ma_chi_square_test <- chisq.test(ma_cross_tab)
+ma_power <- calculate_power(ma_cross_tab, ma_chi_square_test$statistic, ma_chi_square_test$parameter)
 ma_result <- data.frame(
   Variable = "Marital Status",
   Chi_Square = ma_chi_square_test$statistic,
   DF = ma_chi_square_test$parameter,
-  P_Value = ma_chi_square_test$p.value
+  P_Value = ma_chi_square_test$p.value,
+  Power = ma_power
 )
 
 # Sickle cell summary
 si_cross_tab <- table(anc_data_processed_subset_2023$sickle_cell, anc_data_processed_subset_2023$anaemia_status)
 si_chi_square_test <- chisq.test(si_cross_tab)
+si_power <- calculate_power(si_cross_tab, si_chi_square_test$statistic, si_chi_square_test$parameter)
 si_result <- data.frame(
   Variable = "Sickle Cell",
   Chi_Square = si_chi_square_test$statistic,
   DF = si_chi_square_test$parameter,
-  P_Value = si_chi_square_test$p.value
+  P_Value = si_chi_square_test$p.value,
+  Power = si_power
 )
 
-# Malaria summary
-mal_cross_tab <- table(anc_data_processed_subset_2023$malaria, anc_data_processed_subset_2023$anaemia_status)
-mal_chi_square_test <- chisq.test(mal_cross_tab)
-mal_result <- data.frame(
-  Variable = "Malaria",
-  Chi_Square = mal_chi_square_test$statistic,
-  DF = mal_chi_square_test$parameter,
-  P_Value = mal_chi_square_test$p.value
-)
 
-# 
+
+# Combine results
 combined_results <- bind_rows(
-  ag_result,
   ed_result,
   po_result,
   lo_result,
   ma_result,
   si_result,
-  mal_result
 )
 
 print(combined_results)
@@ -675,7 +811,7 @@ anc_data_processed_subset_2023 |>
   ) + 
   oxthema::theme_oxford(grid = "Yy")
 ##------------------------------------------------------------------------------------------
-####boxplot###3
+####boxplot####
 
 #profession and Hb
 levels(anc_data_processed_subset_2023$profession_summary) <- c("Employed", "Self-employed (Formal)", "Self-employed (Informal)", "No Data")
@@ -768,7 +904,7 @@ ggplot(anc_data_processed_subset_2023, aes(x = malaria, y = haemoglobin, fill = 
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set3")
 ####-----------------------------------------------------------------------------------
-#Mean 95%CI by Hb
+####Mean 95%CI by Hb####
 #education
 meanci_by_ed <- anc_data_processed_subset_2023 %>%
   group_by(education_level_summary) %>%
@@ -787,7 +923,7 @@ print(meanci_by_ed)
 
 #profession
 meanci_by_profession <- anc_data_processed_subset_2023 %>%
-  group_by(profession_summary) %>%
+  group_by(profession_summary1) %>%
   summarise(
     mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
     sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
@@ -805,7 +941,7 @@ print(meanci_by_profession)
 
 #location
 meanci_by_lo <- anc_data_processed_subset_2023 %>%
-  group_by(address_group) %>%
+  group_by(location_group) %>%
   summarise(
     mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
     sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),

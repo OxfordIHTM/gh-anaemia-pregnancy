@@ -15,6 +15,7 @@ library(tidyr)
 library(openxlsx)
 library(ggplot2)
 library(writexl)
+library(pwr)
 
 
 ## Packages for data cleaning, processing, and checking ----
