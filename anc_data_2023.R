@@ -21,8 +21,7 @@ anc_data_processed_subset_2023 <- anc_data_processed07 %>%
       TRUE ~ "NA"
       ),
     location_group= case_when(
-      address %in% c( "Makassium","Saltpond Zongo") ~ "Urban",
-      address %in% c( "Anomabo", "Biriwa", "Abandze", "Yamoransa","Kormantse","Ekon") ~ "Semi-Urban",
+      address %in% c( "Makassium","Saltpond Zongo","Anomabo", "Biriwa", "Abandze", "Yamoransa","Kormantse","Ekon") ~ "Urban",
       address %in% c("Amoanda","Buranamoah","Moree","Asafora", "Aketekyiwa","Egyirefa","Pomasi(Pomase)", "Waakrom", "Afrago Junction", "Amissakrom", "Egyierefa","Insanfo(NSANFO)") ~ "Rural Town",
       TRUE ~ "NA"
     ),
@@ -59,6 +58,20 @@ median(anc_data_processed_subset_2023$age)
 IQR(anc_data_processed_subset_2023$age)
 #Shapiro-Wilk test
 shapiro.test(anc_data_processed_subset_2023$age)
+
+#in anaemia caterogy
+age_summary <- anc_data_processed_subset_2023 %>%
+  group_by(anaemia_category) %>%
+  summarize(
+    youngest_age = min(age, na.rm = TRUE),
+    oldest_age = max(age, na.rm = TRUE)
+  )
+
+# Print the summary
+print(age_summary)
+
+
+
 
 
 #---in anaemia group
@@ -477,6 +490,7 @@ print(t_test)
 
 wilcox_test <- wilcox.test(age ~ anaemia_status, data = anc_data_processed_subset_2023)
 print(wilcox_test)
+
 #chi square test
 ####summary of bivariate anaylisis####
 #age group summary
@@ -484,6 +498,8 @@ ag_cross_tab <- table(anc_data_processed_subset_2023$age_group, anc_data_process
 print(ag_cross_tab)
 ag_chi_square_test <- chisq.test(ag_cross_tab)
 print(ag_chi_square_test)
+
+
 
 #education summary
 ed_cross_tab <- table(anc_data_processed_subset_2023$education_level_summary, anc_data_processed_subset_2023$anaemia_status)
@@ -812,10 +828,36 @@ anc_data_processed_subset_2023 |>
   oxthema::theme_oxford(grid = "Yy")
 ##------------------------------------------------------------------------------------------
 ####boxplot####
+#Education
+# Replace NA values and "No value" with "No Data"
+anc_data_processed_subset_2023 <- anc_data_processed_subset_2023 %>%
+  mutate(profession_summary1 = ifelse(is.na(profession_summary1) | profession_summary1 == "No value", "No Data", profession_summary1),
+         education_level_summary = ifelse(is.na(education_level_summary) | education_level_summary == "No value", "No Data", education_level_summary),
+         location_group = ifelse(is.na(location_group) | location_group == "No value", "No Data", location_group),
+         marital_status = ifelse(is.na(marital_status) | marital_status == "No value", "No Data", marital_status),
+         sickle_cell = ifelse(is.na(sickle_cell) | sickle_cell == "No value", "No Data", sickle_cell),
+         anaemia_status = ifelse(is.na(anaemia_status), "No Data", anaemia_status))
+
+anc_data_processed_subset_2023$education_level <- factor(anc_data_processed_subset_2023$education_level_summary,
+                                                         levels = c("Primary/Junior High School", "Senior High School and higher", "None", "No Data"),
+                                                         labels = c("Primary/Junior High School", "Senior High School and higher","No Education", "No Data"))
+
+
+
+# Create the plot with modified labels for education_level
+ggplot(anc_data_processed_subset_2023, aes(x = education_level_summary, y = haemoglobin, fill = education_level_summary)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Haemoglobin Levels by Education Level",
+       x = "Education Level",
+       y = "Haemoglobin Level (g/dL)",
+       fill = "Education Level") +  # Change legend title
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set3")
 
 #profession and Hb
-levels(anc_data_processed_subset_2023$profession_summary) <- c("Employed", "Self-employed (Formal)", "Self-employed (Informal)", "No Data")
-ggplot(anc_data_processed_subset_2023, aes(x = profession_summary, y = haemoglobin, fill = profession_summary)) +
+levels(anc_data_processed_subset_2023$profession_summary1) <- c("Employed", "Self-employed (Formal)", "Self-employed (Informal)", "No Income","No data")
+ggplot(anc_data_processed_subset_2023, aes(x = profession_summary1, y = haemoglobin, fill = profession_summary1)) +
   geom_boxplot() +
   labs(title = "Boxplot of Haemoglobin Levels by Profession",
        x = "Profession",
@@ -825,19 +867,18 @@ ggplot(anc_data_processed_subset_2023, aes(x = profession_summary, y = haemoglob
   scale_fill_brewer(palette = "Set3")
 
 
-
-# Replace NA values with "No data"
+# Replace NA values with "No Data"
 anc_data_processed_subset_2023 <- anc_data_processed_subset_2023 %>%
-  mutate(profession_summary = ifelse(is.na(profession_summary), "No Data", profession_summary),
+  mutate(profession_summary1 = ifelse(is.na(profession_summary1), "No Data", profession_summary1),
          anaemia_status = ifelse(is.na(anaemia_status), "No Data", anaemia_status))
 
 # Update factor levels to change the labels
-anc_data_processed_subset_2023$profession_summary <- factor(anc_data_processed_subset_2023$profession_summary2,
-                                                            levels = c("Employed", "Self-employed with formal training", "Self-employed with no formal training", "None", "N/A"),
-                                                            labels = c("Employed", "Self-employed (Formal)", "Self-employed (Informal)", "No Profession", "No data"))
+anc_data_processed_subset_2023$profession_summary1 <- factor(anc_data_processed_subset_2023$profession_summary1,
+                                                             levels = c("Employed", "Self-employed with formal training", "Self-employed with no formal training", "None", "No Data"),
+                                                             labels = c("Employed", "Self-employed with formal training", "Self-employed with no formal training", "No Income", "No Data"))
 
 # Create the plot with modified labels
-ggplot(anc_data_processed_subset_2023, aes(x = profession_summary, y = haemoglobin, fill = profession_summary)) +
+ggplot(anc_data_processed_subset_2023, aes(x = profession_summary1, y = haemoglobin, fill = profession_summary1)) +
   geom_boxplot() +
   labs(title = "Boxplot of Haemoglobin Levels by Profession",
        x = "Profession",
@@ -847,28 +888,21 @@ ggplot(anc_data_processed_subset_2023, aes(x = profession_summary, y = haemoglob
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set3")
 
-#education and Hb
-ggplot(anc_data_processed_subset_2023, aes(x = education_level_summary, y = haemoglobin, fill = education_level_summary)) +
+
+
+
+
+
+# Create the plot with modified labels for location_group
+ggplot(anc_data_processed_subset_2023, aes(x = location_group, y = haemoglobin, fill = location_group)) +
   geom_boxplot() +
-  labs(title = "Boxplot of Haemoglobin Levels by Education",
-       x = "Education",
+  labs(title = "Boxplot of Haemoglobin Levels by Location",
+       x = "Location",
        y = "Haemoglobin Level (g/dL)",
-       fill= "Eduction") +
+       fill = "Location") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set3")
-
-#location and Hb
-ggplot(anc_data_processed_subset_2023, aes(x = address_group, y = haemoglobin, fill = address_group)) +
-  geom_boxplot() +
-  labs(title = "Boxplot of Haemoglobin Levels by Distance",
-       x = "Location(Distance)",
-       y = "Haemoglobin Level (g/dL)",
-       fill= "Location")  +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_brewer(palette = "Set3")
-
 
 #marital status and Hb
 ggplot(anc_data_processed_subset_2023, aes(x = marital_status, y = haemoglobin, fill = marital_status)) +
