@@ -21,8 +21,8 @@ anc_data_processed_subset_2023 <- anc_data_processed07 %>%
       TRUE ~ "NA"
       ),
     location_group= case_when(
-      address %in% c( "Makassium","Saltpond Zongo","Anomabo", "Biriwa", "Abandze", "Yamoransa","Kormantse","Ekon") ~ "Urban",
-      address %in% c("Amoanda","Buranamoah","Moree","Asafora", "Aketekyiwa","Egyirefa","Pomasi(Pomase)", "Waakrom", "Afrago Junction", "Amissakrom", "Egyierefa","Insanfo(NSANFO)") ~ "Rural Town",
+      address %in% c( "Makassium","Saltpond Zongo","Anomabo", "Biriwa", "Abandze", "Yamoransa","Kormantse","Ekon","Cape Coast") ~ "Urban",
+      address %in% c("Amoanda","Buranamoah","Moree","Asafora", "Aketekyiwa","Egyirefa","Pomasi(Pomase)", "Waakrom", "Afrago Junction", "Amissakrom", "Egyierefa","Insanfo(NSANFO)","Ekotokrom","Amissakrom","Eguase") ~ "Rural Town",
       TRUE ~ "NA"
     ),
     anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
@@ -523,8 +523,6 @@ print(pro_chi_square_test)
 # Create the contingency table
 lot_cross_tab <- table(anc_data_processed_subset_2023$location_group, anc_data_processed_subset_2023$anaemia_status)
 print(lot_cross_tab)
-
-# Perform the chi-square test
 lot_chi_square_test <- chisq.test(lot_cross_tab)
 print(lot_chi_square_test)
 
@@ -572,11 +570,7 @@ print(si_cross_tab)
 si_chi_square_test <- chisq.test(si_cross_tab)
 print(si_chi_square_test)
 
-#sickle cell summary
-mal_cross_tab <- table(anc_data_processed_subset_2023$malaria, anc_data_processed_subset_2023$anaemia_status)
-print(mal_cross_tab)
-mal_chi_square_test <- chisq.test(mal_cross_tab)
-print(mal_chi_square_test)
+
 ###---------------------------------------------------------------------------------------------------------------
 ####Visualzation####
 # education
