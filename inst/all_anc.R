@@ -29,6 +29,11 @@ anc_data_processed_subset <- anc_data_processed0728 %>%
       address %in% c("Amoanda","Buranamoah","Moree","Asafora", "Aketekyiwa","Egyirefa","Pomasi(Pomase)", "Waakrom", "Afrago Junction", "Amissakrom", "Egyierefa","Insanfo(NSANFO)","Ekotokrom","Amissakrom","Eguase") ~ "Rural Town",
       TRUE ~ "NA"
     ),
+    location_group2= case_when(
+      address_group %in% c( "<5km") ~ "nearby",
+      address_group %in% c("5-10km",">10km") ~ "long dostance",
+      TRUE ~ "NA"
+    ),
     anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
     anaemia_category = case_when(
       haemoglobin >= 10 & haemoglobin < 11 ~ "Mild Anaemia",
@@ -39,12 +44,17 @@ anc_data_processed_subset <- anc_data_processed0728 %>%
     )
   )
 
-####make table for different data##
+####make table for different data####
 # Group by address_group and summarize the names of addresses
 address_group_summary <- anc_data_processed_subset %>%
   group_by(address_group) %>%
   summarize(addresses = paste(unique(address), collapse = ", "))
 
+
+# Group by profession_group and summarize the names of profession
+profession_group_summary <- anc_data_processed_subset %>%
+  group_by(profession_group) %>%
+  summarize(addresses = paste(unique(profession), collapse = ", "))
 
 
 ####univariable before grouping####--------------------------------------------------------------------------------------
@@ -526,7 +536,7 @@ pog_summary <- pog_summary %>%
 print(pog_summary)
 
 # Location Town
-lo_cross_tab <- table(anc_data_processed_subset$location_group, anc_data_processed_subset$anaemia_status)
+lo_cross_tab <- table(anc_data_processed_subset$address_group, anc_data_processed_subset$anaemia_status)
 lo_test_results <- add_test_results(lo_cross_tab)
 lo_percentages <- prop.table(lo_cross_tab, margin = 2) * 100
 lo_summary <- as.data.frame.matrix(lo_cross_tab)
@@ -541,7 +551,7 @@ lo_summary <- lo_summary %>%
 print(lo_summary)
 
 
-# Location Distance
+# Location Distance(5,10)
 ad_cross_tab <- table(anc_data_processed_subset$address_group, anc_data_processed_subset$anaemia_status)
 ad_test_results <- add_test_results(ad_cross_tab)
 ad_percentages <- prop.table(ad_cross_tab, margin = 2) * 100
@@ -555,6 +565,22 @@ ad_summary <- ad_summary %>%
   select(Address_Group, everything()) %>%
   mutate(chi_square_stat = ad_test_results$chi_square_stat, p_value = ad_test_results$p_value, power = ad_test_results$power)
 print(ad_summary)
+
+# Location Distance(1,47)
+ad3_cross_tab <- table(anc_data_processed_subset$address_group3, anc_data_processed_subset$anaemia_status)
+ad3_test_results <- add_test_results(ad3_cross_tab)
+ad3_percentages <- prop.table(ad3_cross_tab, margin = 2) * 100
+ad3_summary <- as.data.frame.matrix(ad3_cross_tab)
+ad3_summary$Address_Group3 <- rownames(ad3_summary)
+rownames(ad3_summary) <- NULL
+for (col in colnames(ad_cross_tab)) {
+  ad3_summary[[col]] <- paste0(ad3_summary[[col]], " (", round(ad3_percentages[, col], 2), "%)")
+}
+ad3_summary <- ad3_summary %>%
+  select(Address_Group3, everything()) %>%
+  mutate(chi_square_stat = ad3_test_results$chi_square_stat, p_value = ad3_test_results$p_value, power = ad3_test_results$power)
+print(ad3_summary)
+
 
 # Marital Summary
 ma_cross_tab <- table(anc_data_processed_subset$marital_status, anc_data_processed_subset$anaemia_status)
@@ -650,7 +676,7 @@ anc_data_processed_subset <- anc_data_processed_subset %>%
 # Education level and profession
 
 anc_data_processed_subset <- anc_data_processed_subset %>%
-  drop_na(education_level_summary, profession_group)%>%
+  drop_na(education_level_summary, profession_group)
   
 ed_p_cross_tab <- table(anc_data_processed_subset$education_level_summary, anc_data_processed_subset$profession_group)
 ed_p_test_results <- add_test_results(ed_p_cross_tab)
@@ -753,3 +779,109 @@ el_ag_summary <- el_ag_summary %>%
 
 # Print the summary table
 print(el_ag_summary)
+
+
+
+####Hb and other variable####
+####Mean 95%CI by Hb####
+#education
+meanci_by_ed <- anc_data_processed_subset %>%
+  group_by(education_level_summary) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
+  )
+colnames(meanci_by_ed)[1] <- "variable"
+
+print(colnames(meanci_by_ed))
+# Print the results
+print(meanci_by_ed)
+
+#profession
+meanci_by_profession <- anc_data_processed_subset %>%
+  group_by(profession_summary1) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
+  )
+
+
+colnames(meanci_by_profession)[1] <- "variable"
+
+print(colnames(meanci_by_profession))
+# Print the results
+print(meanci_by_profession)
+
+#location
+meanci_by_lo <- anc_data_processed_subset %>%
+  group_by(location_group) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
+  )
+colnames(meanci_by_lo)[1] <- "variable"
+
+print(colnames(meanci_by_lo))
+# Print the results
+print(meanci_by_lo)
+
+
+#marital 
+meanci_by_mar <- anc_data_processed_subset %>%
+  group_by(marital_status) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
+  )
+colnames(meanci_by_mar)[1] <- "variable"
+
+print(colnames(meanci_by_mar))
+# Print the results
+print(meanci_by_mar)
+
+
+#sickle cell
+meanci_by_si <- anc_data_processed_subset %>%
+  group_by(sickle_cell) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
+  )
+colnames(meanci_by_si)[1] <- "variable"
+
+print(colnames(meanci_by_si))
+# Print the results
+print(meanci_by_si)
+
+
+#marital 
+meanci_by_mal <- anc_data_processed_subset %>%
+  group_by(malaria) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
+  )
+
+colnames(meanci_by_mal)[1] <- "variable"
+
+print(colnames(meanci_by_mal))
+# Print the results
+print(meanci_by_mal)
