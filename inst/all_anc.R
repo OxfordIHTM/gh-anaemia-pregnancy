@@ -44,6 +44,7 @@ anc_data_processed_subset <- anc_data_processed0728 %>%
     )
   )
 
+
 ####make table for different data####
 # Group by address_group and summarize the names of addresses
 address_group_summary <- anc_data_processed_subset %>%
@@ -108,9 +109,16 @@ Sickle_Cell <- data.frame(
 )
 print(Sickle_Cell)
 
+#malaria
+malaria_counts <- table(anc_data_processed_subset$malaria)
+print(malaria_counts)
+malaria_percentages <- prop.table(malaria_counts) * 100
+malaria <- data.frame(
+  Malaria_Level = names(malaria_counts),
+  Count_and_Percentage = paste(malaria_counts, "(", round(malaria_percentages, 2), "%)", sep = "")
+)
 
-
-
+print(Malaria_Level)
 
 ####univariable grouping data####-----------------------------------------------------------------------------------------
 #anaemia catergory
@@ -353,14 +361,18 @@ print(lm_summary)
 ggplot(anc_data_processed_subset, aes(x = age, y = haemoglobin)) +
   geom_point() +
   geom_smooth(method = "lm", col = "blue") +
-  labs(title = "Relationship between Age and Hemoglobin Levels",
-       x = "Age",
-       y = "Hemoglobin Level") +
+  labs(title = "Relationship between Age and Haemoglobin Levels",
+       x = "Age(year)",
+       y = "Haemoglobin Level(g/dL)") +
   theme_minimal()
 
 # Display the regression results in a tidy format
 lm_tidy <- tidy(lm_model)
 print(lm_tidy)
+
+
+
+
 
 ####age group and histogram####
 
@@ -382,6 +394,8 @@ anc_data_processed_subset %>%
   coord_flip() +
   facet_wrap(. ~ anaemia_status, nrow = 2) +
   oxthema::theme_oxford(grid = "Xx")
+
+
 
 ####grouping bivariate analysis####------------------------------------------------------------------------------------
 #age group summary
@@ -596,16 +610,55 @@ ma_summary <- ma_summary %>%
   select(Marital_Status, everything()) %>%
   mutate(chi_square_stat = ma_test_results$chi_square_stat, p_value = ma_test_results$p_value, power = ma_test_results$power)
 print(ma_summary)
-####Boxplot####
-#Education
-anc_data_processed_subset$education_level_summary <- factor(anc_data_processed_subset$education_level_summary,
-                                                         levels = c("Primary/Junior High School", "Senior High School and higher", "None", "No Data"),
-                                                         labels = c("Primary/Junior High School", "Senior High School and higher","No Education", "No Data"))
 
 
+####bivariate of anaemia catergory####---------------------------------------------------------------
+#Education level and anaemia severity 
+ed_c_cross_tab <- table(anc_data_processed_subset$education_level_summary, anc_data_processed_subset$anaemia_category)
+ed_c_test_results <- add_test_results(ed_c_cross_tab)
+ed_c_percentages <- prop.table(ed_c_cross_tab, margin = 2) * 100
+ed_c_summary <- as.data.frame.matrix(ed_c_cross_tab)
+ed_c_summary$Education_level_summary <- rownames(ed_c_summary)
+rownames(ed_c_summary) <- NULL
+for (col in colnames(ed_c_cross_tab)) {
+  ed_c_summary[[col]] <- paste0(ed_c_summary[[col]], " (", round(ed_c_percentages[, col], 2), "%)")
+}
+ed_c_summary <- ed_c_summary %>%
+  select(Education_level_summary, everything()) %>%
+  mutate(chi_square_stat = ed_c_test_results$chi_square_stat, p_value = ed_c_test_results$p_value, power = ed_c_test_results$power)
+print(ed_c_summary)
+
+#Education level and anaemia severity 
+pr_c_cross_tab <- table(anc_data_processed_subset$profession_group, anc_data_processed_subset$anaemia_category)
+pr_c_test_results <- add_test_results(pr_c_cross_tab)
+pr_c_percentages <- prop.table(pr_c_cross_tab, margin = 2) * 100
+pr_c_summary <- as.data.frame.matrix(pr_c_cross_tab)
+pr_c_summary$Profession_group <- rownames(pr_c_summary)
+rownames(pr_c_summary) <- NULL
+for (col in colnames(pr_c_cross_tab)) {
+  pr_c_summary[[col]] <- paste0(pr_c_summary[[col]], " (", round(pr_c_percentages[, col], 2), "%)")
+}
+pr_c_summary <- pr_c_summary %>%
+  select(Profession_group, everything()) %>%
+  mutate(chi_square_stat = pr_c_test_results$chi_square_stat, p_value = pr_c_test_results$p_value, power = pr_c_test_results$power)
+print(pr_c_summary)
+
+
+
+####Boxplot####---------------------------------------------------------------------------------------------------
+
+
+# Filter out rows with NA values or specific unwanted categories
+anc_data_filtered <- anc_data_processed_subset %>%
+  filter(!is.na(education_level_summary) & education_level_summary != "No Data" &
+           !is.na(profession_group) & profession_group != "No Data" &
+           !is.na(location_group) & location_group != "No Data" &
+           !is.na(profession_summary1) & profession_summary1 != "No Data" &
+           !is.na(address_group) & address_group != "No Data" &
+           !is.na(marital_status) & marital_status != "No Data")
 
 # Create the plot with modified labels for education_level
-ggplot(anc_data_processed_subset, aes(x = education_level_summary, y = haemoglobin, fill = education_level_summary)) +
+ggplot(anc_data_filtered, aes(x = education_level_summary, y = haemoglobin, fill = education_level_summary)) +
   geom_boxplot() +
   labs(title = "Boxplot of Haemoglobin Levels by Education Level",
        x = "Education Level",
@@ -615,22 +668,32 @@ ggplot(anc_data_processed_subset, aes(x = education_level_summary, y = haemoglob
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set3")
 
-
 # Create the plot with modified labels for employment
-ggplot(anc_data_processed_subset, aes(x = profession_group, y = haemoglobin, fill = profession_group)) +
+ggplot(anc_data_filtered, aes(x = profession_summary1, y = haemoglobin, fill = profession_summary1)) +
   geom_boxplot() +
   labs(title = "Boxplot of Haemoglobin Levels by Employment",
        x = "Employment",
        y = "Haemoglobin Level (g/dL)",
-       fill = "Empoyment") +  # Change legend title
+       fill = "Employment") +  # Change legend title
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set3")
 
 
+# Create the plot with modified labels for employment
+ggplot(anc_data_filtered, aes(x = profession_group, y = haemoglobin, fill = profession_group)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Haemoglobin Levels by Employment",
+       x = "Employment",
+       y = "Haemoglobin Level (g/dL)",
+       fill = "Employment") +  # Change legend title
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set3")
+
 
 # Create the plot with modified labels for location_group(town)
-ggplot(anc_data_processed_subset, aes(x = location_group, y = haemoglobin, fill = location_group)) +
+ggplot(anc_data_filtered, aes(x = location_group, y = haemoglobin, fill = location_group)) +
   geom_boxplot() +
   labs(title = "Boxplot of Haemoglobin Levels by Location",
        x = "Location",
@@ -640,9 +703,8 @@ ggplot(anc_data_processed_subset, aes(x = location_group, y = haemoglobin, fill 
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set3")
 
-
 # Create the plot with modified labels for distance
-ggplot(anc_data_processed_subset, aes(x = address_group, y = haemoglobin, fill = address_group)) +
+ggplot(anc_data_filtered, aes(x = address_group, y = haemoglobin, fill = address_group)) +
   geom_boxplot() +
   labs(title = "Boxplot of Haemoglobin Levels by Distance",
        x = "Location",
@@ -652,18 +714,16 @@ ggplot(anc_data_processed_subset, aes(x = address_group, y = haemoglobin, fill =
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set3")
 
-
-#marital status and Hb
-ggplot(anc_data_processed_subset, aes(x = marital_status, y = haemoglobin, fill = marital_status)) +
+# Create the plot with modified labels for marital status
+ggplot(anc_data_filtered, aes(x = marital_status, y = haemoglobin, fill = marital_status)) +
   geom_boxplot() +
-  labs(title = "Boxplot of Haemoglobin Levels by Marital status",
+  labs(title = "Boxplot of Haemoglobin Levels by Marital Status",
        x = "Marital Status",
        y = "Haemoglobin Level (g/dL)",
-       fill= "Marital Status") +
+       fill = "Marital Status") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set3")
-
 
 ####other relationship####---------------------------------------------------------------------------------------
 # Education level and profession
@@ -780,7 +840,21 @@ el_ag_summary <- el_ag_summary %>%
 # Print the summary table
 print(el_ag_summary)
 
-
+#age and marital status
+anc_data_filtered <- anc_data_processed_subset %>%
+  filter(!is.na(marital_status) & !is.na(age))
+anova_results <- aov(age ~ marital_status, data = anc_data_filtered)
+summary(anova_results)
+tukey_results <- TukeyHSD(anova_results)
+print(tukey_results)
+summary_table <- anc_data_filtered %>%
+  group_by(marital_status) %>%
+  summarise(
+    mean_age = mean(age),
+    sd_age = sd(age),
+    n = n()
+  )
+print(summary_table)
 
 ####Hb and other variable####
 ####Mean 95%CI by Hb####
@@ -818,6 +892,66 @@ print(colnames(meanci_by_profession))
 # Print the results
 print(meanci_by_profession)
 
+
+
+
+# Calculate mean, standard deviation, and confidence intervals by profession summary 1
+# Filter out NA values for profession and haemoglobin
+anc_data_filtered_prof <- anc_data_processed_subset %>%
+  filter(!is.na(profession_summary1), !is.na(haemoglobin))
+
+meanci_by_prof <- anc_data_filtered_prof %>%
+  group_by(profession_summary1) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
+  )
+colnames(meanci_by_prof)[1] <- "variable"
+
+# Print the results for profession group
+print(colnames(meanci_by_prof))
+print(meanci_by_prof)
+
+# Perform ANOVA to get the p-value for profession group
+anova_profession <- aov(haemoglobin ~ profession_summary1, data = anc_data_filtered_prof)
+summary_anova_profession <- summary(anova_profession)
+# Extract the p-value from the ANOVA summary for profession group
+p_value_profession <- summary_anova_profession[[1]][["Pr(>F)"]][1]
+
+# Print the p-value for profession group
+print(paste("P-value for the relationship between haemoglobin levels and profession group:", p_value_profession))
+
+
+
+
+
+# Calculate mean, standard deviation, and confidence intervals by profession group
+anc_data_filtered_prof <- anc_data_processed_subset %>%
+  filter(!is.na(profession_group), !is.na(haemoglobin))
+meanci_by_prof <- anc_data_filtered_prof %>%
+  group_by(profession_group) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
+  )
+colnames(meanci_by_prof)[1] <- "variable"
+print(colnames(meanci_by_prof))
+print(meanci_by_prof)
+anova_profession <- aov(haemoglobin ~ profession_group, data = anc_data_filtered_prof)
+summary_anova_profession <- summary(anova_profession)
+p_value_profession <- summary_anova_profession[[1]][["Pr(>F)"]][1]
+print(paste("P-value for the relationship between haemoglobin levels and profession group:", p_value_profession))
+
+
+
+
+
 #location
 meanci_by_lo <- anc_data_processed_subset %>%
   group_by(location_group) %>%
@@ -835,8 +969,13 @@ print(colnames(meanci_by_lo))
 print(meanci_by_lo)
 
 
-#marital 
-meanci_by_mar <- anc_data_processed_subset %>%
+
+# Calculate mean, standard deviation, and confidence intervals by marital status
+
+# Remove rows with NA values in marital_status and haemoglobin
+anc_data_filtered <- anc_data_processed_subset %>%
+  filter(!is.na(marital_status), !is.na(haemoglobin))
+meanci_by_mar <- anc_data_filtered %>%
   group_by(marital_status) %>%
   summarise(
     mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
@@ -846,10 +985,16 @@ meanci_by_mar <- anc_data_processed_subset %>%
     upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
   )
 colnames(meanci_by_mar)[1] <- "variable"
-
 print(colnames(meanci_by_mar))
-# Print the results
 print(meanci_by_mar)
+anova_marital <- aov(haemoglobin ~ marital_status, data = anc_data_filtered)
+summary_anova <- summary(anova_marital)
+
+p_value_marital <- summary_anova[[1]][["Pr(>F)"]][1]
+
+# Print the p-value
+print(paste("P-value for the relationship between haemoglobin levels and marital status:", p_value_marital))
+
 
 
 #sickle cell
@@ -885,3 +1030,170 @@ colnames(meanci_by_mal)[1] <- "variable"
 print(colnames(meanci_by_mal))
 # Print the results
 print(meanci_by_mal)
+
+
+####hb and other variable ANOVA####--------------------------------------------------------------------------
+# Perform ANOVA for each categorical variable and calculate p-values
+
+# For education level
+anova_education <- aov(haemoglobin ~ education_level_summary, data = anc_data_processed_subset)
+summary(anova_education)
+
+# For profession
+anova_profession <- aov(haemoglobin ~ profession_summary1, data = anc_data_processed_subset)
+summary(anova_profession)
+
+# For location
+anova_location <- aov(haemoglobin ~ location_group, data = anc_data_processed_subset)
+summary(anova_location)
+
+# For marital status
+anova_marital <- aov(haemoglobin ~ marital_status, data = anc_data_processed_subset)
+summary(anova_marital)
+
+# For sickle cell status
+anova_sickle_cell <- aov(haemoglobin ~ sickle_cell, data = anc_data_processed_subset)
+summary(anova_sickle_cell)
+
+# Extracting p-values
+p_value_education <- summary(anova_education)[[1]][["Pr(>F)"]][1]
+p_value_profession <- summary(anova_profession)[[1]][["Pr(>F)"]][1]
+p_value_location <- summary(anova_location)[[1]][["Pr(>F)"]][1]
+p_value_marital <- summary(anova_marital)[[1]][["Pr(>F)"]][1]
+p_value_sickle_cell <- summary(anova_sickle_cell)[[1]][["Pr(>F)"]][1]
+
+# Printing p-values
+print(paste("P-value for education level:", p_value_education))
+print(paste("P-value for profession:", p_value_profession))
+print(paste("P-value for location:", p_value_location))
+print(paste("P-value for marital status:", p_value_marital))
+print(paste("P-value for sickle cell status:", p_value_sickle_cell))
+
+
+
+
+
+
+calculate_summary_and_anova <- function(data, group_var) {
+  data_filtered <- data %>%
+    filter(!is.na(!!sym(group_var)), !is.na(haemoglobin))
+  
+  summary_stats <- data_filtered %>%
+    group_by(!!sym(group_var)) %>%
+    summarise(
+      mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+      sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+      n = n(),
+      lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+      upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
+    )
+  
+  colnames(summary_stats)[1] <- "variable"
+  
+  # Perform ANOVA
+  anova_result <- aov(haemoglobin ~ get(group_var), data = data_filtered)
+  summary_anova <- summary(anova_result)
+  
+  # Extract the p-value
+  p_value <- summary_anova[[1]][["Pr(>F)"]][1]
+  
+  list(summary_stats = summary_stats, p_value = p_value)
+}
+
+# Remove rows with NA values and calculate summaries and p-values for each variable
+# For marital_status
+result_marital <- calculate_summary_and_anova(anc_data_processed_subset, "marital_status")
+print("Marital Status Summary:")
+print(result_marital$summary_stats)
+print(paste("P-value for the relationship between haemoglobin levels and marital status:", result_marital$p_value))
+
+# For profession_group
+result_profession <- calculate_summary_and_anova(anc_data_processed_subset, "profession_group")
+print("Profession Group Summary:")
+print(result_profession$summary_stats)
+print(paste("P-value for the relationship between haemoglobin levels and profession group:", result_profession$p_value))
+
+# For education_level_summary
+result_education <- calculate_summary_and_anova(anc_data_processed_subset, "education_level_summary")
+print("Education Level Summary:")
+print(result_education$summary_stats)
+print(paste("P-value for the relationship between haemoglobin levels and education level:", result_education$p_value))
+
+# For location_group
+result_location <- calculate_summary_and_anova(anc_data_processed_subset, "location_group")
+print("Location Group Summary:")
+print(result_location$summary_stats)
+print(paste("P-value for the relationship between haemoglobin levels and location group:", result_location$p_value))
+
+# For address_group
+result_address <- calculate_summary_and_anova(anc_data_processed_subset, "address_group")
+print("Address Group Summary:")
+print(result_address$summary_stats)
+print(paste("P-value for the relationship between haemoglobin levels and address group:", result_address$p_value))
+
+
+
+# For sickle cell
+result_sickle <- calculate_summary_and_anova(anc_data_processed_subset, "sickle_cell")
+print("Sickle cell:")
+print(result_sickle$summary_stats)
+print(paste("P-value for the relationship between haemoglobin levels and sickle cell:", result_sickle$p_value))
+
+            
+            
+#### ODDS RATION####----------------------------------------------------------------------------------------------------
+#  age group
+a_contingency_table <- table(anc_data_processed_subset$age_group, anc_data_processed_subset$anaemia_status)
+print(a_contingency_table)
+a_or_result <- oddsratio(a_contingency_table)
+print(a_or_result)
+
+#  education_level
+contingency_table <- table(anc_data_processed_subset$education_level_summary, anc_data_processed_subset$anaemia_status)
+print(contingency_table)
+or_result <- oddsratio(contingency_table)
+print(or_result)
+
+#  education_level_summary1
+contingency1_table <- table(anc_data_processed_subset$education_level_summary1, anc_data_processed_subset$anaemia_status)
+print(contingency1_table)
+or1_result <- oddsratio(contingency1_table)
+print(or1_result)
+
+
+
+# profession
+pro_contingency_table <- table(anc_data_processed_subset$profession_summary1, anc_data_processed_subset$anaemia_status)
+print(pro_contingency_table)
+pro_or_result <- oddsratio(pro_contingency_table)
+print(pro_or_result)
+
+#Location
+# Remove rows with NA values in location_group
+anc_data_filtered <- anc_data_processed_subset[!is.na(anc_data_processed_subset$location_group) & !is.na(anc_data_processed_subset$anaemia_status), ]
+print(any(is.na(anc_data_filtered$location_group)))
+print(any(is.na(anc_data_filtered$anaemia_status)))
+lo_contingency_table <- table(anc_data_filtered$location_group, anc_data_filtered$anaemia_status)
+print(lo_contingency_table)
+lo_or_result <- oddsratio(lo_contingency_table)
+print(lo_or_result)
+
+
+
+# marital status
+m_contingency_table <- table(anc_data_processed_subset$marital_status, anc_data_processed_subset$anaemia_status)
+print(m_contingency_table)
+m_or_result <- oddsratio(m_contingency_table)
+print(m_or_result)
+
+# sickle cell
+s_contingency_table <- table(anc_data_processed_subset$sickle_cell, anc_data_processed_subset$anaemia_status)
+print(s_contingency_table)
+s_or_result <- oddsratio(s_contingency_table)
+print(s_or_result)
+
+
+
+
+
+
