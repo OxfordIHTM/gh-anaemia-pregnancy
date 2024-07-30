@@ -81,9 +81,6 @@ analysis_targets <- tar_plan(
     name = anc_data_recode,
     command = recode_anc_variables(anc_data_processed)
   ),
-  
-  
-  
   ### Create univariate summary tables ----
   tar_target(
     name = anc_data_summary_univariate_table,

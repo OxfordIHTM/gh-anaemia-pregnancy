@@ -1,7 +1,7 @@
 ---
 title: "Anaemia in pregnancy in Ghana in 2023"
 author: "Shih Ting Tsemg"
-date: "`r format(Sys.time(), format = "%d %B %Y %H:%M")`"
+date: "`r format(Sys.time(), format = '%d %B %Y %H:%M')`"
 output:
   word_document:
     toc: true
