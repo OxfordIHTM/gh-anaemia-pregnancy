@@ -14,6 +14,9 @@ library(dplyr)
 library(tidyr)
 library(openxlsx)
 library(ggplot2)
+library(writexl)
+library(pwr)
+library(tibble)
 
 
 ## Packages for data cleaning, processing, and checking ----
@@ -23,5 +26,10 @@ library(janitor)
 
 ## Packages for Hb data handling ----
 library(micronutr)
+
+
+## Packages for ggplot2 themes ----
+library(oxthema)
+
 
 

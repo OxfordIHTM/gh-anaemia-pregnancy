@@ -54,6 +54,12 @@ processing_targets <- tar_plan(
     command = create_anc_data_processed_csv(anc_data_processed),
     format = "file"
   ),
+  ### Create processed ANC data CSV ----
+  tar_target(
+    name = anc_data_processed07_csv,
+    command = create_anc_data_processed07_csv(anc_data_processed07),
+    format = "file"
+  ),
   ### Create processed ANC data metadata ----
   tar_target(
     name = anc_data_processed_metadata,
@@ -70,8 +76,48 @@ processing_targets <- tar_plan(
 
 ## Analysis targets
 analysis_targets <- tar_plan(
-  
+  ### Recode new ANC data variables ----
+  tar_target(
+    name = anc_data_recode,
+    command = recode_anc_variables(anc_data_processed)
+  ),
+  ### Create univariate summary tables ----
+  tar_target(
+    name = anc_data_summary_univariate_table,
+    command = summarise_anc_data_univariate(anc_data_recode)
+  ),
+  ### Create bivariate summary tables ----
+  tar_target(
+    name = anc_data_summary_bivariate_table,
+    command = summarise_anc_data_bivariate(anc_data_recode)
+  )
 )
+
+
+
+## Analysis targets
+analysis_targets <- tar_plan(
+  ### Recode new ANC data variables ----
+  tar_target(
+    name = anc_data_recode_2023,
+    command = recode_anc_variables(anc_data_processed_subset_2023)
+  ),
+  
+  
+  
+  ### Create univariate summary tables ----
+  tar_target(
+    name = anc_data_summary_univariate_table_2023,
+    command = summarise_anc_data_univariate(anc_data_recode_2023)
+  ),
+  ### Create bivariate summary tables ----
+  tar_target(
+    name = anc_data_summary_bivariate_table_2023,
+    command = summarise_anc_data_bivariate(anc_data_recode_2023)
+  )
+)
+
+
 
 
 ## Output targets
