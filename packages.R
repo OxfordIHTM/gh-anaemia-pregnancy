@@ -17,6 +17,7 @@ library(ggplot2)
 library(writexl)
 library(pwr)
 library(tibble)
+library(epitools)
 
 
 ## Packages for data cleaning, processing, and checking ----
