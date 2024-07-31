@@ -1,6 +1,6 @@
 ---
 title: "Anaemia in pregnancy in Ghana"
-subtitle: "Various analysis options"
+subtitle: "Various bivariate analysis options"
 author: "Shih-Ting Tseng and Proochista Ariana"
 date: "`r format(Sys.time(), format = '%d %B %Y %H:%M')`"
 output:
@@ -83,6 +83,15 @@ table(df$higher_education)
 Currently, we have information on the town/general area where the pregnant women are from. This exposure variable proxies distance from the clinic. In similar studies done in the context of Ghana[^4], distance to services was classified as being services within community or outside community. This is a possible classification that can be used with our dataset. The main thing to determine is a criteria for classifying within community services. This can be a distance criteria using the health clinic catchment area concept. Generally, clinic catchment area is defined as the area up to 10 kms radius from the health clinic.
 
 Another way of approaching this is using the dataset used in the paper on spatial inequalities in skilled birth attendance in Ghana[^5] and then plotting the geolocations of the towns and of the health clinic and then calculating a rough distance between these towns and the health clinic. Anything that is more than 10 kms in distance will be considered outside community and anything 10 kms or less will be considered within community
+
+## Bivariate analysis - odds ratio
+
+### Anaemia status and early childbearing
+
+```{r}
+with(df, table(early_childbearing, anaemia_status)) |>
+  fisher.test(simulate.p.value = TRUE)
+```
 
 
 [^1]: https://data.unicef.org/topic/child-health/adolescent-health/#:~:text=Early%20pregnancy%20and%20childbearing%20can,and%20early%20and%20forced%20marriage.
