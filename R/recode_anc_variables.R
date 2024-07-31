@@ -33,4 +33,3 @@ recode_anc_variables <- function(anc_data_processed) {
       )
     )
 }
-
