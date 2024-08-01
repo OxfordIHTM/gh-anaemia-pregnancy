@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Anaemia in pregnancy in a rural health facility in central district of Ghana <a href="https://amicusonlus.org/" target="_blank"><img src="https://amicusonlus.org/wp-content/uploads/2022/09/PHOTO-2022-08-30-21-44-45-removebg-preview.png" width="300px" align="right" /></a> <a href="https://www.tropicalmedicine.ox.ac.uk/study-with-us/msc-ihtm" target="_blank"><img src="https://podcasts.ox.ac.uk/sites/default/files/image-mirror/unpacking-fundamentals-global-health-towards-new-generation-leadership.png" width="150px" align="right" /></a>
+# Anaemia in pregnancy in a rural health facility in central district of Ghana <a href="https://amicusonlus.org/" target="_blank"><img src="https://amicusonlus.org/wp-content/uploads/2022/09/PHOTO-2022-08-30-21-44-45-removebg-preview.png" width="250px" align="right" /></a> <a href="https://www.tropicalmedicine.ox.ac.uk/study-with-us/msc-ihtm" target="_blank"><img src="https://podcasts.ox.ac.uk/sites/default/files/image-mirror/unpacking-fundamentals-global-health-towards-new-generation-leadership.png" width="150px" align="right" /></a>
 
 <!-- badges: start -->
 
