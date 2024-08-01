@@ -66,7 +66,7 @@ recode_anc_model_variables <- function(anc_data_recode) {
 create_anc_model_data <- function(anc_data_model_recode) {
   anc_data_model_recode |>
     dplyr::select(
-      haemoglobin, anaemia_status, early_childbearing, 
+      haemoglobin, anaemia_status, age, early_childbearing, 
       livelihoods, secondary_education, marital_status, location
     ) |>
     dplyr::mutate(
