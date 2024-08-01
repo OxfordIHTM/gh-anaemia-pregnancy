@@ -15,7 +15,8 @@ knitr::opts_chunk$set(
   warning = FALSE,
   message = FALSE,
   error = FALSE,
-  echo = FALSE
+  echo = FALSE,
+  fig.path = here::here("outputs/figures/")
 )
 
 suppressPackageStartupMessages(source(here::here("packages.R")))
@@ -343,9 +344,20 @@ logit_model <- glm(
 summary(logit_model)
 ```
 
-```{r, echo = TRUE}
+```{r}
+summarise_glm_output(
+  logit_model, 
+  exponentiate = TRUE, 
+  tidy = TRUE, 
+  col_names = c("Exposure", "Odds Ratio", "95% CI", "p-value")
+)
+```
+
+```{r logit-diagnostic, fig.show="hide"}
 boot::glm.diag.plots(logit_model)
 ```
+
+We note that the summary outputs of the logit model present odds ratio that are still at best weakly significant assocition for some variables but the relevant variables are different from those obtained with the bivariate analysis. It is likely that some confouding exists and the that generalised linear model has accounted for this.
 
 ### Gaussian
 
@@ -360,7 +372,11 @@ gaussian_model <- glm(
 summary(gaussian_model)
 ```
 
-```{r, echo = TRUE}
+```{r}
+summarise_glm_output(gaussian_model, tidy = TRUE)
+```
+
+```{r gaussian-diagnostic, fig.show="hide"}
 boot::glm.diag.plots(gaussian_model)
 ```
 

@@ -191,6 +191,12 @@ report_targets <- tar_plan(
     name = anc_data_raw_review_report,
     path = "reports/gh_anc_data_report.Rmd",
     knit_root_dir = here::here()
+  ),
+  ### Render example bivariate data analysis report ----
+  tar_render(
+    name = anc_data_analysis_report,
+    path = "reports/gh_anc_bivariate.Rmd",
+    knit_root_dir = here::here()
   )
 )
 
