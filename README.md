@@ -137,6 +137,7 @@ graph LR
     x6262f74751558db7(["anc_data_model"]):::uptodate --> x11c78e49bf183f4f(["anc_data_model_csv"]):::uptodate
     x2d826175fca676e3(["anc_gaussian_model"]):::uptodate --> x9265d4ebfbcc5e37(["anc_gaussian_model_summary"]):::uptodate
     xbba39ca9e518ed94(["anc_data_raw"]):::uptodate --> x8a8877168229f4dd(["anc_data_raw_metadata"]):::uptodate
+    xa2691830171b0cf9(["anc_data_recode"]):::uptodate --> x4e5d056abbac74dc(["anc_data_analysis_report"]):::uptodate
     xc84eb75d2309c0e2(["anc_data_model_recode"]):::uptodate --> x77712cf549a15628(["anc_bivariate_fisher_test"]):::uptodate
     xc84eb75d2309c0e2(["anc_data_model_recode"]):::uptodate --> x6262f74751558db7(["anc_data_model"]):::uptodate
     x34b86f86bb8014ea(["anc_data_processed_metadata"]):::uptodate --> x2d4384c638b4d284(["anc_data_processed_metadata_csv"]):::uptodate
@@ -198,14 +199,8 @@ will run all targets whose names contain *“metadata”*.
 ## Project Team
 
   - Shih-Ting Tseng - University of Oxford
-
   - Proochista Ariana - University of Oxford
-
   - Caesar Atuire - University of Oxford
-
-  - Ernest Guevarra - University of Oxford
-
-## Licenses
 
 All code created through this project (found in this repository) is
 released under a [GPL-3.0
