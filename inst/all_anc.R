@@ -366,10 +366,6 @@ ggplot(anc_data_processed_subset, aes(x = age, y = haemoglobin)) +
        y = "Haemoglobin Level(g/dL)") +
   theme_minimal()
 
-# Display the regression results in a tidy format
-lm_tidy <- tidy(lm_model)
-print(lm_tidy)
-
 
 
 
