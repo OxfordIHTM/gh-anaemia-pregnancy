@@ -227,7 +227,7 @@ will run all targets whose names contain *“metadata”*.
 
   - Shih-Ting Tseng - University of Oxford
   - Proochista Ariana - University of Oxford
-  - Caesar Atuire - University of Oxford
+  - Caesar Atuire - University of Oxford/Biriwa Baobab Medical Centre
 
 ## Licenses
 
