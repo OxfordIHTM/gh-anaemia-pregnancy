@@ -11,18 +11,22 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Anaemia in pregnancy in Ghana <a href="https://www.tropicalmedicine.ox.ac.uk/study-with-us/msc-ihtm" target="_blank"><img src="https://podcasts.ox.ac.uk/sites/default/files/image-mirror/unpacking-fundamentals-global-health-towards-new-generation-leadership.png" width="150px" align="right" /></a>
+# Anaemia in pregnancy in a rural health facility in central district of Ghana <a href="https://amicusonlus.org/" target="_blank"><img src="https://amicusonlus.org/wp-content/uploads/2022/09/PHOTO-2022-08-30-21-44-45-removebg-preview.png" width="300px" align="right" /></a> <a href="https://www.tropicalmedicine.ox.ac.uk/study-with-us/msc-ihtm" target="_blank"><img src="https://podcasts.ox.ac.uk/sites/default/files/image-mirror/unpacking-fundamentals-global-health-towards-new-generation-leadership.png" width="150px" align="right" /></a>
 
 <!-- badges: start -->
 [![License for code](https://img.shields.io/badge/license (for code)-GPL3.0-blue.svg)](https://opensource.org/licenses/gpl-3.0.html)
 ![License for data](https://img.shields.io/badge/license (for data)-restricted-red)
 <!-- badges: end -->
 
-This repository is a [`docker`](https://www.docker.com/get-started)-containerised, [`{targets}`](https://docs.ropensci.org/targets/)-based, [`{renv}`](https://rstudio.github.io/renv/articles/renv.html)-enabled [`R`](https://cran.r-project.org/) workflow for the project on *Anaemia in pregnancy in Ghana*.
+This repository is a [`docker`](https://www.docker.com/get-started)-containerised, [`{targets}`](https://docs.ropensci.org/targets/)-based, [`{renv}`](https://rstudio.github.io/renv/articles/renv.html)-enabled [`R`](https://cran.r-project.org/) workflow for the project on *Anaemia in pregnancy in a rural health facility in central district of Ghana*.
 
 ## About the Project
 
+This is a descriptive cross-sectional study that aims to determine the burden and determinants of anaemia among pregnant women attending the antenatal clinic at a rural health facility in the Central District of Ghana. The targeted population for the study consists of all pregnant women who received antenatal care (ANC) at Biriwa Baobab Medical Centre, a rural clinic in the Central District of Ghana. 
 
+Ghana divides healthcare providers into five levels: 1) health posts, which provide primary care in rural areas; 2) health centres and clinics; 3) district hospitals; 4) regional hospitals; and 5) tertiary hospitals. Biriwa Baobab Medical Centre is a "health centre and clinic" that mostly serves the nearby communities. It has several departments, including maternal units, the Outpatient Department (OPD), the emergency room (ER), the pharmacy, the lab, and the registration unit. There is one physical assistant and three nurses responsible for OPD, the ward, and the ER. A staff member handles registration, a pharmacist manages the pharmacy, two technicians handle the lab, two midwives oversee the maternal unit, and the manager manages everything in the medical centre. The maternal unit is their primary source of income. The maternal unit primarily generates revenue from the provision of antenatal care (ANC), delivery, and postnatal care (PNC). The ANC unit registers around 270 pregnant women annually and conducts 30 ANC visits each month. 
+
+The study encompasses pregnant women who received antenatal care (ANC) at Biriwa Baobab Medical Centre in 2023 and early 2024. The study excludes pregnant women who do not have digital medical records. 
 
 ## Repository Structure
 
@@ -72,7 +76,7 @@ gh-anaemia-pregnancy
 
 ### R package dependencies
 
-This project was built using `R 4.4.0`. This project uses the `{renv}` package framework to record R package dependencies and versions. Packages and versions used are recorded in `renv.lock` and code used to manage dependencies is in `renv/` and other files in the root project directory. On starting an R session in the working directory, run `renv::restore()` to install R package dependencies.
+This project was built using `R 4.4.1`. This project uses the `{renv}` package framework to record R package dependencies and versions. Packages and versions used are recorded in `renv.lock` and code used to manage dependencies is in `renv/` and other files in the root project directory. On starting an R session in the working directory, run `renv::restore()` to install R package dependencies.
 
 On starting an R session in the working directory, run 
 
