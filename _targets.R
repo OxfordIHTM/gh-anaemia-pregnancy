@@ -84,6 +84,36 @@ analysis_targets <- tar_plan(
   tar_target(
     name = anc_data_summary_bivariate_table,
     command = summarise_anc_data_bivariate(anc_data_recode)
+  ),
+  ### Recode model variables ----
+  tar_target(
+    name = anc_data_model_recode,
+    command = recode_anc_model_variables(anc_data_recode)
+  ),
+  ### Create model data ----
+  tar_target(
+    name = anc_data_model,
+    command = create_anc_model_data(anc_data_model_recode)
+  ),
+  ### Bivariate analysis - odds ratio ----
+  tar_target(
+    name = anc_bivariate_fisher_test,
+    command = test_anc_bivariate_fisher(anc_data_model_recode)
+  ),
+  ### Summary odds ratio table ----
+  tar_target(
+    name = anc_odds_ratio_table,
+    command = summarise_fisher_test_table(anc_bivariate_fisher_test)
+  ),
+  ### Bivariate analysis - t-test ----
+  tar_target(
+    name = anc_bivariate_t_test,
+    command = test_anc_bivariate_t(anc_data_model_recode)
+  ),
+  ### Summary t-test table ----
+  tar_target(
+    name = anc_t_test_table,
+    command = summarise_t_test_table(anc_bivariate_t_test)
   )
 )
 
