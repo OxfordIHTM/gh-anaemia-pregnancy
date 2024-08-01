@@ -32,4 +32,8 @@ library(micronutr)
 library(oxthema)
 
 
-
+## Packages for tables formattting and friends ----
+library(gtsummary)
+library(broom)
+library(broom.helpers)
+library(parameters)
