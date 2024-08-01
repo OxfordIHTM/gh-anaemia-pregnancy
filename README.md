@@ -122,7 +122,7 @@ The project repository is structured as follows:
 
 ### R package dependencies
 
-This project was built using `R 4.4.0`. This project uses the `{renv}`
+This project was built using `R 4.4.1`. This project uses the `{renv}`
 package framework to record R package dependencies and versions.
 Packages and versions used are recorded in `renv.lock` and code used to
 manage dependencies is in `renv/` and other files in the root project
