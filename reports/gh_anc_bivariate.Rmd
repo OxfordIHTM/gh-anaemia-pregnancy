@@ -1,0 +1,375 @@
+---
+title: "Anaemia in pregnancy in Ghana"
+subtitle: "Various bivariate analysis options"
+author: "Shih-Ting Tseng and Proochista Ariana"
+date: "`r format(Sys.time(), format = '%d %B %Y %H:%M')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    code_download: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  echo = FALSE
+)
+
+suppressPackageStartupMessages(source(here::here("packages.R")))
+for (f in list.files(here::here("R"), full.names = TRUE)) source (f)
+
+targets::tar_load(anc_data_recode)
+```
+
+In this document, we demonstrate steps taken in performing bivariate analysis of outcome variable (anaemia status) with available and potential exposure variables (age, profession, education level, marital status, location).
+
+## Recode exposure variables to two category classifications
+
+Currently, only the marital status variable uses a two category classification (married, single). We can simplify the other exposure variable such that they have a two category classification as well.
+
+### Age
+
+Bearing a child at an age less than 20 years old is considered high risk[^1],[^2] and are associated with various maternal morbidities (including anaemia) and maternal mortality. Given this, we can re-classify age into a two categories of those **20 years and older** and those **less than 20 years old**.
+
+```{r, echo = TRUE}
+## Processing code for re-classification of age ----
+df <- anc_data_recode |>
+  dplyr::mutate(
+    early_childbearing = ifelse(age < 20, "Yes", "No") |>
+      factor(levels = c("Yes", "No"))
+  )
+
+## Check re-classification ----
+table(df$early_childbearing)
+```
+
+### Profession or employment or means of earning a living
+
+Currently, the dataset contains 12 distinct professions or employment or means of earning a living. From the point of view of characterising those who are likely to suffer from anaemia during pregnancy, we can re-classify this to those who have a profession or employment or a means of livelihood and to those who do not.
+
+```{r, echo = TRUE}
+## Processing code for re-classification of profession ----
+df <- df |>
+  dplyr::mutate(
+    livelihoods = ifelse(profession %in% c("None", "Student"), "No", "Yes") |>
+      factor(levels = c("Yes", "No"))
+  )
+
+## Check re-classification ----
+table(df$livelihoods)
+```
+
+### Education level
+
+Currently, there are 4 educational level categories in the dataset based on the Ghanian education system. From the point of view of characterising those who are likely to suffer from anaemia during pregnancy, we can re-classify this to those who have had any formal education and to those who have not. This re-classification assumes that even primary education is a distinguishing feature that can differentiate women who suffer from anaemia during pregnancy. However, literature suggests that it might be about secondary education and higher that is more important[^3].
+
+```{r, echo = TRUE}
+## Processing code for re-classification of education level ----
+df <- df |>
+  dplyr::mutate(
+    higher_education = ifelse(
+      education_level %in% c("None", "Primary"), "No", "Yes"
+    ) |>
+      factor(levels = c("Yes", "No"))
+  )
+
+## Check re-classification ----
+table(df$higher_education)
+```
+
+### Marital status
+
+Marital status is already in two categories so this can remain as is.
+
+```{r, echo = TRUE}
+## Tabulate marital status ----
+table(df$marital_status)
+```
+
+### Location
+
+Currently, we have information on the town/general area where the pregnant women are from. This exposure variable proxies distance from the clinic. In similar studies done in the context of Ghana[^4], distance to services was classified as being services within community or outside community. This is a possible classification that can be used with our dataset. The main thing to determine is a criteria for classifying within community services. This can be a distance criteria using the health clinic catchment area concept. Generally, clinic catchment area is defined as the area up to 10 kms radius from the health clinic.
+
+Another way of approaching this is using the dataset used in the paper on spatial inequalities in skilled birth attendance in Ghana[^5] and then plotting the geolocations of the towns and of the health clinic and then calculating a rough distance between these towns and the health clinic. Anything that is more than 10 kms in distance will be considered outside community and anything 10 kms or less will be considered within community.
+
+Both these options require getting geocoordinates for the reported locations and get rough distances. Such estimation itself can be onerous and complicated. For purposes of simplicity and consistent with the idea of within community and outside community described in the earlier paper, we looked at Google Maps and roughly located the general area of the health clinic which is in Biriwa and two other towns that are quite near to Biriwa namely Anomabo and Yamoransa.
+
+```{r, echo = TRUE}
+## Processing code for re-classification of location ----
+df <- df |>
+  dplyr::mutate(
+    location = ifelse(
+      address %in% c("Anomabo", "Biriwa", "Yamoransa"), 
+      "Within community", "Outside community"
+    ) |>
+      factor(levels = c("Within community", "Outside community"))
+  )
+
+## Check re-classification ----
+table(df$higher_education)
+```
+
+## Bivariate analysis - odds ratio
+
+To estimate odds ratio, we use the Fisher's Exact Test given the small sample sizes.
+
+### Anaemia status and early childbearing
+
+```{r, echo = TRUE}
+with(df, table(early_childbearing, anaemia_status)) |>
+  fisher.test(simulate.p.value = TRUE)
+```
+
+### Anaemia status and livelihoods
+
+```{r, echo = TRUE}
+with(df, table(livelihoods, anaemia_status)) |>
+  fisher.test(simulate.p.value = TRUE)
+```
+
+### Anaemia status and education
+
+```{r, echo = TRUE}
+with(df, table(higher_education, anaemia_status)) |>
+  fisher.test(simulate.p.value = TRUE)
+```
+
+### Anaemia status and marital status
+
+```{r, echo = TRUE}
+with(df, table(marital_status, anaemia_status)) |>
+  fisher.test(simulate.p.value = TRUE)
+```
+
+### Anaemia status and location
+
+```{r, echo = TRUE}
+with(df, table(location, anaemia_status)) |>
+  fisher.test(simulate.p.value = TRUE)
+```
+
+### Anaemia status bivariate odds ratio summary
+
+```{r, echo = TRUE}
+odds_ratio_table <- Map(
+  f = fisher.test,
+  x = list(
+    with(df, table(early_childbearing, anaemia_status)),
+    with(df, table(livelihoods, anaemia_status)),
+    with(df, table(higher_education, anaemia_status)),
+    with(df, table(marital_status, anaemia_status)),
+    with(df, table(location, anaemia_status))
+  ),
+  simulate.p.value = TRUE
+) |>
+  (\(x) 
+    { 
+      names(x) <- c(
+        "Early childbearing", "Livelihoods", "Higher education", 
+        "Marital status", "Location"
+      )
+      x 
+    }
+  )() |>
+  lapply(
+    FUN = function(x) 
+      data.frame(
+        odds_ratio = x$estimate,
+        lcl = x$conf.int[1],
+        ucl = x$conf.int[2],
+        p_value = x$p.value
+      )
+  ) |>
+  dplyr::bind_rows(.id = "exposure")
+
+row.names(odds_ratio_table) <- NULL 
+
+odds_ratio_table
+```
+
+```{r}
+odds_ratio_table |>
+  dplyr::mutate(
+    lcl = scales::label_number(accuracy = 0.001)(lcl),
+    ucl = scales::label_number(accuracy = 0.001)(ucl),
+    odds_ratio = paste0(
+      scales::label_number(accuracy = 0.001)(odds_ratio),
+      " (", lcl, ", ", ucl, ")"
+    ),
+    p_value = scales::label_pvalue()(p_value)
+  ) |>
+  dplyr::select(exposure, odds_ratio, p_value) |>
+  knitr::kable(
+    col.names = c(
+      "Exposure", "Odds Ratio (95% CI)", "p-value"
+    )
+  ) |>
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "bordered"),
+    full_width = FALSE
+  )
+```
+
+## Bivariate analysis - t-test
+
+### Anaemia status and early childbearing
+
+```{r, echo = TRUE}
+t.test(haemoglobin ~ early_childbearing, data = df)
+```
+
+### Anaemia status and livelihoods
+
+```{r, echo = TRUE}
+t.test(haemoglobin ~ livelihoods, data = df)
+```
+
+### Anaemia status and higher education
+
+```{r, echo = TRUE}
+t.test(haemoglobin ~ higher_education, data = df)
+```
+
+### Anaemia status and marital status
+
+```{r, echo = TRUE}
+t.test(haemoglobin ~ marital_status, data = df)
+```
+
+### Anaemia and location
+
+```{r, echo = TRUE}
+t.test(haemoglobin ~ location, data = df)
+```
+
+### Anaemia status bivariate t-test summary
+
+```{r, echo = TRUE}
+t_test_table <- Map(
+  f = t.test,
+  formula = list(
+    eval(parse(text = "haemoglobin ~ early_childbearing")),
+    eval(parse(text = "haemoglobin ~ livelihoods")),
+    eval(parse(text = "haemoglobin ~ higher_education")),
+    eval(parse(text = "haemoglobin ~ marital_status")),
+    eval(parse(text = "haemoglobin ~ location"))
+  ),
+  data = rep(list(df), 5)
+) |>
+  (\(x) 
+    { 
+      names(x) <- c(
+        "Early childbearing", "Livelihoods", "Higher education", 
+        "Marital status", "Location"
+      )
+      x 
+    }
+  )() |>
+  lapply(
+    FUN = function(x) 
+      data.frame(
+        difference_mean = x$estimate[1] - x$estimate[2],
+        lcl = x$conf.int[1],
+        ucl = x$conf.int[2],
+        p_value = x$p.value
+      )
+  ) |>
+  dplyr::bind_rows(.id = "exposure")
+
+row.names(t_test_table) <- NULL 
+
+t_test_table
+```
+
+```{r}
+t_test_table |>
+  dplyr::mutate(
+    lcl = scales::label_number(accuracy = 0.001)(lcl),
+    ucl = scales::label_number(accuracy = 0.001)(ucl),
+    difference_mean = paste0(
+      scales::label_number(accuracy = 0.001)(difference_mean),
+      " (", lcl, ", ", ucl, ")"
+    ),
+    p_value = scales::label_pvalue()(p_value)
+  ) |>
+  dplyr::select(exposure, difference_mean, p_value) |>
+  knitr::kable(
+    col.names = c(
+      "Exposure", "Mean Difference (95% CI)", "p-value"
+    )
+  ) |>
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "bordered"),
+    full_width = FALSE
+  )
+```
+
+## Generalized linear model
+
+```{r, echo = TRUE}
+anaemia_model <- df |>
+  dplyr::select(
+    haemoglobin, anaemia_status, early_childbearing, 
+    livelihoods, higher_education, marital_status, location
+  ) |>
+  dplyr::mutate(
+    anaemia_status = ifelse(anaemia_status == "anaemia", 1, 0),
+    early_childbearing = ifelse(early_childbearing == "Yes", 1, 0),
+    livelihoods = ifelse(livelihoods == "Yes", 1, 0),
+    higher_education = ifelse(higher_education == "Yes", 1, 0),
+    marital_status = ifelse(marital_status == "married", 1, 0),
+    location = ifelse(location == "Within community", 1, 0),
+  ) |>
+  na.omit()
+```
+
+### Binomial logit
+
+```{r, echo = TRUE}
+logit_model <- glm(
+  formula = anaemia_status ~ early_childbearing + livelihoods + 
+    higher_education + marital_status + location, 
+  family = binomial(logit), 
+  data = anaemia_model
+)
+
+summary(logit_model)
+```
+
+```{r, echo = TRUE}
+boot::glm.diag.plots(logit_model)
+```
+
+### Gaussian
+
+```{r, echo = TRUE}
+gaussian_model <- glm(
+  formula = haemoglobin ~ early_childbearing + livelihoods + 
+    higher_education + marital_status + location, 
+  family = gaussian(), 
+  data = anaemia_model
+)
+  
+summary(gaussian_model)
+```
+
+```{r, echo = TRUE}
+boot::glm.diag.plots(gaussian_model)
+```
+
+<br/>
+<br/>
+
+
+[^1]: https://data.unicef.org/topic/child-health/adolescent-health/#:~:text=Early%20pregnancy%20and%20childbearing%20can,and%20early%20and%20forced%20marriage.
+
+[^2]: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8173845/#:~:text=Girls%20who%20get%20married%20and,been%20quantified%20in%20previous%20studies.
+
+[^3]: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5954959/#:~:text=3.3.&text=Women%20with%20secondary%20education%20or,associated%20with%20anaemia%20during%20pregnancy.
+
+[^4]: https://link.springer.com/article/10.1007/s43999-024-00042-0
+
+[^5]: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7613541/

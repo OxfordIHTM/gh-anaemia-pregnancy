@@ -54,12 +54,6 @@ processing_targets <- tar_plan(
     command = create_anc_data_processed_csv(anc_data_processed),
     format = "file"
   ),
-  ### Create processed ANC data CSV ----
-  tar_target(
-    name = anc_data_processed07_csv,
-    command = create_anc_data_processed07_csv(anc_data_processed07),
-    format = "file"
-  ),
   ### Create processed ANC data metadata ----
   tar_target(
     name = anc_data_processed_metadata,
@@ -90,34 +84,38 @@ analysis_targets <- tar_plan(
   tar_target(
     name = anc_data_summary_bivariate_table,
     command = summarise_anc_data_bivariate(anc_data_recode)
+  ),
+  ### Recode model variables ----
+  tar_target(
+    name = anc_data_model_recode,
+    command = recode_anc_model_variables(anc_data_recode)
+  ),
+  ### Create model data ----
+  tar_target(
+    name = anc_data_model,
+    command = create_anc_model_data(anc_data_model_recode)
+  ),
+  ### Bivariate analysis - odds ratio ----
+  tar_target(
+    name = anc_bivariate_fisher_test,
+    command = test_anc_bivariate_fisher(anc_data_model_recode)
+  ),
+  ### Summary odds ratio table ----
+  tar_target(
+    name = anc_odds_ratio_table,
+    command = summarise_fisher_test_table(anc_bivariate_fisher_test)
+  ),
+  ### Bivariate analysis - t-test ----
+  tar_target(
+    name = anc_bivariate_t_test,
+    command = test_anc_bivariate_t(anc_data_model_recode)
+  ),
+  ### Summary t-test table ----
+  tar_target(
+    name = anc_t_test_table,
+    command = summarise_t_test_table(anc_bivariate_t_test)
   )
 )
-
-
-
-## Analysis targets
-analysis_targets <- tar_plan(
-  ### Recode new ANC data variables ----
-  tar_target(
-    name = anc_data_recode_2023,
-    command = recode_anc_variables(anc_data_processed_subset_2023)
-  ),
-  
-  
-  
-  ### Create univariate summary tables ----
-  tar_target(
-    name = anc_data_summary_univariate_table_2023,
-    command = summarise_anc_data_univariate(anc_data_recode_2023)
-  ),
-  ### Create bivariate summary tables ----
-  tar_target(
-    name = anc_data_summary_bivariate_table_2023,
-    command = summarise_anc_data_bivariate(anc_data_recode_2023)
-  )
-)
-
-
 
 
 ## Output targets

@@ -169,4 +169,3 @@ create_metadata_processed_csv <- function(anc_data_processed_metadata) {
   
   "metadata/anc_data_processed_metadata.csv"
 }
-
