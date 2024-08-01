@@ -229,6 +229,8 @@ will run all targets whose names contain *“metadata”*.
   - Proochista Ariana - University of Oxford
   - Caesar Atuire - University of Oxford
 
+## Licenses
+
 All code created through this project (found in this repository) is
 released under a [GPL-3.0
 license](https://opensource.org/licenses/gpl-3.0.html).
