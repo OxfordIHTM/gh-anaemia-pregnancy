@@ -246,6 +246,19 @@ sicklecell_summary <- data.frame(
 print(sicklecell_summary)
 
 
+# Calculate the number of people in sickle cell
+an_ca_counts <- table(anc_data_processed_subset_2023$anaemia_category)
+print(an_ca_counts)
+an_ca_percentages <- prop.table(an_ca_counts) * 100
+an_ca_summary <- data.frame(
+  an_ca = names(an_ca_counts),
+  Count_and_Percentage = paste(an_ca_counts, "(", round(an_ca_percentages, 2), "%)", sep = "")
+)
+
+print(an_ca_summary)
+
+
+
 ##-----------------------------------------------------------------------------------------------------##
 ####anaemia status and different varable####
 # anaemia status and age group

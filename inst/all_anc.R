@@ -6,11 +6,11 @@ anc_data_processed_subset <- anc_data_processed0728 %>%
     total_n = n(),
     age_group = cut(
       x = age,
-      breaks = c(-Inf, 15, 20, 25, 30, 35, 40, 45, Inf),
+      breaks = c( 15, 20, 25, 30, 35, 40, 45),
       labels = c(
-        "under 15 years", "15 to 19 years", "20 to 24 years", "25 to 29 years", 
+         "15 to 19 years", "20 to 24 years", "25 to 29 years", 
         "30 to 34 years", "35 to 39, years", 
-        "40 to 44 years", "45 years and older"
+        "40 to 44 years"
       ),
       include.lowest = TRUE, right = FALSE
     ),
@@ -726,6 +726,8 @@ ggplot(anc_data_filtered, aes(x = marital_status, y = haemoglobin, fill = marita
   scale_fill_brewer(palette = "Set3")
 
 ####other relationship####---------------------------------------------------------------------------------------
+#Age and education level 
+
 # Education level and profession
 # Ensure no missing values before analysis
 anc_data_processed_subset <- anc_data_processed_subset %>%
@@ -874,6 +876,7 @@ print(colnames(meanci_by_ed))
 # Print the results
 print(meanci_by_ed)
 
+
 #profession
 meanci_by_profession <- anc_data_processed_subset %>%
   group_by(profession_summary1) %>%
@@ -891,6 +894,59 @@ colnames(meanci_by_profession)[1] <- "variable"
 print(colnames(meanci_by_profession))
 # Print the results
 print(meanci_by_profession)
+
+
+
+
+# Filter out rows with NA values in education_summary1 and haemoglobin
+anc_data_filtered_education <- anc_data_processed_subset %>%
+  filter(!is.na(education_level_summary1), !is.na(haemoglobin))
+
+# Calculate means and confidence intervals by education_summary1
+meanci_by_education <- anc_data_filtered_education %>%
+  group_by(education_level_summary1) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
+  )
+colnames(meanci_by_education)[1] <- "variable"
+
+# Print the results for education group
+print(colnames(meanci_by_education))
+print(meanci_by_education)
+
+# Perform ANOVA to get the p-value for education group
+anova_education <- aov(haemoglobin ~ education_level_summary1, data = anc_data_filtered_education)
+summary_anova_education <- summary(anova_education)
+# Extract the p-value from the ANOVA summary for education group
+p_value_education <- summary_anova_education[[1]][["Pr(>F)"]][1]
+
+# Print the p-value for education group
+print(paste("P-value for the relationship between haemoglobin levels and education group:", p_value_education))
+
+
+#age group==>p=0.0365
+# Calculate means and confidence intervals by age_group
+meanci_by_age_group <- anc_data_processed_subset %>%
+  group_by(age_group) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
+  )
+colnames(meanci_by_age_group)[1] <- "variable"
+print(colnames(meanci_by_age_group))
+print(meanci_by_age_group)
+anova_age_group <- aov(haemoglobin ~ age_group, data = anc_data_processed_subset)
+summary_anova_age_group <- summary(anova_age_group)
+p_value_age_group <- summary_anova_age_group[[1]][["Pr(>F)"]][1]
+print(paste("P-value for the relationship between haemoglobin levels and age group:", p_value_age_group))
+
 
 
 
@@ -969,6 +1025,35 @@ print(colnames(meanci_by_lo))
 print(meanci_by_lo)
 
 
+anc_data_filtered_address <- anc_data_processed_subset %>%
+  filter(!is.na(address_group), !is.na(haemoglobin))
+
+# Calculate means and confidence intervals by address_group
+meanci_by_address <- anc_data_filtered_address %>%
+  group_by(address_group) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
+  )
+colnames(meanci_by_address)[1] <- "variable"
+
+# Print the results for address group
+print(colnames(meanci_by_address))
+print(meanci_by_address)
+
+# Perform ANOVA to get the p-value for address group
+anova_address <- aov(haemoglobin ~ address_group, data = anc_data_filtered_address)
+summary_anova_address <- summary(anova_address)
+# Extract the p-value from the ANOVA summary for address group
+p_value_address <- summary_anova_address[[1]][["Pr(>F)"]][1]
+
+# Print the p-value for address group
+print(paste("P-value for the relationship between haemoglobin levels and address group:", p_value_address))
+
+
 
 # Calculate mean, standard deviation, and confidence intervals by marital status
 
@@ -997,8 +1082,12 @@ print(paste("P-value for the relationship between haemoglobin levels and marital
 
 
 
-#sickle cell
-meanci_by_si <- anc_data_processed_subset %>%
+# Filter out rows with NA values in sickle_cell and haemoglobin
+anc_data_filtered_sickle_cell <- anc_data_processed_subset %>%
+  filter(!is.na(sickle_cell), !is.na(haemoglobin))
+
+# Calculate means and confidence intervals by sickle_cell
+meanci_by_sickle_cell <- anc_data_filtered_sickle_cell %>%
   group_by(sickle_cell) %>%
   summarise(
     mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
@@ -1007,11 +1096,21 @@ meanci_by_si <- anc_data_processed_subset %>%
     lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
     upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
   )
-colnames(meanci_by_si)[1] <- "variable"
+colnames(meanci_by_sickle_cell)[1] <- "variable"
 
-print(colnames(meanci_by_si))
-# Print the results
-print(meanci_by_si)
+# Print the results for sickle_cell group
+print(colnames(meanci_by_sickle_cell))
+print(meanci_by_sickle_cell)
+
+# Perform ANOVA to get the p-value for sickle_cell group
+anova_sickle_cell <- aov(haemoglobin ~ sickle_cell, data = anc_data_filtered_sickle_cell)
+summary_anova_sickle_cell <- summary(anova_sickle_cell)
+# Extract the p-value from the ANOVA summary for sickle_cell group
+p_value_sickle_cell <- summary_anova_sickle_cell[[1]][["Pr(>F)"]][1]
+
+# Print the p-value for sickle_cell group
+print(paste("P-value for the relationship between haemoglobin levels and sickle_cell group:", p_value_sickle_cell))
+
 
 
 #marital 
@@ -1138,6 +1237,40 @@ result_sickle <- calculate_summary_and_anova(anc_data_processed_subset, "sickle_
 print("Sickle cell:")
 print(result_sickle$summary_stats)
 print(paste("P-value for the relationship between haemoglobin levels and sickle cell:", result_sickle$p_value))
+
+
+
+####age and education###
+calculate_summary_and_anova <- function(data, group_var) {
+  data_filtered <- data %>%
+    filter(!is.na(!!sym(group_var)), !is.na(age))
+  
+  summary_stats <- data_filtered %>%
+    group_by(!!sym(group_var)) %>%
+    summarise(
+      mean_age = mean(age, na.rm = TRUE),
+      sd_age = sd(age, na.rm = TRUE),
+      n = n(),
+      lower_ci = mean(age, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(age, na.rm = TRUE) / sqrt(n())),
+      upper_ci = mean(age, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(age, na.rm = TRUE) / sqrt(n()))
+    )
+  
+  colnames(summary_stats)[1] <- "variable"
+  
+  # Perform ANOVA
+  anova_result <- aov(age ~ get(group_var), data = data_filtered)
+  summary_anova <- summary(anova_result)
+  
+  # Extract the p-value
+  p_value <- summary_anova[[1]][["Pr(>F)"]][1]
+  
+  list(summary_stats = summary_stats, p_value = p_value)
+}
+
+# Calculate summary and ANOVA for education_level_summary
+result_education <- calculate_summary_and_anova(anc_data_processed_subset, "education_level_summary1")
+print(result_education$summary_stats)
+print(paste("P-value for the relationship between age and education level:", result_education$p_value))
 
             
             
