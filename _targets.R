@@ -103,7 +103,9 @@ analysis_targets <- tar_plan(
   ### Summary odds ratio table ----
   tar_target(
     name = anc_odds_ratio_table,
-    command = summarise_fisher_test_table(anc_bivariate_fisher_test)
+    command = summarise_fisher_test_table(
+      anc_bivariate_fisher_test, tidy = TRUE
+    )
   ),
   ### Bivariate analysis - t-test ----
   tar_target(
@@ -113,14 +115,72 @@ analysis_targets <- tar_plan(
   ### Summary t-test table ----
   tar_target(
     name = anc_t_test_table,
-    command = summarise_t_test_table(anc_bivariate_t_test)
+    command = summarise_t_test_table(anc_bivariate_t_test, tidy = TRUE)
+  ),
+  ### GLM - logit model ----
+  tar_target(
+    name = anc_logit_model,
+    command = glm(
+      formula = anaemia_status ~ early_childbearing + livelihoods + 
+        secondary_education + marital_status + location,
+      family = binomial(), data = anc_data_model
+    )
+  ),
+  ### GLM - logit model summary table ----
+  tar_target(
+    name = anc_logit_model_summary,
+    command = summarise_glm_output(
+      anc_logit_model, exponentiate = TRUE, tidy = TRUE,
+      col_names = c("Exposure", "Odds Ratio", "95% CI", "p-value")
+    )
+  ),
+  ### GLM - gaussian model ----
+  tar_target(
+    name = anc_gaussian_model,
+    command = glm(
+      formula = haemoglobin ~ early_childbearing + livelihoods + 
+        secondary_education + marital_status + location,
+      family = gaussian(), data = anc_data_model
+    )
+  ),
+  ### GLM - logit model summary table ----
+  tar_target(
+    name = anc_gaussian_model_summary,
+    command = summarise_glm_output(anc_gaussian_model, tidy = TRUE)
   )
 )
 
 
 ## Output targets
 output_targets <- tar_plan(
-  
+  ### Output recoded ANC data model as CSV ----
+  tar_target(
+    name = anc_data_model_recode_csv,
+    command = create_csv_output(
+      df = anc_data_model_recode, path = "data/anc_data_model_recode.csv"
+    ),
+    format = "file"
+  ),
+  ### Output ANC data model for GLM ----
+  tar_target(
+    name = anc_data_model_csv,
+    command = create_csv_output(
+      df = anc_data_model, path = "data/anc_data_model"
+    ),
+    format = "file"
+  ),
+  ### Create XLSX file with all the testing and model results output ----
+  tar_target(
+    name = anc_model_outputs,
+    command = create_xlsx_output(
+      anc_odds_ratio_table,
+      anc_t_test_table,
+      anc_logit_model_summary,
+      anc_gaussian_model_summary,
+      path = "outputs/anc_model_outputs.xlsx"
+    ),
+    format = "file"
+  )
 )
 
 

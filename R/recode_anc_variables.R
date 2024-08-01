@@ -46,7 +46,7 @@ recode_anc_model_variables <- function(anc_data_recode) {
         factor(levels = c("Yes", "No")),
       livelihoods = ifelse(profession %in% c("None", "Student"), "No", "Yes") |>
         factor(levels = c("Yes", "No")),
-      higher_education = ifelse(
+      secondary_education = ifelse(
         education_level %in% c("None", "Primary"), "No", "Yes"
       ) |>
         factor(levels = c("Yes", "No")),
@@ -67,13 +67,13 @@ create_anc_model_data <- function(anc_data_model_recode) {
   anc_data_model_recode |>
     dplyr::select(
       haemoglobin, anaemia_status, early_childbearing, 
-      livelihoods, higher_education, marital_status, location
+      livelihoods, secondary_education, marital_status, location
     ) |>
     dplyr::mutate(
       anaemia_status = ifelse(anaemia_status == "anaemia", 1, 0),
       early_childbearing = ifelse(early_childbearing == "Yes", 1, 0),
       livelihoods = ifelse(livelihoods == "Yes", 1, 0),
-      higher_education = ifelse(higher_education == "Yes", 1, 0),
+      secondary_education = ifelse(secondary_education == "Yes", 1, 0),
       marital_status = ifelse(marital_status == "married", 1, 0),
       location = ifelse(location == "Within community", 1, 0),
     ) |>

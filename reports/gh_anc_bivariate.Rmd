@@ -70,14 +70,14 @@ Currently, there are 4 educational level categories in the dataset based on the 
 ## Processing code for re-classification of education level ----
 df <- df |>
   dplyr::mutate(
-    higher_education = ifelse(
+    secondary_education = ifelse(
       education_level %in% c("None", "Primary"), "No", "Yes"
     ) |>
       factor(levels = c("Yes", "No"))
   )
 
 ## Check re-classification ----
-table(df$higher_education)
+table(df$secondary_education)
 ```
 
 ### Marital status
@@ -109,7 +109,7 @@ df <- df |>
   )
 
 ## Check re-classification ----
-table(df$higher_education)
+table(df$location)
 ```
 
 ## Bivariate analysis - odds ratio
@@ -133,7 +133,7 @@ with(df, table(livelihoods, anaemia_status)) |>
 ### Anaemia status and education
 
 ```{r, echo = TRUE}
-with(df, table(higher_education, anaemia_status)) |>
+with(df, table(secondary_education, anaemia_status)) |>
   fisher.test(simulate.p.value = TRUE)
 ```
 
@@ -159,7 +159,7 @@ odds_ratio_table <- Map(
   x = list(
     with(df, table(early_childbearing, anaemia_status)),
     with(df, table(livelihoods, anaemia_status)),
-    with(df, table(higher_education, anaemia_status)),
+    with(df, table(secondary_education, anaemia_status)),
     with(df, table(marital_status, anaemia_status)),
     with(df, table(location, anaemia_status))
   ),
@@ -168,7 +168,7 @@ odds_ratio_table <- Map(
   (\(x) 
     { 
       names(x) <- c(
-        "Early childbearing", "Livelihoods", "Higher education", 
+        "Early childbearing", "Livelihoods", "Secondary education", 
         "Marital status", "Location"
       )
       x 
@@ -227,10 +227,10 @@ t.test(haemoglobin ~ early_childbearing, data = df)
 t.test(haemoglobin ~ livelihoods, data = df)
 ```
 
-### Anaemia status and higher education
+### Anaemia status and secondary education
 
 ```{r, echo = TRUE}
-t.test(haemoglobin ~ higher_education, data = df)
+t.test(haemoglobin ~ secondary_education, data = df)
 ```
 
 ### Anaemia status and marital status
@@ -253,7 +253,7 @@ t_test_table <- Map(
   formula = list(
     eval(parse(text = "haemoglobin ~ early_childbearing")),
     eval(parse(text = "haemoglobin ~ livelihoods")),
-    eval(parse(text = "haemoglobin ~ higher_education")),
+    eval(parse(text = "haemoglobin ~ secondary_education")),
     eval(parse(text = "haemoglobin ~ marital_status")),
     eval(parse(text = "haemoglobin ~ location"))
   ),
@@ -262,7 +262,7 @@ t_test_table <- Map(
   (\(x) 
     { 
       names(x) <- c(
-        "Early childbearing", "Livelihoods", "Higher education", 
+        "Early childbearing", "Livelihoods", "Secondary education", 
         "Marital status", "Location"
       )
       x 
@@ -307,19 +307,23 @@ t_test_table |>
   )
 ```
 
-## Generalized linear model
+## Generalised linear model
+
+The above bivariate analysis does not take into account confounding between the covariates. Given that possible associations noted are at best weakly significant, this point is irrelevant.
+
+If there were significant associations in the bivariate analysis, a generalised linear model would be able to deal with any possible confounding. Below demonstrates how this would have been implemented.
 
 ```{r, echo = TRUE}
 anaemia_model <- df |>
   dplyr::select(
     haemoglobin, anaemia_status, early_childbearing, 
-    livelihoods, higher_education, marital_status, location
+    livelihoods, secondary_education, marital_status, location
   ) |>
   dplyr::mutate(
     anaemia_status = ifelse(anaemia_status == "anaemia", 1, 0),
     early_childbearing = ifelse(early_childbearing == "Yes", 1, 0),
     livelihoods = ifelse(livelihoods == "Yes", 1, 0),
-    higher_education = ifelse(higher_education == "Yes", 1, 0),
+    secondary_education = ifelse(secondary_education == "Yes", 1, 0),
     marital_status = ifelse(marital_status == "married", 1, 0),
     location = ifelse(location == "Within community", 1, 0),
   ) |>
@@ -331,7 +335,7 @@ anaemia_model <- df |>
 ```{r, echo = TRUE}
 logit_model <- glm(
   formula = anaemia_status ~ early_childbearing + livelihoods + 
-    higher_education + marital_status + location, 
+    secondary_education + marital_status + location, 
   family = binomial(logit), 
   data = anaemia_model
 )
@@ -348,7 +352,7 @@ boot::glm.diag.plots(logit_model)
 ```{r, echo = TRUE}
 gaussian_model <- glm(
   formula = haemoglobin ~ early_childbearing + livelihoods + 
-    higher_education + marital_status + location, 
+    secondary_education + marital_status + location, 
   family = gaussian(), 
   data = anaemia_model
 )

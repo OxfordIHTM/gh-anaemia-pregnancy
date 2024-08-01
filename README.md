@@ -120,25 +120,35 @@ graph LR
   subgraph Graph
     direction LR
     xbba39ca9e518ed94(["anc_data_raw"]):::uptodate --> x597caed207d4fc5d(["anc_data_processed"]):::uptodate
-    x597caed207d4fc5d(["anc_data_processed"]):::uptodate --> x34b86f86bb8014ea(["anc_data_processed_metadata"]):::uptodate
-    x34b86f86bb8014ea(["anc_data_processed_metadata"]):::uptodate --> x2d4384c638b4d284(["anc_data_processed_metadata_csv"]):::uptodate
+    x05812169c4dfa932(["anc_data_raw_file"]):::uptodate --> xbba39ca9e518ed94(["anc_data_raw"]):::uptodate
     x597caed207d4fc5d(["anc_data_processed"]):::uptodate --> x34a9c3203c3a0d4e(["anc_data_raw_review_report"]):::uptodate
     x34b86f86bb8014ea(["anc_data_processed_metadata"]):::uptodate --> x34a9c3203c3a0d4e(["anc_data_raw_review_report"]):::uptodate
     xbba39ca9e518ed94(["anc_data_raw"]):::uptodate --> x34a9c3203c3a0d4e(["anc_data_raw_review_report"]):::uptodate
     x8a8877168229f4dd(["anc_data_raw_metadata"]):::uptodate --> x34a9c3203c3a0d4e(["anc_data_raw_review_report"]):::uptodate
     xa2691830171b0cf9(["anc_data_recode"]):::uptodate --> x83b06018b27c1391(["anc_data_summary_bivariate_table"]):::uptodate
-    xa2691830171b0cf9(["anc_data_recode"]):::uptodate --> xdeea979a9fc8283c(["anc_data_summary_univariate_table"]):::uptodate
-    x597caed207d4fc5d(["anc_data_processed"]):::uptodate --> xa2691830171b0cf9(["anc_data_recode"]):::uptodate
-    x597caed207d4fc5d(["anc_data_processed"]):::uptodate --> x9efa48e5541103b9(["anc_data_processed_csv"]):::uptodate
-    x05812169c4dfa932(["anc_data_raw_file"]):::uptodate --> xbba39ca9e518ed94(["anc_data_raw"]):::uptodate
-    xbba39ca9e518ed94(["anc_data_raw"]):::uptodate --> x8a8877168229f4dd(["anc_data_raw_metadata"]):::uptodate
-    x22e570cd18c3f66c(["anc_bivariate_t_test"]):::uptodate --> x02d4c90c16108e87(["anc_t_test_table"]):::uptodate
-    xc84eb75d2309c0e2(["anc_data_model_recode"]):::uptodate --> x77712cf549a15628(["anc_bivariate_fisher_test"]):::uptodate
-    xc84eb75d2309c0e2(["anc_data_model_recode"]):::uptodate --> x6262f74751558db7(["anc_data_model"]):::uptodate
-    x77712cf549a15628(["anc_bivariate_fisher_test"]):::uptodate --> x2d1d696496197875(["anc_odds_ratio_table"]):::uptodate
+    x9265d4ebfbcc5e37(["anc_gaussian_model_summary"]):::uptodate --> x8f6836dcac596e4d(["anc_model_outputs"]):::uptodate
+    x2d44714c6076aea5(["anc_logit_model_summary"]):::uptodate --> x8f6836dcac596e4d(["anc_model_outputs"]):::uptodate
+    x2d1d696496197875(["anc_odds_ratio_table"]):::uptodate --> x8f6836dcac596e4d(["anc_model_outputs"]):::uptodate
+    x02d4c90c16108e87(["anc_t_test_table"]):::uptodate --> x8f6836dcac596e4d(["anc_model_outputs"]):::uptodate
     x8a8877168229f4dd(["anc_data_raw_metadata"]):::uptodate --> x2f4ef36220e6f123(["anc_data_raw_metadata_csv"]):::uptodate
+    x597caed207d4fc5d(["anc_data_processed"]):::uptodate --> x9efa48e5541103b9(["anc_data_processed_csv"]):::uptodate
     xa2691830171b0cf9(["anc_data_recode"]):::uptodate --> xc84eb75d2309c0e2(["anc_data_model_recode"]):::uptodate
     xc84eb75d2309c0e2(["anc_data_model_recode"]):::uptodate --> x22e570cd18c3f66c(["anc_bivariate_t_test"]):::uptodate
+    x6262f74751558db7(["anc_data_model"]):::uptodate --> x11c78e49bf183f4f(["anc_data_model_csv"]):::uptodate
+    x2d826175fca676e3(["anc_gaussian_model"]):::uptodate --> x9265d4ebfbcc5e37(["anc_gaussian_model_summary"]):::uptodate
+    xbba39ca9e518ed94(["anc_data_raw"]):::uptodate --> x8a8877168229f4dd(["anc_data_raw_metadata"]):::uptodate
+    xc84eb75d2309c0e2(["anc_data_model_recode"]):::uptodate --> x77712cf549a15628(["anc_bivariate_fisher_test"]):::uptodate
+    xc84eb75d2309c0e2(["anc_data_model_recode"]):::uptodate --> x6262f74751558db7(["anc_data_model"]):::uptodate
+    x34b86f86bb8014ea(["anc_data_processed_metadata"]):::uptodate --> x2d4384c638b4d284(["anc_data_processed_metadata_csv"]):::uptodate
+    x597caed207d4fc5d(["anc_data_processed"]):::uptodate --> xa2691830171b0cf9(["anc_data_recode"]):::uptodate
+    xa2691830171b0cf9(["anc_data_recode"]):::uptodate --> xdeea979a9fc8283c(["anc_data_summary_univariate_table"]):::uptodate
+    x597caed207d4fc5d(["anc_data_processed"]):::uptodate --> x34b86f86bb8014ea(["anc_data_processed_metadata"]):::uptodate
+    x22e570cd18c3f66c(["anc_bivariate_t_test"]):::uptodate --> x02d4c90c16108e87(["anc_t_test_table"]):::uptodate
+    xec336fb433299b8a(["anc_logit_model"]):::uptodate --> x2d44714c6076aea5(["anc_logit_model_summary"]):::uptodate
+    xc84eb75d2309c0e2(["anc_data_model_recode"]):::uptodate --> x60423dd0fbb1026b(["anc_data_model_recode_csv"]):::uptodate
+    x6262f74751558db7(["anc_data_model"]):::uptodate --> xec336fb433299b8a(["anc_logit_model"]):::uptodate
+    x6262f74751558db7(["anc_data_model"]):::uptodate --> x2d826175fca676e3(["anc_gaussian_model"]):::uptodate
+    x77712cf549a15628(["anc_bivariate_fisher_test"]):::uptodate --> x2d1d696496197875(["anc_odds_ratio_table"]):::uptodate
   end
 ```
 
