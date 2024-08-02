@@ -158,7 +158,7 @@ anaemia_model <- anc_data_recode |>
     livelihoods = ifelse(livelihoods == "Yes", 1, 0),
     secondary_education = ifelse(secondary_education == "Yes", 1, 0),
     marital_status = ifelse(marital_status == "married", 1, 0),
-    location = ifelse(location == "Within community", 1, 0),
+    location = ifelse(location == "Within community", 1, 0)
   ) |>
   na.omit()
 
