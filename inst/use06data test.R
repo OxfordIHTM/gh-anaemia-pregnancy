@@ -116,4 +116,22 @@ ggplot(anc_data_processed_subset, aes(x = age, y = haemoglobin)) +
        x = "Age(year)",
        y = "Haemoglobin Level(g/dL)") +
   theme_minimal()
+#####byErnest ####
+## Processing code for re-classification of age ----
+df <- data |>
+  dplyr::mutate(
+    early_childbearing = ifelse(age < 20, "Yes", "No") |>
+      factor(levels = c("Yes", "No"))
+  )
 
+## Check re-classification ----
+table(df$early_childbearing)
+## Processing code for re-classification of profession ----
+df <- df |>
+  dplyr::mutate(
+    livelihoods = ifelse(profession %in% c("None", "Student"), "No", "Yes") |>
+      factor(levels = c("Yes", "No"))
+  )
+
+## Check re-classification ----
+table(df$livelihoods)
