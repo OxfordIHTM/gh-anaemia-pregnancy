@@ -1,32 +1,27 @@
 ####data cleaning####
 anc_data_processed06 <- read_csv("data/anc_data_processed06.csv")
 #all data
-data<- anc_data_processed06 %>%
+anc_data_processed06<- anc_data_processed06 %>%
   dplyr::mutate(
     total_n = n(),
     age_group = cut(
       x = age,
-      breaks = c( 15, 20, 25, 30, 35, 40, 45),
+      breaks = c( 15, 20, 25, 30, 35, 40, 45, Inf),
       labels = c(
         "15 to 19 years", "20 to 24 years", "25 to 29 years", 
         "30 to 34 years", "35 to 39, years", 
-        "40 to 44 years"
+        "40 to 44 years","45 years and older"
       ),
       include.lowest = TRUE, right = FALSE
     ),
     education_level_summary1= case_when(
-      education_level %in% c( "None", "Primary") ~ "no education and Primary",
-      education_level %in% c("Junior High School", "Senior High School", "Tertiary") ~ "Junior high school and higher",
+      education_level %in% c( "None", "Primary","Junior High School") ~ "no education and Primary",
+      education_level %in% c( "Senior High School", "Tertiary") ~ "Senior high school and higher",
       TRUE ~ "NA"
     ),
     profession_group= case_when(
       profession %in% c("None","Student" ) ~ "Unemployed",
       profession %in% c("Teacher", "Company Employee", "Midwife","Undertaker", "Trader", "Seamstress", "Hair Dresser", "Fishmonger", "Farmer", "Decorator", "Caterer", "Business Owner") ~ "Employed",
-      TRUE ~ "NA"
-    ),
-    location_group= case_when(
-      address %in% c( "Makassium","Saltpond Zongo","Anomabo", "Biriwa", "Abandze", "Yamoransa","Kormantse","Ekon","Cape Coast") ~ "Urban",
-      address %in% c("Amoanda","Buranamoah","Moree","Asafora", "Aketekyiwa","Egyirefa","Pomasi(Pomase)", "Waakrom", "Afrago Junction", "Amissakrom", "Egyierefa","Insanfo(NSANFO)","Ekotokrom","Amissakrom","Eguase") ~ "Rural Town",
       TRUE ~ "NA"
     ),
     location_group2= case_when(
@@ -48,8 +43,27 @@ data<- anc_data_processed06 %>%
 
 
 #####univariable analysis####
+#anaemia catergory
+an_c_counts <- table(anc_data_processed06$anaemia_category)
+print(an_c_counts)
+an_c_percentages <- prop.table(an_c_counts) * 100
+an_c_s <- data.frame(
+  Anaemia_catergory = names(an_c_counts),
+  Count_and_Percentage = paste(an_c_counts, "(", round(an_c_percentages, 2), "%)", sep = "")
+)
+print()
+
+# age group
+age_group_counts <- table(anc_data_processed06$age_group)
+print(age_group_counts)
+age_group_percentages <- prop.table(age_group_counts) * 100
+age_group <- data.frame(
+  Age_Group = names(age_group_counts),
+  Count_and_Percentage = paste(age_group_counts, "(", round(age_group_percentages, 2), "%)", sep = "")
+)
+print(age_group)
 # education levels
-education_counts <- table(data$education_level)
+education_counts <- table(anc_data_processed06$education_level)
 print(education_counts)
 education_percentages <- prop.table(education_counts) * 100
 education <- data.frame(
@@ -59,7 +73,7 @@ education <- data.frame(
 
 
 # profession
-profession_counts <- table(data$profession)
+profession_counts <- table(anc_data_processed06$profession)
 print(profession_counts)
 profession_percentages <- prop.table(profession_counts) * 100
 Profession <- data.frame(
@@ -67,7 +81,7 @@ Profession <- data.frame(
   Count_and_Percentage = paste(profession_counts, "(", round(profession_percentages, 2), "%)", sep = "")
 )
 #address
-address_counts <- table(data$address)
+address_counts <- table(anc_data_processed06$address)
 print(address_counts)
 address_percentages <- prop.table(address_counts) * 100
 Address <- data.frame(
@@ -77,7 +91,7 @@ Address <- data.frame(
 print(Address)
 
 #marital status
-marital_status_counts <- table(data$marital_status)
+marital_status_counts <- table(anc_data_processed06$marital_status)
 print(marital_status_counts)
 marital_status_percentages <- prop.table(marital_status_counts) * 100
 Marital_Status <- data.frame(
@@ -88,7 +102,7 @@ print(Marital_Status)
 
 
 #sickle cell
-sickle_cell_counts <- table(data$sickle_cell)
+sickle_cell_counts <- table(anc_data_processed06$sickle_cell)
 print(sickle_cell_counts)
 sickle_cell_percentages <- prop.table(sickle_cell_counts) * 100
 Sickle_Cell <- data.frame(
@@ -97,28 +111,70 @@ Sickle_Cell <- data.frame(
 )
 print(Sickle_Cell)
 
+####Mean,median####
+calculate_95ci <- function(mean, sd, n) {
+  error <- qnorm(0.975) * sd / sqrt(n)
+  lower_bound <- mean - error
+  upper_bound <- mean + error
+  return(c(lower_bound, upper_bound))
+}
+overall_stats <- anc_data_processed06 %>%
+  summarize(
+    median_age = median(age, na.rm = TRUE),
+    mean_age = mean(age, na.rm = TRUE),
+    sd_age = sd(age, na.rm = TRUE),
+    youngest_age = min(age, na.rm = TRUE),
+    oldest_age = max(age, na.rm = TRUE),
+    n = sum(!is.na(age))  
+  ) %>%
+  rowwise() %>%
+  mutate(
+    ci = list(calculate_95ci(mean_age, sd_age, n)),
+    ci_lower = ci[1],
+    ci_upper = ci[2]
+  ) %>%
+  ungroup() %>%
+  select(-ci)  
+print(overall_stats)
+
+
+##Total Hb
+Hb_summary <- anc_data_processed06 %>%
+  summarize(
+    median_hb=median(haemoglobin,na.rm=TRUE),
+    mean_hb = mean(haemoglobin, na.rm = TRUE),
+    sd_hb=sd(haemoglobin,na.rm=TRUE),
+    min_hb = min(haemoglobin, na.rm = TRUE),
+    max_hb = max(haemoglobin, na.rm = TRUE)
+  )
+
+# Print the summary
+print(Hb_summary)
 
 #### age and haemoglobin relationship####
 # Correlation analysis
-correlation <- cor(anc_data_processed_subset$age, anc_data_processed_subset$haemoglobin, use = "complete.obs")
+correlation <- cor(anc_data_processed06$age, anc_data_processed06$haemoglobin, use = "complete.obs")
 print(paste("Correlation between age and haemoglobin:", correlation))
 
 # Linear regression analysis
-lm_model <- lm(haemoglobin ~ age, data = anc_data_processed_subset)
+lm_model <- lm(haemoglobin ~ age, data = anc_data_processed06)
 lm_summary <- summary(lm_model)
 print(lm_summary)
 
 # Plotting the relationship
-ggplot(anc_data_processed_subset, aes(x = age, y = haemoglobin)) +
+ggplot(anc_data_processed06, aes(x = age, y = haemoglobin)) +
   geom_point() +
   geom_smooth(method = "lm", col = "blue") +
   labs(title = "Relationship between Age and Haemoglobin Levels",
        x = "Age(year)",
        y = "Haemoglobin Level(g/dL)") +
   theme_minimal()
-#####byErnest ####
+
+
+
+###
 ## Processing code for re-classification of age ----
-df <- data |>
+df <- anc_data_recode |>
   dplyr::mutate(
     early_childbearing = ifelse(age < 20, "Yes", "No") |>
       factor(levels = c("Yes", "No"))
@@ -126,8 +182,9 @@ df <- data |>
 
 ## Check re-classification ----
 table(df$early_childbearing)
-## Processing code for re-classification of profession ----
-df <- df |>
+
+
+df <- anc_data_processed06 |>
   dplyr::mutate(
     livelihoods = ifelse(profession %in% c("None", "Student"), "No", "Yes") |>
       factor(levels = c("Yes", "No"))
@@ -135,3 +192,42 @@ df <- df |>
 
 ## Check re-classification ----
 table(df$livelihoods)
+
+
+## Processing code for re-classification of education level ----
+df <- df |>
+  dplyr::mutate(
+    secondary_education = ifelse(
+      education_level %in% c("None", "Primary"), "No", "Yes"
+    ) |>
+      factor(levels = c("Yes", "No"))
+  )
+
+## Check re-classification ----
+table(df$secondary_education)
+
+
+
+## Tabulate marital status ----
+table(df$marital_status)
+
+
+
+
+
+## Tabulate sickle cell ----
+table(df$sickle_cell)
+
+
+## Processing code for re-classification of location ----
+df <- df |>
+  dplyr::mutate(
+    location = ifelse(
+      address %in% c("Anomabo", "Biriwa", "Asafora"), 
+      "Within community", "Outside community"
+    ) |>
+      factor(levels = c("Within community", "Outside community"))
+  )
+
+## Check re-classification ----
+table(df$location)
