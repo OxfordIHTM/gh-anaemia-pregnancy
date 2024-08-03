@@ -94,7 +94,7 @@ The current project workflow is described in the image below:
 cat(
   "```mermaid",
   targets::tar_mermaid(
-    targets_only = TRUE, color = FALSE, legend = FALSE
+    targets_only = FALSE, color = TRUE, legend = FALSE
   ),
   "```",
   sep = "\n"
