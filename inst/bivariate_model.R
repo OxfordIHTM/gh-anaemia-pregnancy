@@ -1,5 +1,6 @@
 library(dplyr)
 library(openxlsx)
+library(gtsummary)
 anc_data<-read.csv("data/anc_data_processed06.csv")
 #'
 #' Summarise glm model output
@@ -112,13 +113,12 @@ anc_data_recode<-anc_data%>%
       education_level %in% c("None", "Primary"), "No", "Yes"
     ) |>
       factor(levels = c("Yes", "No")),
+    location = ifelse(address == "Mfanteman", NA_character_, address),
     location = ifelse(
       address %in% c("Anomabo", "Biriwa", "Asafora"), 
       "Within community", "Outside community"
     ) |>
       factor(levels = c("Within community", "Outside community"))
-  
-
   )
 
 
@@ -144,6 +144,32 @@ odds_ratio_table <- Map(
   )() 
 
 summarise_fisher_test_table(odds_ratio_table,tidy=TRUE)
+
+
+tab_summary <- gtsummary::tbl_summary(
+  anc_data_recode |> 
+    dplyr::select(
+      age, haemoglobin, anaemia_status, early_childbearing, 
+      livelihoods, secondary_education, marital_status, location
+    ), 
+  by = anaemia_status,
+  label = list(
+    age = "Mean age",
+    haemoglobin = "Mean haemoglobin (mg/L)",
+    anaemia_status = "Anaemia status",
+    early_childbearing = "Early childbearing",
+    livelihoods = "Earns a living",
+    secondary_education = "At least secondary",
+    marital_status = "Marital status",
+    location = "Location relative to clinic"
+  )
+)
+
+tab_summary
+
+tab_summary |>
+  gtsummary::as_gt() |>
+  gt::gtsave("outputs/descriptive_table.docx")
 
 
 
