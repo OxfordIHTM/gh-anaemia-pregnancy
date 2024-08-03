@@ -124,8 +124,8 @@ gtsummary::tbl_summary(
     ), 
   by = anaemia_status,
   label = list(
-    age = "Age",
-    haemoglobin = "Haemoglobin (mg / L)",
+    age = "Mean age",
+    haemoglobin = "Mean haemoglobin (mg / L)",
     anaemia_status = "Anaemia status",
     early_childbearing = "Early childbearing",
     livelihoods = "Earns a living",
