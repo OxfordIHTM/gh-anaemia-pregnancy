@@ -113,13 +113,12 @@ anc_data_recode<-anc_data%>%
       education_level %in% c("None", "Primary"), "No", "Yes"
     ) |>
       factor(levels = c("Yes", "No")),
+    location = ifelse(address == "Mfanteman", NA_character_, address),
     location = ifelse(
       address %in% c("Anomabo", "Biriwa", "Asafora"), 
       "Within community", "Outside community"
     ) |>
       factor(levels = c("Within community", "Outside community"))
-    
-    
   )
 
 
