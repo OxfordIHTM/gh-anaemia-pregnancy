@@ -32,8 +32,11 @@ library(micronutr)
 library(oxthema)
 
 
-## Packages for tables formattting and friends ----
+## Packages for table summaries ----
 library(gtsummary)
-library(broom)
-library(broom.helpers)
-library(parameters)
+
+
+## Packages for directed acyclic graphs ----
+library(dagitty)
+library(ggdag)
+
