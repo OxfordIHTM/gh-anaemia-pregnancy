@@ -22,7 +22,7 @@ This repository is a [`docker`](https://www.docker.com/get-started)-containerise
 
 ## About the Project
 
-This is a descriptive cross-sectional study that aims to determine the burden and determinants of anaemia among pregnant women attending the antenatal clinic at a rural health facility in the Central District of Ghana. The targeted population for the study consists of all pregnant women who received antenatal care (ANC) at Biriwa Baobab Medical Centre, a rural clinic in the Central District of Ghana. 
+This is a descriptive study that aims to determine the burden and determinants of anaemia among pregnant women attending the antenatal clinic at a rural health facility in the Central District of Ghana. The targeted population for the study consists of all pregnant women who received antenatal care (ANC) at [Biriwa Baobab Medical Centre](https://amicusonlus.org/the-baobab-medical-center), a rural clinic in the Central District of Ghana. 
 
 Ghana divides healthcare providers into five levels: 1) health posts, which provide primary care in rural areas; 2) health centres and clinics; 3) district hospitals; 4) regional hospitals; and 5) tertiary hospitals. Biriwa Baobab Medical Centre is a "health centre and clinic" that mostly serves the nearby communities. It has several departments, including maternal units, the Outpatient Department (OPD), the emergency room (ER), the pharmacy, the lab, and the registration unit. There is one physical assistant and three nurses responsible for OPD, the ward, and the ER. A staff member handles registration, a pharmacist manages the pharmacy, two technicians handle the lab, two midwives oversee the maternal unit, and the manager manages everything in the medical centre. The maternal unit is their primary source of income. The maternal unit primarily generates revenue from the provision of antenatal care (ANC), delivery, and postnatal care (PNC). The ANC unit registers around 270 pregnant women annually and conducts 30 ANC visits each month. 
 
@@ -37,6 +37,7 @@ gh-anaemia-pregnancy
     |-- .github/
     |-- data/
     |-- data-raw/
+    |-- inst/
     |-- metadata/
     |-- outputs/
     |-- R/
@@ -48,15 +49,17 @@ gh-anaemia-pregnancy
     |-- _targets.R
 ```
 
-* `.github` contains project testing and automated deployment of outputs workflows via continuous integration and continuous deployment (CI/CD) using Github Actions.
+* `.github` contains workflows for project testing and automated deployment of outputs via continuous integration and continuous deployment (CI/CD) using Github Actions.
 
-* `data/` contains intermediate and final data outputs produced by the workflow.
+* `data/` contains intermediate and final data outputs produced by the workflow. This directory is empty given that data outputs from this project are restricted and can only be reproduced by eligible members of the project. This directory is kept here to maintain reproducibility of project directory structure and ensure that the workflow runs as expected. Those who are collaborating on this project and who have permissions to use the raw datasets (see next point) should run the workflow as described below in the section on [Reproducibility](#reproducibility) to generate the data outputs of this project.
 
 * `data-raw/` contains raw datasets, usually either downloaded from source or added manually, that are used in the project. This directory is empty given that the raw datasets used in this project are restricted and are only distributed to eligible members of the project. This directory is kept here to maintain reproducibility of project directory structure and ensure that the workflow runs as expected. Those who are collaborating on this project and who have permissions to use the raw datasets should include their copies of the raw dataset into this directory in their local versions of this repository.
 
-* `metadata/` contains various metadata for both raw and processed datasets found in `data-raw` and `data` directories respectively.
+* `inst/` contains loose R scripts and outputs developed during code development and testing. These are not used in the workflow but are archived here for reference purposes.
 
-* `outputs/` contains compiled reports and figures produced by the workflow.
+* `metadata/` contains various metadata for both raw and processed datasets found in the `data-raw` and `data` directories.
+
+* `outputs/` contains compiled reports, tables, and figures produced by the workflow.
 
 * `R/` contains functions developed/created specifically for use in this workflow.
 
@@ -115,21 +118,21 @@ You can also run the entire workflow from the command line/Terminal as follows:
 Rscript -e "targets::tar_make()"
 ```
 
-Running specific components of the workflow usually involves specifying a target name or target names of the components you want to run. Usually, you should be able to run a full workflow path by just specifying the name of the last target in the workflow sequence. For example, the following will run just the *raw data metadata processing workflow*:
+Running specific components of the workflow usually involves specifying a target name or target names of the components you want to run. Usually, you should be able to run a full workflow path by just specifying the name of the last target in the workflow sequence. For example, the following will run just the *model analysis workflow*:
 
 ```R
-targets::tar_make(anc_data_raw_metadata_csv)
+targets::tar_make(anc_model_outputs)
 ```
 
-The target `anc_data_raw_metadata_csv` is the last target of a series of linked metadata processing targets. Hence, to be able to produce the `anc_data_raw_metadata_csv` target requires running this series of linked targets.
+The target `anc_model_outputs` is the last target of a series of linked model analysis targets. Hence, to be able to produce the `anc_model_outputs` target requires running this series of linked targets.
 
 If you would like to run a set of interrelated but not fully linked targets, you will likely need to specify more than one target name. For this, you can use `tidyselect` approaches to name targets to be run. For example:
 
 ```R
-targets::tar_make(dplyr::contains("metadata"))
+targets::tar_make(dplyr::contains("model"))
 ```
 
-will run all targets whose names contain *"metadata"*.
+will run all targets (and their linked targets) whose names contain *"model"*.
 
 ## Project Team
 

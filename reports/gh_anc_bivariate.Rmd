@@ -113,6 +113,30 @@ df <- df |>
 table(df$location)
 ```
 
+## Descriptive summary of recoded variables
+
+```{r}
+gtsummary::tbl_summary(
+  df |> 
+    dplyr::select(
+      age, haemoglobin, anaemia_status, early_childbearing, 
+      livelihoods, secondary_education, marital_status, location
+    ), 
+  by = anaemia_status,
+  label = list(
+    age = "Mean age",
+    haemoglobin = "Mean haemoglobin (mg / L)",
+    anaemia_status = "Anaemia status",
+    early_childbearing = "Early childbearing",
+    livelihoods = "Earns a living",
+    secondary_education = "At least secondary",
+    marital_status = "Marital status",
+    location = "Location relative to clinic"
+  )
+)
+```
+
+
 ## Bivariate analysis - odds ratio
 
 To estimate odds ratio, we use the Fisher's Exact Test given the small sample sizes.

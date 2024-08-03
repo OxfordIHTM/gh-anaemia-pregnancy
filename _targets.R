@@ -10,6 +10,15 @@ for (f in list.files(here::here("R"), full.names = TRUE)) source (f)
 
 # Create targets and list targets objects -------------------------------------
 
+## DAG targets ----
+dag_targets <- tar_plan(
+  ### Study DAG ----
+  tar_target(
+    name = anc_study_dag,
+    command = create_study_dag()
+  )
+)
+
 ## Data targets
 data_targets <- tar_plan(
   ### Path to raw data ----

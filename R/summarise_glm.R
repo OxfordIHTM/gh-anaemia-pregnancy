@@ -40,7 +40,11 @@ summarise_glm_output <- function(glm_model,
   
   if (exponentiate) {
     summary_glm_tab <- summary_glm_tab |>
-      dplyr::mutate(estimate = exp(estimate))
+      dplyr::mutate(
+        estimate = exp(estimate),
+        lcl = exp(lcl),
+        ucl = exp(ucl)
+      )
   }
   
   if (tidy) {

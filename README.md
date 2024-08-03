@@ -20,12 +20,13 @@ in pregnancy in a rural health facility in central district of Ghana*.
 
 ## About the Project
 
-This is a descriptive cross-sectional study that aims to determine the
-burden and determinants of anaemia among pregnant women attending the
-antenatal clinic at a rural health facility in the Central District of
-Ghana. The targeted population for the study consists of all pregnant
-women who received antenatal care (ANC) at Biriwa Baobab Medical Centre,
-a rural clinic in the Central District of Ghana.
+This is a descriptive study that aims to determine the burden and
+determinants of anaemia among pregnant women attending the antenatal
+clinic at a rural health facility in the Central District of Ghana. The
+targeted population for the study consists of all pregnant women who
+received antenatal care (ANC) at [Biriwa Baobab Medical
+Centre](https://amicusonlus.org/the-baobab-medical-center), a rural
+clinic in the Central District of Ghana.
 
 Ghana divides healthcare providers into five levels: 1) health posts,
 which provide primary care in rural areas; 2) health centres and
@@ -55,6 +56,7 @@ The project repository is structured as follows:
         |-- .github/
         |-- data/
         |-- data-raw/
+        |-- inst/
         |-- metadata/
         |-- outputs/
         |-- R/
@@ -65,12 +67,20 @@ The project repository is structured as follows:
         |-- packages.R
         |-- _targets.R
 
-  - `.github` contains project testing and automated deployment of
-    outputs workflows via continuous integration and continuous
+  - `.github` contains workflows for project testing and automated
+    deployment of outputs via continuous integration and continuous
     deployment (CI/CD) using Github Actions.
 
   - `data/` contains intermediate and final data outputs produced by the
-    workflow.
+    workflow. This directory is empty given that data outputs from this
+    project are restricted and can only be reproduced by eligible
+    members of the project. This directory is kept here to maintain
+    reproducibility of project directory structure and ensure that the
+    workflow runs as expected. Those who are collaborating on this
+    project and who have permissions to use the raw datasets (see next
+    point) should run the workflow as described below in the section on
+    [Reproducibility](#reproducibility) to generate the data outputs of
+    this project.
 
   - `data-raw/` contains raw datasets, usually either downloaded from
     source or added manually, that are used in the project. This
@@ -83,11 +93,15 @@ The project repository is structured as follows:
     the raw dataset into this directory in their local versions of this
     repository.
 
-  - `metadata/` contains various metadata for both raw and processed
-    datasets found in `data-raw` and `data` directories respectively.
+  - `inst/` contains loose R scripts and outputs developed during code
+    development and testing. These are not used in the workflow but are
+    archived here for reference purposes.
 
-  - `outputs/` contains compiled reports and figures produced by the
-    workflow.
+  - `metadata/` contains various metadata for both raw and processed
+    datasets found in the `data-raw` and `data` directories.
+
+  - `outputs/` contains compiled reports, tables, and figures produced
+    by the workflow.
 
   - `R/` contains functions developed/created specifically for use in
     this workflow.
@@ -164,7 +178,7 @@ graph LR
     x6262f74751558db7(["anc_data_model"]):::uptodate --> x11c78e49bf183f4f(["anc_data_model_csv"]):::uptodate
     x2d826175fca676e3(["anc_gaussian_model"]):::uptodate --> x9265d4ebfbcc5e37(["anc_gaussian_model_summary"]):::uptodate
     xbba39ca9e518ed94(["anc_data_raw"]):::uptodate --> x8a8877168229f4dd(["anc_data_raw_metadata"]):::uptodate
-    xa2691830171b0cf9(["anc_data_recode"]):::uptodate --> x4e5d056abbac74dc(["anc_data_analysis_report"]):::uptodate
+    xa2691830171b0cf9(["anc_data_recode"]):::uptodate --> x4e5d056abbac74dc(["anc_data_analysis_report"]):::outdated
     xc84eb75d2309c0e2(["anc_data_model_recode"]):::uptodate --> x77712cf549a15628(["anc_bivariate_fisher_test"]):::uptodate
     xc84eb75d2309c0e2(["anc_data_model_recode"]):::uptodate --> x6262f74751558db7(["anc_data_model"]):::uptodate
     x34b86f86bb8014ea(["anc_data_processed_metadata"]):::uptodate --> x2d4384c638b4d284(["anc_data_processed_metadata_csv"]):::uptodate
@@ -177,6 +191,7 @@ graph LR
     x6262f74751558db7(["anc_data_model"]):::uptodate --> xec336fb433299b8a(["anc_logit_model"]):::uptodate
     x6262f74751558db7(["anc_data_model"]):::uptodate --> x2d826175fca676e3(["anc_gaussian_model"]):::uptodate
     x77712cf549a15628(["anc_bivariate_fisher_test"]):::uptodate --> x2d1d696496197875(["anc_odds_ratio_table"]):::uptodate
+    xa1f8e339ffb46424(["anc_study_dag"]):::outdated --> xa1f8e339ffb46424(["anc_study_dag"]):::outdated
   end
 ```
 
@@ -200,17 +215,16 @@ Running specific components of the workflow usually involves specifying
 a target name or target names of the components you want to run.
 Usually, you should be able to run a full workflow path by just
 specifying the name of the last target in the workflow sequence. For
-example, the following will run just the *raw data metadata processing
-workflow*:
+example, the following will run just the *model analysis workflow*:
 
 ``` r
-targets::tar_make(anc_data_raw_metadata_csv)
+targets::tar_make(anc_model_outputs)
 ```
 
-The target `anc_data_raw_metadata_csv` is the last target of a series of
-linked metadata processing targets. Hence, to be able to produce the
-`anc_data_raw_metadata_csv` target requires running this series of
-linked targets.
+The target `anc_model_outputs` is the last target of a series of linked
+model analysis targets. Hence, to be able to produce the
+`anc_model_outputs` target requires running this series of linked
+targets.
 
 If you would like to run a set of interrelated but not fully linked
 targets, you will likely need to specify more than one target name. For
@@ -218,10 +232,11 @@ this, you can use `tidyselect` approaches to name targets to be run. For
 example:
 
 ``` r
-targets::tar_make(dplyr::contains("metadata"))
+targets::tar_make(dplyr::contains("model"))
 ```
 
-will run all targets whose names contain *“metadata”*.
+will run all targets (and their linked targets) whose names contain
+*“model”*.
 
 ## Project Team
 
