@@ -4,18 +4,22 @@ anc_data_processed06 <- read_csv("data/anc_data_processed06.csv")
 anc_data_processed06<- anc_data_processed06 %>%
   dplyr::mutate(
     total_n = n(),
-    age_group = cut(
+    early_childbearing= cut(
       x = age,
-      breaks = c( 15, 20, 25, 30, 35, 40, 45, Inf),
+      breaks = c( 15, 20, Inf),
       labels = c(
-        "15 to 19 years", "20 to 24 years", "25 to 29 years", 
-        "30 to 34 years", "35 to 39, years", 
-        "40 to 44 years","45 years and older"
+        "15 to 19 years","20 years and older"
       ),
       include.lowest = TRUE, right = FALSE
     ),
     education_level_summary1= case_when(
-      education_level %in% c( "None", "Primary","Junior High School") ~ "no education and Primary",
+      education_level %in% c( "None", "Primary","Junior High School") ~ "No education and Basic education",
+      education_level %in% c( "Senior High School", "Tertiary") ~ "Senior high school and higher",
+      TRUE ~ "NA"
+    ),
+    education_level_summary2= case_when(
+      education_level %in% c( "None") ~ "No education ",
+      education_level%in%c( "Primary","Junior High School")~"Basic education",
       education_level %in% c( "Senior High School", "Tertiary") ~ "Senior high school and higher",
       TRUE ~ "NA"
     ),
@@ -25,10 +29,10 @@ anc_data_processed06<- anc_data_processed06 %>%
       TRUE ~ "NA"
     ),
     location_group2= case_when(
-      address%in% c( "Anomabo", "Asafora", "Biriwa","Abandze", "Aketekyiwa",
-                            "Buranamoah", "Eguase", "Kormantse", "Moree", "Pomasi (Pomase)", "Waakrom", "Yamoransa") ~ "<10km",
-      address %in% c(" Afrago Junction", "Amissakrom", "Amoanda", "Cape Coast", "Egyirefa", "Ekon", "Ekotokrom",
-      "Insanfo (Nsanfo)", "Makassium", "Saltpond Zongo") ~ ">10km",
+      address%in% c( "Abandze", "Aketekyiwa",
+                            "Buranamoah", "Eguase", "Kormantse", "Moree", "Pomasi (Pomase)", "Waakrom", "Yamoransa"," Afrago Junction", "Amissakrom", "Amoanda", "Cape Coast", "Egyirefa", "Ekon", "Ekotokrom",
+                     "Insanfo (Nsanfo)", "Makassium", "Saltpond Zongo") ~ ">5km",
+      address %in% c("Biriwa", "Anomabo", "Asafora") ~ "<5km",
       TRUE ~ "NA"
      ),
     anaemia_status = ifelse(haemoglobin < 11, "anaemia", "no anaemia"),
@@ -43,6 +47,24 @@ anc_data_processed06<- anc_data_processed06 %>%
 
 
 #####univariable analysis####
+#early childbearing
+ec_counts <- table(anc_data_processed06$early_childbearing)
+print(ec_counts)
+ec_percentages <- prop.table(ec_counts) * 100
+ec_s <- data.frame(
+  Early_childbearing = names(ec_counts),
+  Count_and_Percentage = paste(ec_counts, "(", round(ec_percentages, 2), "%)", sep = "")
+)
+print(ec_s)
+#anaemia status
+an_counts <- table(anc_data_processed06$anaemia_status)
+print(an_counts)
+an_percentages <- prop.table(an_counts) * 100
+an_s <- data.frame(
+  Anaemia_status = names(an_counts),
+  Count_and_Percentage = paste(an_counts, "(", round(an_percentages, 2), "%)", sep = "")
+)
+print(an_s)
 #anaemia catergory
 an_c_counts <- table(anc_data_processed06$anaemia_category)
 print(an_c_counts)
@@ -51,7 +73,7 @@ an_c_s <- data.frame(
   Anaemia_catergory = names(an_c_counts),
   Count_and_Percentage = paste(an_c_counts, "(", round(an_c_percentages, 2), "%)", sep = "")
 )
-print()
+print(an_c_s)
 
 # age group
 age_group_counts <- table(anc_data_processed06$age_group)
@@ -111,7 +133,10 @@ Sickle_Cell <- data.frame(
 )
 print(Sickle_Cell)
 
-####Mean,median####
+
+
+
+####Mean,median of age and Hb####
 calculate_95ci <- function(mean, sd, n) {
   error <- qnorm(0.975) * sd / sqrt(n)
   lower_bound <- mean - error
@@ -171,63 +196,170 @@ ggplot(anc_data_processed06, aes(x = age, y = haemoglobin)) +
   theme_minimal()
 
 
+# Create a contingency table
+table_data <- table(anc_data_processed06$sickle_cell, anc_data_processed06$anaemia_status)
 
-###
-## Processing code for re-classification of age ----
-df <- anc_data_recode |>
-  dplyr::mutate(
-    early_childbearing = ifelse(age < 20, "Yes", "No") |>
-      factor(levels = c("Yes", "No"))
+# Display the contingency table
+print(table_data)
+
+# Calculate the Odds Ratio using epitools
+or_result <- oddsratio(table_data)
+print(or_result)
+
+# Perform Fisher's Exact Test
+fisher_result <- fisher.test(table_data)
+print(fisher_result)
+
+####Hb and other variable
+# Calculate means, standard deviations, confidence intervals, and p-value
+meanci_by_ec <- anc_data_processed06 %>%
+  group_by(early_childbearing) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
   )
 
-## Check re-classification ----
-table(df$early_childbearing)
+# Rename the first column
+colnames(meanci_by_ec)[1] <- "variable"
 
+# Print the column names and the summarized data
+print(colnames(meanci_by_ec))
+print(meanci_by_ec)
 
-df <- anc_data_processed06 |>
-  dplyr::mutate(
-    livelihoods = ifelse(profession %in% c("None", "Student"), "No", "Yes") |>
-      factor(levels = c("Yes", "No"))
+# Conduct a t-test to calculate the p-value
+t_test_result <- t.test(haemoglobin ~ early_childbearing, data = anc_data_processed06)
+p_value <- t_test_result$p.value
+
+# Print the p-value
+print(paste("P-value:", p_value))
+
+# Create a box plot for hemoglobin levels by early childbearing status
+ggplot(anc_data_processed06, aes(x = early_childbearing, y = haemoglobin, fill = early_childbearing)) +
+  geom_boxplot() +
+  labs(
+    title = "Box Plot of Haemoglobin Levels by Early Childbearing",
+    x = "Early Childbearing",
+    y = "Hemoglobin Level"
+  ) +
+  scale_fill_manual(values = c("#FF9999", "#66B2FF")) +  # Customize colors here
+  theme_minimal()
+
+# Remove rows with NA values in location_group2 and haemoglobin
+anc_data_processed06_clean <- anc_data_processed06 %>%
+  filter(!is.na(location_group2) & !is.na(haemoglobin))
+
+# Calculate means, standard deviations, confidence intervals, and p-value
+meanci_by_location <- anc_data_processed06_clean %>%
+  group_by(location_group2) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
   )
 
-## Check re-classification ----
-table(df$livelihoods)
+# Rename the first column
+colnames(meanci_by_location)[1] <- "variable"
+
+# Print the column names and the summarized data
+print(colnames(meanci_by_location))
+print(meanci_by_location)
+
+# Conduct a t-test to calculate the p-value
+t_test_result <- t.test(haemoglobin ~ location_group2, data = anc_data_processed06_clean)
+p_value <- t_test_result$p.value
+
+# Print the p-value
+print(paste("P-value:", p_value))
+
+ggplot(anc_data_processed06_clean, aes(x = location_group2, y = haemoglobin, fill = location_group2)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Haemoglobin Levels by Distance",
+       x = "Distance",
+       y = "Haemoglobin Level (g/dL)",
+       fill = "Distance") +  # Change legend title
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set3")
 
 
-## Processing code for re-classification of education level ----
-df <- df |>
-  dplyr::mutate(
-    secondary_education = ifelse(
-      education_level %in% c("None", "Primary"), "No", "Yes"
-    ) |>
-      factor(levels = c("Yes", "No"))
+# Calculate means, standard deviations, confidence intervals, and p-value
+meanci_by_education <- anc_data_processed06_clean %>%
+  group_by(education_level_summary1) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
   )
 
-## Check re-classification ----
-table(df$secondary_education)
+# Rename the first column
+colnames(meanci_by_education)[1] <- "variable"
+
+# Print the column names and the summarized data
+print(colnames(meanci_by_education))
+print(meanci_by_education)
+
+# Conduct a t-test to calculate the p-value
+t_test_result <- t.test(haemoglobin ~ education_level_summary1, data = anc_data_processed06_clean)
+p_value <- t_test_result$p.value
+
+# Print the p-value
+print(paste("P-value:", p_value))
+
+# Create a box plot for haemoglobin levels by education level summary
+ggplot(anc_data_processed06_clean, aes(x = education_level_summary1, y = haemoglobin, fill = education_level_summary1)) +
+  geom_boxplot() +
+  labs(
+    title = "Boxplot of Haemoglobin Levels by Education Level Summary",
+    x = "Education Level",
+    y = "Haemoglobin Level (g/dL)",
+    fill = "Education Level Summary"  # Change legend title
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set3")
 
 
-
-## Tabulate marital status ----
-table(df$marital_status)
-
-
-
-
-
-## Tabulate sickle cell ----
-table(df$sickle_cell)
-
-
-## Processing code for re-classification of location ----
-df <- df |>
-  dplyr::mutate(
-    location = ifelse(
-      address %in% c("Anomabo", "Biriwa", "Asafora"), 
-      "Within community", "Outside community"
-    ) |>
-      factor(levels = c("Within community", "Outside community"))
+# Calculate means, standard deviations, confidence intervals, and p-value
+meanci_by_education <- anc_data_processed06 %>%
+  group_by(education_level_summary2) %>%
+  summarise(
+    mean_hemoglobin = mean(haemoglobin, na.rm = TRUE),
+    sd_hemoglobin = sd(haemoglobin, na.rm = TRUE),
+    n = n(),
+    lower_ci = mean(haemoglobin, na.rm = TRUE) - qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n())),
+    upper_ci = mean(haemoglobin, na.rm = TRUE) + qt(0.975, df = n() - 1) * (sd(haemoglobin, na.rm = TRUE) / sqrt(n()))
   )
 
-## Check re-classification ----
-table(df$location)
+# Rename the first column
+colnames(meanci_by_education)[1] <- "variable"
+
+# Print the column names and the summarized data
+print(colnames(meanci_by_education))
+print(meanci_by_education)
+
+# Conduct a t-test to calculate the p-value
+t_test_result <- t.test(haemoglobin ~ education_level_summary2, data = anc_data_processed06_clean)
+p_value <- t_test_result$p.value
+
+# Print the p-value
+print(paste("P-value:", p_value))
+
+# Create a box plot for haemoglobin levels by education level summary
+ggplot(anc_data_processed06, aes(x = education_level_summary2, y = haemoglobin, fill = education_level_summary2)) +
+  geom_boxplot() +
+  labs(
+    title = "Boxplot of Haemoglobin Levels by Education Level Summary",
+    x = "Education Level",
+    y = "Haemoglobin Level (g/dL)",
+    fill = "Education Level Summary"  # Change legend title
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set3")
